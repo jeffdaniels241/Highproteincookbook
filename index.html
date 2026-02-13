@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The High-Protein System: Interactive Cookbook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        .recipe-scroll::-webkit-scrollbar { width: 8px; }
+        .recipe-scroll::-webkit-scrollbar-track { background: #f1f1f1; }
+        .recipe-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
+        .recipe-scroll::-webkit-scrollbar-thumb:hover { background: #a8a29e; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: auto; height: 300px; max-height: 400px; }
+        .checkbox-pill:checked + label { background-color: #f59e0b; color: white; border-color: #f59e0b; }
+    </style>
+    <!-- Chosen Palette: Warm Stone Neutrals with Amber accents -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Core philosophy.
+         2. Pantry Check: Interactive checkboxes to narrow down recipes by available ingredients.
+         3. The Bases: Reference for the 6 core formulas.
+         4. Recipe Finder: Filterable grid combining tags, categories, and ingredient logic.
+         5. Visuals & Science: Ingredient behavior charts.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans leading-relaxed">
+
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+            <span class="text-xl font-bold text-amber-700">High-Protein<span class="text-stone-600 font-light">System</span></span>
+            <div class="hidden md:flex space-x-6 items-center">
+                <button onclick="scrollToSection('pantry')" class="text-amber-600 font-bold hover:text-amber-700">Pantry Filter</button>
+                <button onclick="scrollToSection('bases')" class="text-stone-600 hover:text-amber-700">Bases</button>
+                <button onclick="scrollToSection('recipes')" class="text-stone-600 hover:text-amber-700">Recipes</button>
+                <button onclick="scrollToSection('visuals')" class="text-stone-600 hover:text-amber-700">Science</button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-stone-900 text-stone-100 py-16 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Structure Over Hype</h1>
+        <p class="text-stone-400 max-w-2xl mx-auto px-4 mb-8">The complete 52-recipe system. No guesswork, just structural logic and high-protein density.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <button onclick="scrollToSection('pantry')" class="bg-amber-600 px-8 py-3 rounded-lg font-bold hover:bg-amber-700 transition shadow-lg">Check My Pantry</button>
+            <button onclick="scrollToSection('recipes')" class="bg-stone-700 px-8 py-3 rounded-lg font-bold hover:bg-stone-600 transition">Browse All</button>
+        </div>
+    </header>
+
+    <!-- Pantry Filter Section -->
+    <section id="pantry" class="py-12 bg-white border-b border-stone-200">
+        <div class="max-w-5xl mx-auto px-4">
+            <div class="bg-stone-50 rounded-2xl p-6 md:p-8 border border-stone-200 shadow-sm">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-stone-900">What's in your pantry?</h2>
+                        <p class="text-stone-600 text-sm">Select ingredients you have to find compatible recipes.</p>
+                    </div>
+                    <button onclick="clearPantry()" class="text-xs font-bold text-stone-400 hover:text-amber-600 uppercase tracking-widest border-b border-transparent hover:border-amber-600 transition">Clear All</button>
+                </div>
+                
+                <div class="flex flex-wrap gap-3" id="ingredient-checkboxes">
+                    <!-- Checkboxes populated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 1: Bases -->
+    <section id="bases" class="py-16 max-w-7xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">The 6 Base Formulas</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="base-container"></div>
+    </section>
+
+    <!-- Section 2: Recipes -->
+    <section id="recipes" class="py-16 bg-stone-100">
+        <div class="max-w-7xl mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-8">Recipe Finder</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <select id="tagFilter" onchange="renderRecipes()" class="p-3 bg-white border border-stone-300 rounded-lg outline-none cursor-pointer">
+                    <option value="all">All Tags</option>
+                    <option value="Post-Workout">Post-Workout</option>
+                    <option value="Late-Night Craving">Late-Night Craving</option>
+                    <option value="Work Snack">Work Snack</option>
+                    <option value="Meal-Prep">Meal-Prep Friendly</option>
+                    <option value="Party">Party</option>
+                    <option value="Freezer-Friendly">Freezer-Friendly</option>
+                    <option value="Kid-Friendly">Kid-Friendly</option>
+                </select>
+                <select id="catFilter" onchange="renderRecipes()" class="p-3 bg-white border border-stone-300 rounded-lg outline-none cursor-pointer">
+                    <option value="all">All Categories</option>
+                    <option value="Savory">Savory Dips & Snacks</option>
+                    <option value="Sweet">Sweet & Cheesecakes</option>
+                    <option value="Frozen">Frozen Desserts</option>
+                    <option value="Baked">Baked Treats</option>
+                    <option value="No-Bake">No-Bake Bars & Bites</option>
+                    <option value="Microwave">Microwave-Only</option>
+                </select>
+                <input type="text" id="searchBar" oninput="renderRecipes()" placeholder="Search recipes or items..." class="p-3 bg-white border border-stone-300 rounded-lg outline-none">
+            </div>
+            
+            <div id="active-filters" class="flex flex-wrap gap-2 mb-6 hidden">
+                <span class="text-xs text-stone-500 font-bold uppercase py-1">Active:</span>
+                <div id="filter-pills" class="flex flex-wrap gap-2"></div>
+            </div>
+
+            <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[300px]"></div>
+            
+            <div id="no-results" class="hidden text-center py-20 bg-white rounded-xl border-2 border-dashed border-stone-200">
+                <p class="text-stone-400 mb-2">No recipes found with these specific ingredients.</p>
+                <button onclick="clearPantry()" class="text-amber-600 font-bold hover:underline">Clear pantry filters</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="recipeModal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative overflow-hidden">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-800 text-3xl">&times;</button>
+            <div class="p-8 overflow-y-auto recipe-scroll">
+                <div id="modalContent">
+                    <h3 id="mTitle" class="text-3xl font-bold text-amber-700 mb-2"></h3>
+                    <div id="mTags" class="flex flex-wrap gap-2 mb-6"></div>
+                    
+                    <div class="grid md:grid-cols-2 gap-8 mt-4">
+                        <div>
+                            <h5 class="font-bold uppercase text-xs tracking-widest text-stone-500 mb-3 border-b pb-2">Ingredients</h5>
+                            <ul id="mIngredients" class="space-y-2 text-stone-600 list-disc list-inside"></ul>
+                        </div>
+                        <div>
+                            <h5 class="font-bold uppercase text-xs tracking-widest text-stone-500 mb-3 border-b pb-2">Instructions</h5>
+                            <ol id="mInstructions" class="space-y-3 text-stone-600 list-decimal list-inside"></ol>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 p-4 bg-amber-50 rounded-xl border border-amber-100">
+                        <h5 class="text-amber-900 font-bold text-sm mb-1">System Insight</h5>
+                        <p id="mNote" class="text-amber-800 text-sm italic"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Science Section -->
+    <section id="visuals" class="py-16 bg-stone-200">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-2xl shadow-sm">
+                <h3 class="text-xl font-bold mb-4">Protein Behavior Matrix</h3>
+                <div class="chart-container"><canvas id="pChart"></canvas></div>
+            </div>
+            <div class="bg-white p-8 rounded-2xl shadow-sm">
+                <h3 class="text-xl font-bold mb-4">Moisture Hierarchy</h3>
+                <div class="chart-container"><canvas id="mChart"></canvas></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 bg-stone-900 text-stone-500 text-center">
+        <p>&copy; 2026 The High-Protein System. Interactive Cookpad.</p>
+    </footer>
+
+    <script>
+        const pantryItems = [
+            "Greek Yogurt", "Cottage Cheese", "Chicken", "Ground Beef", "Turkey", "Egg", 
+            "Whey Protein", "Casein Protein", "Oats", "Oat Flour", "Banana", "Pumpkin", 
+            "Cheddar", "Mozzarella", "Peanut Butter", "Cocoa", "Honey", "Maple Syrup", 
+            "Berries", "Marinara", "Buffalo Sauce", "Taco Seasoning"
+        ];
+
+        const bases = [
+            { name: "Savory Dip Base", ratio: "1c Yogurt/CC + 1tsp Seasoning + 1-3tbsp Liquid", note: "Blend CC 60s for smoothness." },
+            { name: "Sweet Cheesecake Base", ratio: "1c Yogurt + Sweetener + 1/2tsp Vanilla", note: "Add egg for bake, powder for no-bake." },
+            { name: "Pudding/Mousse Base", ratio: "1c Yogurt + 1 scoop Protein Powder", note: "Casein = Thick. Whey = Light." },
+            { name: "Frozen Dessert Base", ratio: "1.5c Cottage Cheese + Sweetener", note: "Thaw 10m before serving." },
+            { name: "Baked Batter Base", ratio: "1c Fruit/Yogurt + 2 Eggs + 1c Dry Base", note: "Oats/Protein as dry base." },
+            { name: "Meat Dip Base", ratio: "1.5c Meat + 1c Dairy + Sauce", note: "Fold meat into blended dairy." }
+        ];
+
+        const recipes = [
+            // SAVORY DIPS
+            { id: 1, title: "Buffalo Chicken Dip", cat: "Savory", tags: ["Party", "Post-Workout", "Meal-Prep"], ingredients: ["1.5c shredded chicken", "0.75c blended cottage cheese", "0.25c buffalo sauce", "0.25c cheddar", "Garlic powder"], instructions: ["Blend cottage cheese smooth.", "Mix with sauce and seasoning.", "Fold in chicken.", "Heat 1-2 mins.", "Stir in cheese while hot."], note: "Base 6." },
+            { id: 2, title: "Cheeseburger Dip", cat: "Savory", tags: ["Party", "Meal-Prep"], ingredients: ["1lb lean ground beef", "0.75c blended cottage cheese", "0.5c cheddar", "1tbsp mustard", "1tbsp ketchup", "Garlic/Onion powder"], instructions: ["Brown beef and drain fat.", "Mix cottage cheese with mustard and ketchup.", "Combine with beef.", "Heat and stir in cheddar."], note: "Base 6." },
+            { id: 3, title: "Taco Meat Dip", cat: "Savory", tags: ["Party", "Meal-Prep"], ingredients: ["1lb lean turkey or beef", "0.75c blended cottage cheese", "2tbsp taco seasoning", "0.25c water", "0.5c shredded cheese"], instructions: ["Cook meat with seasoning and water.", "Blend cottage cheese smooth.", "Combine, heat, and stir in shredded cheese."], note: "Base 6." },
+            { id: 4, title: "Pizza Chicken Bake", cat: "Savory", tags: ["Party", "Freezer-Friendly"], ingredients: ["1.5c shredded chicken", "0.75c blended cottage cheese", "0.5c marinara", "0.5c mozzarella", "Turkey pepperoni"], instructions: ["Mix chicken and cottage cheese.", "Spread in dish.", "Top with marinara and cheese.", "Bake 375F for 12-15 min."], note: "Base 6." },
+            { id: 5, title: "Breakfast Sausage Dip", cat: "Savory", tags: ["Party", "Meal-Prep"], ingredients: ["1lb lean turkey sausage", "0.75c blended cottage cheese", "0.25c Greek yogurt", "0.5c shredded cheddar"], instructions: ["Cook sausage and drain fat.", "Blend cottage cheese.", "Combine all ingredients.", "Heat until warm and creamy."], note: "Base 6." },
+            { id: 6, title: "Smoked Salmon Spread", cat: "Savory", tags: ["Party", "Work Snack"], ingredients: ["1c blended cottage cheese", "4oz smoked salmon", "1tbsp capers", "1tbsp fresh dill", "Lemon juice"], instructions: ["Blend cottage cheese smooth.", "Fold in salmon, capers, and dill.", "Season with lemon juice."], note: "Seafood option." },
+            { id: 7, title: "Ranch Deviled Eggs", cat: "Savory", tags: ["Party", "Post-Workout"], ingredients: ["6 hard-boiled eggs", "0.25c Greek yogurt", "1tsp ranch seasoning"], instructions: ["Slice eggs and remove yolks.", "Mash yolks with yogurt and ranch.", "Pipe back into whites."], note: "Classic hack." },
+            { id: 8, title: "Buffalo Tofu Bites", cat: "Savory", tags: ["Meal-Prep"], ingredients: ["1 block firm tofu", "0.25c buffalo sauce", "2tbsp nutritional yeast", "0.5c blended cottage cheese"], instructions: ["Toss tofu in sauce and yeast.", "Air-fry at 400F for 15 min.", "Serve with cottage cheese ranch."], note: "Vegetarian savory." },
+            
+            // SAVORY DESSERT-ADJACENT
+            { id: 9, title: "Pizza Cheesecake Cups", cat: "Savory", tags: ["Party", "Work Snack"], ingredients: ["1c Greek yogurt", "1 egg", "0.25c cottage cheese", "1/3c marinara", "0.5c mozzarella", "Italian seasoning"], instructions: ["Mix yogurt, egg, and cottage cheese.", "Fold in half the cheese.", "Bake in muffin tin 350F for 20m.", "Top with marinara and more cheese."], note: "Savory Base 2." },
+            { id: 10, title: "Bacon Cheddar Squares", cat: "Savory", tags: ["Work Snack"], ingredients: ["1c yogurt", "2 eggs", "0.5c oat flour", "0.5c cheddar", "4 slices bacon", "0.5tsp baking powder"], instructions: ["Mix yogurt and eggs.", "Stir in dry ingredients, cheese, and bacon.", "Bake 350F for 20-25 min."], note: "Bread replacement." },
+            { id: 11, title: "Ranch Cheesecake Bites", cat: "Savory", tags: ["Party"], ingredients: ["1c yogurt", "1 egg white", "1tbsp ranch seasoning", "0.25c mozzarella"], instructions: ["Mix until smooth.", "Spoon into mini muffin tin.", "Bake 325F for 15-18 min.", "Chill before serving."], note: "Bake-set dip." },
+            { id: 12, title: "Jalapeño Popper Squares", cat: "Savory", tags: ["Party"], ingredients: ["1c blended cottage cheese", "0.5c yogurt", "2 eggs", "0.5c jalapeños", "0.5c cheddar"], instructions: ["Mix all.", "Pour into dish.", "Bake 350F for 25 min.", "Cool before slicing."], note: "Party favorite." },
+            { id: 13, title: "Everything Bagel Loaf", cat: "Savory", tags: ["Work Snack"], ingredients: ["1c yogurt", "2 eggs", "0.75c oat flour", "1tsp baking powder", "1tbsp seasoning"], instructions: ["Mix wet.", "Add dry.", "Bake 350F for 30-35 min in loaf pan."], note: "Base 5 logic." },
+            { id: 14, title: "Garlic Herb Muffins", cat: "Savory", tags: ["Meal-Prep"], ingredients: ["1c yogurt", "1 egg", "0.25c parmesan", "1tsp herbs"], instructions: ["Mix all.", "Bake 325F for 20 min.", "Chill for best texture."], note: "Stable cold." },
+
+            // SWEET CHEESECAKES & PUDDINGS
+            { id: 15, title: "Banana Cheesecake Bowl", cat: "Sweet", tags: ["Post-Workout", "Kid-Friendly"], ingredients: ["1c Greek yogurt", "1 mashed banana", "Sweetener", "Vanilla"], instructions: ["Mash banana.", "Stir in yogurt and vanilla.", "Chill 15 min."], note: "No-bake Base 2." },
+            { id: 16, title: "Chocolate Cheesecake Cup", cat: "Sweet", tags: ["Late-Night Craving"], ingredients: ["1c Greek yogurt", "1 scoop chocolate whey protein", "1tbsp cocoa", "Pinch of salt"], instructions: ["Mix powder with tiny amount of yogurt to form paste.", "Add rest and mix.", "Chill 20 min."], note: "Base 3." },
+            { id: 17, title: "Lemon Pie Protein Cup", cat: "Sweet", tags: ["Post-Workout"], ingredients: ["1c yogurt", "1-2tbsp lemon juice", "Lemon zest", "Sweetener"], instructions: ["Mix until smooth.", "Chill.", "Top with crushed graham if desired."], note: "Refreshing." },
+            { id: 18, title: "Strawberry Parfait", cat: "Sweet", tags: ["Post-Workout"], ingredients: ["1c yogurt", "0.5c strawberries", "0.25c cereal"], instructions: ["Sweeten yogurt.", "Layer with berries.", "Chill briefly."], note: "Fastest sweet snack." },
+            { id: 19, title: "Pumpkin Protein Pudding", cat: "Sweet", tags: ["Meal-Prep"], ingredients: ["1c yogurt", "0.5c pumpkin puree", "1 scoop vanilla whey protein", "Pumpkin spice"], instructions: ["Mix protein with yogurt first.", "Stir in pumpkin and spice.", "Chill 20 min."], note: "Base 3." },
+            { id: 20, title: "PB Cheesecake Cup", cat: "Sweet", tags: ["Late-Night Craving"], ingredients: ["1c yogurt", "2tbsp peanut butter powder", "Vanilla", "Sweetener"], instructions: ["Mix until smooth.", "Add splash of milk if too thick.", "Chill 20 min."], note: "Base 3 variation." },
+            { id: 21, title: "Mocha Protein Mousse", cat: "Sweet", tags: ["Late-Night Craving"], ingredients: ["1c yogurt", "1 scoop chocolate whey protein", "0.5tsp instant espresso"], instructions: ["Hydrate protein with little yogurt.", "Mix all.", "Chill."], note: "Base 3." },
+            { id: 22, title: "Chia Protein Pudding", cat: "Sweet", tags: ["Meal-Prep"], ingredients: ["1c milk", "2tbsp chia seeds", "0.5c yogurt", "0.5 scoop casein protein"], instructions: ["Mix all.", "Refrigerate 4+ hours."], note: "Meal prep staple." },
+
+            // FROZEN DESSERTS
+            { id: 23, title: "CC Vanilla Ice Cream", cat: "Frozen", tags: ["Late-Night Craving"], ingredients: ["1.5c cottage cheese", "Sweetener", "1tsp vanilla"], instructions: ["Blend smooth.", "Freeze 90 min.", "Re-blend midway."], note: "Base 4." },
+            { id: 24, title: "Choco PB Ice Cream", cat: "Frozen", tags: ["Late-Night Craving"], ingredients: ["1.5c cottage cheese", "1tbsp cocoa", "1tbsp peanut butter"], instructions: ["Blend smooth.", "Freeze 90 min.", "Stir halfway."], note: "Base 4." },
+            { id: 25, title: "Strawberry CC Ice Cream", cat: "Frozen", tags: ["Late-Night Craving"], ingredients: ["1.5c cottage cheese", "0.5c strawberries", "Sweetener"], instructions: ["Blend CC and berries smooth.", "Freeze 90 min.", "Stir halfway."], note: "Base 4." },
+            { id: 26, title: "Banana Nice Cream", cat: "Frozen", tags: ["Kid-Friendly"], ingredients: ["2 frozen bananas", "0.5c yogurt", "1 scoop whey protein"], instructions: ["Blend until creamy.", "Serve immediately or freeze 20m."], note: "Classic hack." },
+            { id: 27, title: "Greek Yogurt Berry Bark", cat: "Frozen", tags: ["Late-Night Craving", "Kid-Friendly"], ingredients: ["1.5c yogurt", "0.5c mixed berries"], instructions: ["Spread yogurt thin on parchment.", "Top with berries.", "Freeze 3 hours."], note: "Base 4 option." },
+            { id: 28, title: "Protein Fudgesicles", cat: "Frozen", tags: ["Kid-Friendly"], ingredients: ["1c milk", "1 scoop chocolate protein", "1tbsp cocoa"], instructions: ["Blend.", "Pour into molds.", "Freeze 4+ hours."], note: "Icy snack." },
+            { id: 29, title: "Mango Lassi Pops", cat: "Frozen", tags: ["Kid-Friendly"], ingredients: ["1c yogurt", "0.5c mango", "Sweetener"], instructions: ["Blend smooth.", "Freeze in molds."], note: "Base 4." },
+            { id: 30, title: "Key Lime Frozen Cup", cat: "Frozen", tags: ["Late-Night Craving"], ingredients: ["1c yogurt", "2tbsp lime juice", "Sweetener"], instructions: ["Mix.", "Freeze 1-2 hours.", "Stir midway."], note: "Base 4." },
+
+            // BAKED SWEET TREATS
+            { id: 31, title: "Chocolate Brownies", cat: "Baked", tags: ["Freezer-Friendly", "Meal-Prep"], ingredients: ["1c yogurt", "0.5c chocolate whey protein", "0.25c cocoa", "2 eggs", "0.5tsp baking powder"], instructions: ["Mix wet.", "Add dry.", "Bake 350F for 20m.", "Underbake for fudginess."], note: "Base 5." },
+            { id: 32, title: "Banana Protein Muffins", cat: "Baked", tags: ["Post-Workout", "Kid-Friendly"], ingredients: ["2 bananas", "2 eggs", "0.5c vanilla whey protein", "0.5c oat flour", "1tsp baking powder"], instructions: ["Mix bananas/eggs.", "Add dry.", "Bake 350F for 20m."], note: "Base 5." },
+            { id: 33, title: "Blueberry Lemon Loaf", cat: "Baked", tags: ["Meal-Prep"], ingredients: ["1c yogurt", "2 eggs", "0.75c oat flour", "0.5c protein", "0.5c berries"], instructions: ["Mix wet.", "Add dry.", "Fold in berries.", "Bake 350F for 35m."], note: "Base 5." },
+            { id: 34, title: "Pumpkin Choco Muffins", cat: "Baked", tags: ["Meal-Prep", "Kid-Friendly"], ingredients: ["1c pumpkin", "2 eggs", "0.5c vanilla whey protein", "0.5c oat flour", "Choco chips"], instructions: ["Mix wet.", "Add dry.", "Bake 350F for 20m."], note: "Base 5." },
+            { id: 35, title: "Cinnamon Roll Bake", cat: "Baked", tags: ["Meal-Prep"], ingredients: ["1c yogurt", "2 eggs", "0.5c oat flour", "0.5c whey protein", "1tsp cinnamon"], instructions: ["Mix wet.", "Add dry.", "Bake 350F for 25m."], note: "Base 5." },
+            { id: 36, title: "Protein Lava Mug Cake", cat: "Baked", tags: ["Late-Night Craving"], ingredients: ["0.25c yogurt", "1 egg white", "2tbsp chocolate protein", "1 square dark choco"], instructions: ["Mix all but square.", "Press square into center.", "Microwave 60s."], note: "Single serve." },
+
+            // NO BAKE
+            { id: 37, title: "Energy Bites", cat: "No-Bake", tags: ["Work Snack"], ingredients: ["1c oats", "0.5c peanut butter", "1/3c honey", "0.5c vanilla protein"], instructions: ["Mix all.", "Roll into balls.", "Chill 30m."], note: "Base 5 (No Bake)." },
+            { id: 38, title: "Cheesecake Balls", cat: "No-Bake", tags: ["Work Snack"], ingredients: ["0.75c thick yogurt", "0.5c vanilla protein", "0.25c almond flour"], instructions: ["Mix into dough.", "Roll into balls.", "Chill 1 hour."], note: "Base 2." },
+            { id: 39, title: "Choco Coconut Bars", cat: "No-Bake", tags: ["Meal-Prep"], ingredients: ["1c protein", "0.5c peanut butter", "0.25c coconut flour", "Milk as needed"], instructions: ["Mix dough.", "Press in container.", "Chill.", "Slice."], note: "Dense snack." },
+            { id: 40, title: "Edible Cookie Dough", cat: "No-Bake", tags: ["Late-Night Craving"], ingredients: ["0.75c blended cottage cheese", "0.5c oat flour", "0.5c vanilla whey protein", "Chocolate chips"], instructions: ["Blend CC.", "Mix with dry.", "Chill 30m."], note: "Raw safe." },
+            { id: 41, title: "Snickers Clusters", cat: "No-Bake", tags: ["Late-Night Craving"], ingredients: ["1c yogurt", "0.25c peanuts", "Caramel syrup", "Dark chocolate"], instructions: ["Mix yogurt/peanuts/syrup.", "Spoon on parchment.", "Freeze.", "Drizzle with chocolate."], note: "Viral hack." },
+            { id: 42, title: "Brownie Bites", cat: "No-Bake", tags: ["Work Snack"], ingredients: ["1c dates", "0.5c walnuts", "2tbsp cocoa", "0.5c chocolate protein"], instructions: ["Pulse dates/nuts.", "Add dry.", "Roll balls.", "Chill."], note: "Fiber rich." },
+            { id: 43, title: "Dessert Rice Cake", cat: "No-Bake", tags: ["Work Snack"], ingredients: ["2 rice cakes", "0.5c sweetened yogurt", "Fruit"], instructions: ["Spread yogurt on cake.", "Top with fruit.", "Eat immediately."], note: "Quick snack." },
+            { id: 44, title: "Protein Fudge", cat: "No-Bake", tags: ["Meal-Prep"], ingredients: ["1c blended cottage cheese", "2tbsp cocoa", "0.5c chocolate casein protein"], instructions: ["Blend smooth.", "Freeze/Chill until set.", "Slice."], note: "Base 3 variation." },
+
+            // MICROWAVE ONLY
+            { id: 45, title: "2-Min Brownie", cat: "Microwave", tags: ["Late-Night Craving"], ingredients: ["Yogurt", "Egg white", "Chocolate protein", "Cocoa", "Baking powder"], instructions: ["Mix in mug.", "Microwave 45-60s."], note: "Fastest sweet." },
+            { id: 46, title: "Microwave Cheesecake", cat: "Microwave", tags: ["Late-Night Craving"], ingredients: ["0.5c yogurt", "1 egg white", "Sweetener", "Vanilla"], instructions: ["Mix.", "Microwave 75s.", "Chill 10m."], note: "Base 2." },
+            { id: 47, title: "Microwave Buffalo Dip", cat: "Microwave", tags: ["Post-Workout"], ingredients: ["Chicken", "Blended cottage cheese", "Buffalo sauce", "Cheddar"], instructions: ["Mix all.", "Microwave 90s."], note: "Base 6." },
+            { id: 48, title: "Cinnamon Oat Mug Cake", cat: "Microwave", tags: ["Post-Workout"], ingredients: ["Oat flour", "Vanilla protein", "Egg white", "Yogurt", "Cinnamon"], instructions: ["Mix in mug.", "Microwave 60s."], note: "Fast fuel." },
+            { id: 49, title: "Microwave Pizza Bowl", cat: "Microwave", tags: ["Post-Workout"], ingredients: ["Chicken", "Marinara", "Blended cottage cheese", "Mozzarella"], instructions: ["Combine base.", "Microwave 90s.", "Top with cheese."], note: "Savory speed." },
+            { id: 50, title: "90-Second Lava Cake", cat: "Microwave", tags: ["Late-Night Craving"], ingredients: ["Chocolate protein", "Cocoa", "Egg white", "Yogurt", "Dark chocolate square"], instructions: ["Mix base.", "Press chocolate center.", "Microwave 50s."], note: "Indulgent." },
+            { id: 51, title: "Parmesan Crisps", cat: "Savory", tags: ["Party", "Work Snack"], ingredients: ["0.5c parmesan", "Protein powder", "Garlic powder"], instructions: ["Mix.", "Place heaps on parchment.", "Bake 400F for 5m."], note: "Crunchy fix." },
+            { id: 52, title: "Espresso Choco Bark", cat: "Frozen", tags: ["Late-Night Craving"], ingredients: ["1c yogurt", "1 scoop chocolate protein", "1tsp instant espresso", "Chocolate chips"], instructions: ["Mix base.", "Spread thin.", "Freeze."], note: "Energizing frozen." }
+        ];
+
+        // --- FILTER LOGIC ---
+        let selectedPantry = [];
+
+        function renderPantry() {
+            const container = document.getElementById('ingredient-checkboxes');
+            container.innerHTML = pantryItems.map(item => `
+                <div class="relative">
+                    <input type="checkbox" id="check-${item.replace(/\s+/g, '')}" value="${item}" 
+                        class="checkbox-pill hidden" onchange="togglePantryItem('${item}')">
+                    <label for="check-${item.replace(/\s+/g, '')}" 
+                        class="px-4 py-2 rounded-full border border-stone-300 bg-white text-stone-600 text-sm font-semibold cursor-pointer hover:border-amber-500 transition-all select-none flex items-center gap-2">
+                        ${item}
+                    </label>
+                </div>
+            `).join('');
+        }
+
+        function togglePantryItem(item) {
+            if (selectedPantry.includes(item)) {
+                selectedPantry = selectedPantry.filter(i => i !== item);
+            } else {
+                selectedPantry.push(item);
+            }
+            renderRecipes();
+        }
+
+        function clearPantry() {
+            selectedPantry = [];
+            document.querySelectorAll('.checkbox-pill').forEach(cb => cb.checked = false);
+            document.getElementById('searchBar').value = '';
+            document.getElementById('tagFilter').value = 'all';
+            document.getElementById('catFilter').value = 'all';
+            renderRecipes();
+        }
+
+        function renderBases() {
+            document.getElementById('base-container').innerHTML = bases.map((b, i) => `
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-amber-500">
+                    <span class="text-[10px] font-bold text-stone-400 uppercase">Formula ${i+1}</span>
+                    <h4 class="font-bold text-lg mb-2">${b.name}</h4>
+                    <p class="text-sm font-mono text-amber-700 bg-stone-50 p-2 rounded border mb-3">${b.ratio}</p>
+                    <p class="text-xs text-stone-500">💡 ${b.note}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderRecipes() {
+            const tag = document.getElementById('tagFilter').value;
+            const cat = document.getElementById('catFilter').value;
+            const search = document.getElementById('searchBar').value.toLowerCase();
+            
+            const filtered = recipes.filter(r => {
+                const tagMatch = tag === 'all' || r.tags.includes(tag);
+                const catMatch = cat === 'all' || r.cat.includes(cat);
+                const searchMatch = r.title.toLowerCase().includes(search) || r.ingredients.some(i => i.toLowerCase().includes(search));
+                
+                // Pantry Matching logic: Recipe must contain ALL selected items (or at least one if preferred)
+                // For a "Find what I can make" approach, usually we want recipes that match ANY of my ingredients 
+                // but let's do a logic where if I have ingredients, I only see recipes containing those.
+                const pantryMatch = selectedPantry.length === 0 || selectedPantry.some(item => {
+                    const itemLower = item.toLowerCase();
+                    return r.ingredients.some(ri => ri.toLowerCase().includes(itemLower));
+                });
+
+                return tagMatch && catMatch && searchMatch && pantryMatch;
+            });
+
+            const grid = document.getElementById('recipe-grid');
+            const noResults = document.getElementById('no-results');
+            const filterContainer = document.getElementById('active-filters');
+            const filterPills = document.getElementById('filter-pills');
+
+            // Handle filter pills UI
+            if (selectedPantry.length > 0 || tag !== 'all' || cat !== 'all' || search !== '') {
+                filterContainer.classList.remove('hidden');
+                let activeHtml = '';
+                if(tag !== 'all') activeHtml += `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-bold">${tag}</span>`;
+                if(cat !== 'all') activeHtml += `<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-[10px] font-bold">${cat}</span>`;
+                selectedPantry.forEach(i => activeHtml += `<span class="bg-amber-600 text-white px-2 py-1 rounded text-[10px] font-bold">${i}</span>`);
+                filterPills.innerHTML = activeHtml;
+            } else {
+                filterContainer.classList.add('hidden');
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                grid.innerHTML = filtered.map(r => `
+                    <div onclick='openModal(${r.id})' class="bg-white p-5 rounded-xl border border-stone-200 cursor-pointer hover:border-amber-400 hover:shadow-md transition group h-full flex flex-col">
+                        <span class="text-[10px] bg-stone-100 px-2 py-0.5 rounded text-stone-500 w-fit">${r.cat}</span>
+                        <h4 class="font-bold mt-2 group-hover:text-amber-700 transition flex-grow">${r.title}</h4>
+                        <div class="flex flex-wrap gap-1 mt-3">
+                            ${r.tags.slice(0, 3).map(t => `<span class="text-[8px] border border-amber-200 text-amber-600 px-2 py-0.5 rounded-full">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function openModal(id) {
+            const r = recipes.find(x => x.id === id);
+            document.getElementById('mTitle').innerText = r.title;
+            document.getElementById('mTags').innerHTML = r.tags.map(t => `<span class="bg-stone-100 text-stone-500 text-xs px-2 py-1 rounded">${t}</span>`).join('');
+            document.getElementById('mIngredients').innerHTML = r.ingredients.map(i => `<li>${i}</li>`).join('');
+            document.getElementById('mInstructions').innerHTML = r.instructions.map(i => `<li>${i}</li>`).join('');
+            document.getElementById('mNote').innerText = r.note;
+            
+            document.getElementById('recipeModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('recipeModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function initCharts() {
+            if (typeof Chart === 'undefined') {
+                setTimeout(initCharts, 200);
+                return;
+            }
+
+            const pCtx = document.getElementById('pChart');
+            const mCtx = document.getElementById('mChart');
+
+            new Chart(pCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Thickness', 'Heat Stability', 'Fluid Need', 'Mousse Texture', 'Bake Hold'],
+                    datasets: [
+                        { label: 'Whey', data: [20, 10, 40, 90, 30], borderColor: '#f59e0b', backgroundColor: 'rgba(245,158,11,0.1)' },
+                        { label: 'Casein', data: [90, 80, 90, 40, 70], borderColor: '#44403c', backgroundColor: 'rgba(68,64,60,0.1)' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { r: { suggestedMin: 0, suggestedMax: 100 } } }
+            });
+
+            new Chart(mCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Casein', 'Cottage Cheese', 'Greek Yogurt', 'Oat Flour', 'Milk'],
+                    datasets: [{ label: 'Structural Stability', data: [95, 85, 75, 60, 20], backgroundColor: '#a8a29e' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y' }
+            });
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.onload = () => {
+            renderPantry();
+            renderBases();
+            renderRecipes();
+            initCharts();
+        }
+    </script>
+</body>
+</html>
