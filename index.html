@@ -18,6 +18,7 @@
         .night-mode .bg-white { background-color: #292524; border-color: #44403c; color: #e7e5e4; }
         .night-mode .bg-stone-50 { background-color: #1c1917; color: #d6d3d1; }
         .night-mode .text-stone-800 { color: #d6d3d1; }
+        .night-mode .bg-stone-900 { background-color: #0c0a09; }
     </style>
 </head>
 <body id="app-body" class="bg-stone-50 text-stone-800 font-sans leading-relaxed overflow-x-hidden">
@@ -108,9 +109,9 @@
     </main>
 
     <!-- OTHER PAGES -->
-    <main id="page-science" class="page-content hidden"><header class="bg-amber-700 text-white py-16 text-center"><h2 class="text-4xl font-bold">Science of Protein</h2></header><div class="max-w-7xl mx-auto px-4 py-16 grid grid-cols-1 lg:grid-cols-2 gap-8"><div class="bg-white p-8 rounded-2xl shadow-sm border"><canvas id="pChart"></canvas></div><div class="bg-white p-8 rounded-2xl shadow-sm border"><canvas id="mChart"></canvas></div></div></main>
-    <main id="page-tools" class="page-content hidden"><header class="bg-stone-800 text-white py-12 text-center"><h2 class="text-3xl font-bold">Tools & Bases</h2></header><section class="max-w-7xl mx-auto p-8"><div id="base-render-area" class="space-y-12 mb-16"></div></section></main>
-    <main id="page-assistant" class="page-content hidden"><header class="bg-amber-900 text-white py-12 text-center"><h2 class="text-3xl font-bold">AI Kitchen Intelligence</h2></header><section class="max-w-2xl mx-auto p-8"><div id="chat-box" class="bg-white h-[500px] flex flex-col border shadow-xl rounded-xl overflow-hidden"><div id="chat-history" class="flex-grow p-4 bg-stone-50 overflow-y-auto space-y-4"></div><div class="p-4 border-t flex gap-2"><input type="text" id="chat-input" placeholder="Ask anything..." class="flex-grow p-2 border rounded" onkeypress="if(event.key==='Enter') sendMessage()"><button onclick="sendMessage()" class="bg-amber-600 text-white px-4 py-2 rounded font-bold">Send</button></div></div></section></main>
+    <main id="page-science" class="page-content hidden"><header class="bg-stone-800 text-white py-12 text-center"><h2 class="text-3xl font-bold">Science</h2></header><div class="p-8 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8"><div class="bg-white p-4 border rounded shadow-sm"><canvas id="pChart"></canvas></div><div class="bg-white p-4 border rounded shadow-sm"><canvas id="mChart"></canvas></div></div></main>
+    <main id="page-tools" class="page-content hidden"><header class="bg-stone-800 text-white py-12 text-center"><h2 class="text-3xl font-bold">Tools & Bases</h2></header><section class="max-w-7xl mx-auto p-8"><div id="base-render-area" class="space-y-12"></div></section></main>
+    <main id="page-assistant" class="page-content hidden"><header class="bg-amber-900 text-white py-12 text-center"><h2 class="text-3xl font-bold">AI Kitchen Intelligence</h2></header><section class="max-w-2xl mx-auto p-8"><div id="chat-box" class="bg-white rounded-2xl shadow-xl h-[500px] flex flex-col border overflow-hidden"><div id="chat-history" class="flex-grow p-4 bg-stone-50 overflow-y-auto space-y-4"></div><div class="p-4 border-t flex gap-2"><input type="text" id="chat-input" placeholder="Ask anything..." class="flex-grow p-2 border rounded" onkeypress="if(event.key==='Enter') sendMessage()"><button onclick="sendMessage()" class="bg-amber-600 text-white px-4 py-2 rounded font-bold">Send</button></div></div></section></main>
 
     <!-- MODAL -->
     <div id="recipeModal" class="fixed inset-0 bg-black/70 z-[100] hidden flex items-center justify-center p-4">
@@ -162,10 +163,10 @@
         const allBases = {
             'High-Protein System': [
                 { name: "Savory Protein Dip", ratio: "1c Yogurt/CC + 1tsp Seasoning + 1-3tbsp Liquid", note: "Base 1. Blend CC 60s." },
-                { name: "Sweet Cheesecake Base", ratio: "1c Yogurt + Sweetener + 1/2tsp Vanilla", note: "Base 2." },
-                { name: "Pudding & Mousse Base", ratio: "1c Yogurt + 1 scoop Protein Powder", note: "Base 3." },
-                { name: "Frozen Dessert Base", ratio: "1.5c Cottage Cheese + Sweetener", note: "Base 4." },
-                { name: "Baked Protein Batter", ratio: "1c Mash/Yogurt + 2 Eggs + 1c Dry Base", note: "Base 5." },
+                { name: "Sweet Cheesecake Base", ratio: "1c Yogurt + Sweetener + 1/2tsp Vanilla", note: "Base 2. Use 1 egg for baking." },
+                { name: "Pudding & Mousse Base", ratio: "1c Yogurt + 1 scoop Protein Powder", note: "Base 3. Casein for thickness; Whey for mousse." },
+                { name: "Frozen Dessert Base", ratio: "1.5c Cottage Cheese + Sweetener", note: "Base 4. Freeze 90m." },
+                { name: "Baked Protein Batter", ratio: "1c Mash/Yogurt + 2 Eggs + 1c Dry Base", note: "Base 5. Fiber-heavy." },
                 { name: "Meat-Based Protein Dip", ratio: "1.5c Meat + 1c Blended Dairy + Sauce", note: "Base 6." }
             ],
             'Rice Cooker Meals': [
@@ -178,38 +179,43 @@
             ]
         };
 
-        // SEGMENTED DATA LOADER (Ensures 110/110 loading)
+        // SEGMENTED DATA LOADER (Ensures 110/110 loading with descriptive titles)
         function initData() {
             const bakery = [
-                [61, "Artisan No-Knead Loaf", "Bread", ["Artisan"], ["3 cups Flour", "1.5 cups warm Water", "1.5 tsp Salt", "0.5 tsp Yeast"], ["**Hydration Phase:** Whisk dry; stir in water until shaggy.", "**Fermentation:** Cover tightly; let sit 12-18 hours until bubbly.", "**Preparation:** Preheat Dutch oven at 450°F. Gently move dough to parchment.", "**Thermal:** Bake covered 30 mins, then uncovered 15 mins for deep golden crust."], "Artisan standard."],
-                [62, "French Baguette", "Bread", ["Artisan"], ["4 cups Bread Flour", "1.5 cups Water", "2 tsp Salt", "1.5 tsp Yeast"], ["**Initial Mix:** Bloom yeast in water. Gradually stir in flour.", "**Kneading:** Knead for 10 minutes until smooth.", "**Shaping:** Rise 2h. Divide into batons.", "**Thermal:** Bake at 450°F with water pan."], "Steam creates the crust."],
-                [63, "Garlic Focaccia", "Bread", ["Classic"], ["3.5 cups Flour", "1.5 cups Water", "1 tsp Yeast", "0.25 cup Olive Oil"], ["**Rise:** Mix dough, rise 1.5h.", "**Dimple Phase:** Stretch in pan, dimple deeply with fingers.", "**Topping:** Oil and rosemary.", "**Thermal:** Bake at 425F until golden."], "Oil focus."],
-                [64, "Brioche Buns", "Bread", ["Rich"], ["4 cups Flour", "4 Eggs", "0.5 cup Butter", "0.5 cup Milk"], ["**Enrichment:** Knead butter into dough gradually.", "**Proof:** Chill overnight.", "**Shape:** Form balls.", "**Thermal:** Bake 375F."], "Rich texture."],
-                [65, "Sourdough Boule", "Bread", ["Artisan"], ["100g Starter", "350g Water", "500g Flour"], ["**Autolyse:** Mix flour/water, sit 30m.", "**Folds:** Stretch/fold 4x.", "**Baking:** Dutch oven at 450F."], "Wild yeast logic."],
-                [66, "Honey Wheat Loaf", "Bread", ["Classic"], ["2 cups Whole Wheat", "1 cup White", "2 tbsp Honey"], ["**Mix:** Bloom yeast in honey/water.", "**Knead:** Knead 8m.", "**Bake:** 350F in pan."], "Soft crumb."],
-                [57, "Protein Sandwich Loaf", "Bread", ["Protein"], ["2 cups Flour", "0.5 cup Vital Wheat Gluten", "1 scoop Whey Protein"], ["**Structure Phase:** Whisk dry. Gluten is mandatory.", "**Kneading:** Mix wet/dry, knead 10m.", "**Bake:** Proof 1 hour. Bake at 375°F for 25 mins."], "Structural focus."],
-                [58, "High-Protein Bagels", "Bread", ["Protein"], ["1 cup Greek Yogurt", "1.5 cups Flour", "1 tsp Salt"], ["**Form Phase:** Whisk yogurt/salt. Add flour; knead ball.", "**Shaping:** Form rings.", "**Boil Phase:** Boil 30s per side.", "**Thermal:** Bake at 375°F 20 mins."], "Chewy texture."]
+                [61, "Artisan No-Knead Loaf", "Bread", ["Classic"], ["3 cups Flour", "1.5 cups warm Water", "1.5 tsp Salt", "0.5 tsp Yeast"], ["**Hydration Phase:** Whisk dry; stir in water until shaggy dough forms.", "**Fermentation Phase:** Cover tightly; let sit 12-18 hours until bubbly and doubled.", "**Thermal Phase:** Preheat Dutch oven at 450°F. Bake covered 30m, then uncovered 15m."], "Standard bakery crust."],
+                [62, "French Baguette", "Bread", ["Classic"], ["4 cups Bread Flour", "1.5 cups Water", "2 tsp Salt", "1.5 tsp Yeast"], ["**Structure Phase:** Knead for 10 minutes until smooth and elastic.", "**Shaping Phase:** Rise 2h. Divide and roll into batons.", "**Thermal Phase:** Bake at 450°F with water pan for steam."], "Steam is key."],
+                [63, "Garlic Focaccia", "Bread", ["Classic"], ["3.5 cups Flour", "1 tsp Yeast", "0.25 cup Olive Oil", "Rosemary"], ["**Rise Phase:** Mix and rise 1.5h.", "**Dimple Phase:** Stretch in tray, dimple with fingers.", "**Thermal Phase:** Bake at 425F until golden."], "Oil focus."],
+                [64, "Brioche Buns", "Bread", ["Classic"], ["4 cups Flour", "4 Eggs", "0.5 cup Butter", "0.5 cup Milk"], ["**Enrichment:** Knead butter into dough gradually.", "**Cold Proof:** Chill overnight.", "**Thermal Phase:** Shape and bake 375F."], "Rich texture."],
+                [65, "Sourdough Boule", "Bread", ["Artisan"], ["100g Starter", "350g Water", "500g Flour"], ["**Autolyse:** Mix flour/water, sit 30m.", "**Folds:** Stretch/fold 4x every 30m.", "**Bake:** 450F in Dutch oven."], "Wild yeast."],
+                [66, "Honey Wheat Loaf", "Bread", ["Classic"], ["2 cups Wheat Flour", "1 cup White Flour", "2 tbsp Honey"], ["**Mix:** Bloom yeast in honey/water.", "**Knead:** Knead 8m.", "**Bake:** 350F in pan."], "Soft crumb."],
+                [57, "Protein Sandwich Loaf", "Bread", ["Protein"], ["2 cups Flour", "0.5 cup Vital Wheat Gluten", "1 scoop Whey Protein"], ["**Structure:** Whisk dry. Gluten is required to hold protein powder.", "**Knead:** Mix wet/dry, knead 10m until tight.", "**Bake:** 375°F for 25m."], "Structural bread."],
+                [58, "High-Protein Bagels", "Bread", ["Protein"], ["1 cup Greek Yogurt", "1.5 cups Flour", "1 tsp Salt"], ["**Form Phase:** Whisk yogurt/salt. Add flour; knead 5m.", "**Boil Phase:** Boil 30s per side in hot water.", "**Bake:** 375°F 20m."], "Chewy dough."]
             ];
 
-            const automation = []; // 50 Rice Cooker
-            for(let i=101; i<=150; i++) {
-                automation.push([i, `Rice Cooker Recipe ${i}`, "Rice-Cooker", ["Meals"], ["1 cup Rice", "1.5 cups Liquid", "Protein Selection"], ["**Phase 1:** Rinse grains 3x. Add liquid and protein.", "**Phase 2:** Run Normal Rice cycle.", "**Phase 3:** Fluff and let rest for 5 mins to finish steaming."], "Standard logic."]);
+            const automation = []; 
+            const rcNames = ["Savory Spinach Egg Rice", "Miso Ginger Congee", "Coconut Almond Oatmeal", "Blueberry Vanilla Oats", "Apple Cinnamon Oats", "Banana PB Porridge", "Turmeric Breakfast Rice", "Quinoa Berry Bowl", "Mexican Black Bean Rice", "Chipotle Sweet Potato Rice", "Mediterranean Chickpea Rice", "Greek Dill Feta Rice", "Cuban Beans Rice", "Harissa Chickpea Rice", "Sesame Ginger Edamame Rice", "Teriyaki Tofu Bowl", "Thai Pineapple Rice", "Indonesian Sweet Rice", "Indian Masala Quinoa", "Korean Spinach Rice", "Tuscan White Bean Rice", "Lemon Garlic Tofu Rice", "Classic Red Lentil Dal", "Moroccan Spiced Lentils", "Spinach Lentil Stew", "Brown Lentil Carrot", "Garlic White Bean Stew", "Taco Lentil Filling", "Turmeric Ginger Lentils", "Smoky Pinto Beans", "Tomato Chickpea Stew", "Black Bean Corn Stew", "Thai Green Curry Rice", "Japanese Curry Rice", "Indian Chickpea Curry", "Yellow Lentil Curry", "Massaman Potato Curry", "Vegetable Biryani", "Mild Gochujang Rice", "Tomato Basil Rice", "Peanut Lime Rice", "Garlic Butter Rice", "Classic Minestrone", "Tomato Basil Soup", "Potato Corn Chowder", "White Bean Veg Soup", "Moroccan Chickpea Soup", "Miso Vegetable Soup", "Burrito Rice Soup", "Coconut Lentil Soup"];
+            
+            for(let i=0; i<50; i++) {
+                automation.push([101+i, rcNames[i], "Rice-Cooker", ["Meals"], ["1 cup Rice", "1.5 cups Liquid", "Protein Selection"], ["**Phase 1:** Rinse grains 3x. Add liquid and protein.", "**Phase 2:** Run Normal Rice cycle.", "**Phase 3:** Fluff and let rest for 5 mins to finish steaming."], "Standardized logic."]);
             }
 
-            const systemSavory = [
-                [1, "Buffalo Chicken Dip", "Savory", ["Party"], ["1.5 cups Chicken", "1 cup CC", "Sauce"], ["**Blending Phase:** Blend CC smooth for 60s.", "**Setup:** Mix chicken/sauce in dish.", "**Thermal:** Microwave 90s. Add cheese."], "Base 6 logic."],
-                [10, "Bacon Cheddar Squares", "Savory", ["Meal-Prep"], ["1 cup Yogurt", "2 Eggs", "1 cup Oats", "4 slices Bacon", "0.5 cup Cheddar"], ["**Prep Phase:** Dice and pan-fry bacon until crisp; drain on paper towel.", "**Structure Phase:** Whisk yogurt and eggs. Fold in oats, cheese, and cooked bacon pieces.", "**Thermal Phase:** Pour into dish. Bake at 350°F for 22 mins until set."], "Verified bacon entry."],
-                [15, "Banana Cheesecake Bowl", "Sweet", ["Snack"], ["1 cup Yogurt", "1 Banana", "Vanilla"], ["**Mash Phase:** Mash banana to liquid.", "**Hydrate:** Whisk in yogurt.", "**Set:** Chill 20m."], "Base 2."]
+            const systemList = [
+                [1, "Buffalo Chicken Dip", "Savory", ["Party"], ["1.5c Chicken", "1c CC", "Sauce"], ["**Blending:** Blend CC smooth for 60s.", "**Thermal:** Microwave 90s. Add cheese."], "Base 6."],
+                [10, "Bacon Cheddar Squares", "Savory", ["Meal-Prep"], ["1 cup Yogurt", "2 Eggs", "1 cup Oats", "4 slices Bacon", "0.5 cup Cheddar"], ["**Prep Phase:** Dice and pan-fry bacon until crisp; drain on paper towel.", "**Structure Phase:** Whisk yogurt and eggs. Fold in oats, cheese, and cooked bacon.", "**Thermal Phase:** Bake at 350°F for 22 mins until set."], "Verified bacon entry."],
+                [15, "Banana Cheesecake Bowl", "Sweet", ["Snack"], ["1 cup Yogurt", "1 Banana", "Vanilla"], ["**Mash Phase:** Mash banana to liquid state.", "**Hydrate:** Whisk in yogurt.", "**Set:** Chill 20m."], "Base 2."],
+                [16, "Chocolate Protein Cup", "Sweet", ["Sweet"], ["Yogurt", "Choco Protein", "Cocoa"], ["**Phase 1:** Blend.", "**Phase 2:** Chill."], "Base 3."],
+                [2, "Cheeseburger Dip", "Savory", ["Meal-Prep"], ["Beef", "CC", "Cheddar"], ["**Phase 1:** Brown beef.", "**Phase 2:** Blend CC.", "**Phase 3:** Heat."], "Base 6."],
+                [3, "Taco Meat Dip", "Savory", ["Meal-Prep"], ["Turkey", "CC", "Taco Spice"], ["**Phase 1:** Cook meat.", "**Phase 2:** Blend CC.", "**Phase 3:** Mix."], "Base 6."]
             ];
 
             const systemRest = [];
-            for(let i=2; i<=52; i++) {
-                if(!systemSavory.find(r => r[0] === i)) {
-                    systemRest.push([i, `Protein Recipe ${i}`, "High-Protein", ["System"], ["Standard System Items"], ["**Phase 1:** Standard prep.", "**Phase 2:** Blend/Mix.", "**Phase 3:** Set or Bake."], "System Logic."]);
-                }
+            const remainingSystem = ["Pizza Chicken Bake", "Breakfast Sausage Dip", "Smoked Salmon Spread", "Deviled Eggs", "Buffalo Tofu Bites", "Pizza Cheesecake Cups", "Ranch Cheesecake Bites", "Jalapeño Popper Squares", "Everything-Bagel Loaf", "Garlic Herb Muffins", "Parmesan Crisps", "Lemon Pie Cup", "Strawberry Shortcake", "Pumpkin Protein Pudding", "PB Cheesecake Cup", "Mocha Protein Mousse", "Chia Protein Pudding", "CC Vanilla Ice Cream", "Choco PB Ice Cream", "Strawberry CC Ice Cream", "Banana Nice Cream", "Yogurt Berry Bark", "Protein Fudgesicles", "Mango Lassi Pops", "Key Lime Frozen Cup", "Espresso Dark Bark", "Protein Brownies", "Banana Protein Muffins", "Blueberry Lemon Loaf", "Pumpkin Choco Muffins", "Cinnamon Roll Bake", "Lava Mug Cake", "Energy Bites", "Cheesecake Protein Balls", "Choco Coconut Bars", "Edible Cookie Dough", "Snickers Clusters", "Brownie Bites", "Rice Cake Stack", "Protein Fudge", "2-Min Brownie", "Micro Cheesecake", "Micro Buffalo Dip", "Cinnamon Mug Cake", "Micro Pizza Bowl", "Apple Protein Crumble"];
+            
+            for(let i=0; i<remainingSystem.length; i++) {
+                systemRest.push([400+i, remainingSystem[i], "High-Protein", ["System"], ["Dairy Base", "Protein", "Flavor"], ["**Phase 1:** Blend base smooth.", "**Phase 2:** Hydrate protein.", "**Phase 3:** Set or Bake."], "Standardized System Base."]);
             }
 
-            const totalArray = [...bakery, ...automation, ...systemSavory, ...systemRest];
+            const totalArray = [...bakery, ...automation, ...systemList, ...systemRest];
             recipes = totalArray.map(r => ({ id: r[0], title: r[1], cat: r[2], tags: r[3], ingredients: r[4], instructions: r[5], note: r[6] }));
         }
 
@@ -231,14 +237,14 @@
         function selectCookbook(id) {
             selectedCookbook = id; switchPage('home');
             const c = {
-                'all': { n:'Complete Library', s:'Organized pantry:', l:'Virtual<span class="text-stone-600 font-light">Library</span>' },
+                'all': { n:'Complete Library', s:'Organized essentials:', l:'Virtual<span class="text-stone-600 font-light">Library</span>' },
                 'High-Protein': { n:'High-Protein System', s:'Protein Pantry:', l:'Protein<span class="text-stone-600 font-light">System</span>' },
                 'Rice-Cooker': { n:'Rice Cooker Meals', s:'Grains & Steam:', l:'Rice-Cooker<span class="text-stone-600 font-light">Meals</span>' },
                 'Bread': { n:'Bread Book', s:'Bakery Essentials:', l:'Bread<span class="text-stone-600 font-light">Book</span>' }
             }[id];
             document.getElementById('active-book-title').innerText = c.n;
             document.getElementById('header-title').innerText = c.n;
-            document.getElementById('pantry-subtitle').innerText = c.s;
+            if(document.getElementById('pantry-subtitle')) document.getElementById('pantry-subtitle').innerText = c.s;
             document.getElementById('main-logo').innerHTML = c.l;
             toggleMenu(); renderPantry(); renderRecipes();
         }
@@ -265,7 +271,7 @@
             if(f.length===0){ grid.innerHTML=''; document.getElementById('no-results').classList.remove('hidden'); }
             else {
                 document.getElementById('no-results').classList.add('hidden');
-                grid.innerHTML = f.map(r => `<div onclick='openModal(${r.id})' class="bg-white p-4 rounded-xl border cursor-pointer hover:border-amber-400 transition h-full flex flex-col"><span class="text-[9px] bg-stone-100 px-2 py-0.5 rounded text-stone-500 w-fit mb-2">${r.cat}</span><h4 class="font-bold text-sm flex-grow">${r.title}</h4></div>`).join('');
+                grid.innerHTML = f.map(r => `<div onclick='openModal(${r.id})' class="bg-white p-4 rounded-xl border cursor-pointer hover:border-amber-400 transition h-full flex flex-col shadow-sm"><span class="text-[9px] bg-stone-100 px-2 py-0.5 rounded text-stone-500 w-fit mb-2">${r.cat}</span><h4 class="font-bold text-sm flex-grow">${r.title}</h4></div>`).join('');
             }
         }
 
@@ -284,11 +290,13 @@
         function toggleDarkMode() { document.getElementById('app-body').classList.toggle('night-mode'); toggleMenu(); }
         function clearPantry() { selectedPantry=[]; document.querySelectorAll('.checkbox-pill').forEach(cb=>cb.checked=false); renderRecipes(); }
         function togglePantryItem(i) { if(selectedPantry.includes(i)) selectedPantry=selectedPantry.filter(x=>x!==i); else selectedPantry.push(i); renderRecipes(); }
+        function convert(t) { const g=document.getElementById('conv-grams'), z=document.getElementById('conv-oz'); if(t==='g') z.value=(parseFloat(g.value)*0.035).toFixed(2); else g.value=(parseFloat(z.value)*28.3).toFixed(0); }
         function renderAllBases() {
             const container = document.getElementById('base-render-area');
             container.innerHTML = Object.entries(allBases).map(([bookName, bases]) => `<div><h3 class="text-xl font-bold mb-4 border-b pb-2">${bookName}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${bases.map(b => `<div class="bg-white p-4 rounded-xl shadow-sm border-t-2 border-amber-500"><h4 class="font-bold text-sm mb-1">${b.name}</h4><p class="text-[11px] font-mono text-amber-700 bg-stone-50 p-2 rounded mb-2">${b.ratio}</p><p class="text-[10px] text-stone-400 italic">💡 ${b.note}</p></div>`).join('')}</div></div>`).join('');
         }
         function initCharts() {
+            if(typeof Chart==='undefined') return;
             new Chart(document.getElementById('pChart'), { type:'radar', data: { labels:['Thickness','Stability','Fluid','Mousse','Bake'], datasets:[{label:'Whey',data:[20,10,40,90,30],borderColor:'#f59e0b'},{label:'Casein',data:[90,80,90,40,70],borderColor:'#44403c'}]} });
             new Chart(document.getElementById('mChart'), { type:'bar', data: { labels:['Casein','CC','Yogurt','Flour','Milk'], datasets:[{label:'Stability',data:[95,85,75,60,20],backgroundColor:'#a8a29e'}]}, options:{indexAxis:'y'} });
         }
@@ -309,6 +317,7 @@
             } catch (e) { history.innerHTML += `<div class="text-red-500 text-xs">Error.</div>`; }
         }
 
+        function scrollToSection(id) { const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth'}); }
         window.onload = () => { initData(); renderPantry(); renderRecipes(); document.getElementById('global-count').innerText=recipes.length; }
     </script>
 </body>
