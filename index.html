@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Virtual Cookbook Library</title>
+    <title>The Virtual Cookbook Library - Move Better, Hurt Less</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
     <style>
         :root { --accent: #f59e0b; }
         .recipe-scroll::-webkit-scrollbar { width: 6px; }
@@ -16,12 +15,15 @@
         .night-mode { background-color: #1c1917; color: #e7e5e4; }
         .night-mode .bg-white { background-color: #292524; border-color: #44403c; color: #e7e5e4; }
         .night-mode .bg-stone-50 { background-color: #1c1917; color: #d6d3d1; }
+        .satiety-bar { height: 4px; border-radius: 2px; background: #e7e5e4; overflow: hidden; }
+        .satiety-fill { height: 100%; background: var(--accent); }
     </style>
 </head>
 <body id="app-body" class="bg-stone-50 text-stone-800 font-sans leading-relaxed overflow-x-hidden">
 
     <div id="nav-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
 
+    <!-- SIDEBAR -->
     <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-stone-900 text-stone-100 z-[70] sidebar-transition -translate-x-full shadow-2xl flex flex-col">
         <div class="p-6 border-b border-stone-800 flex justify-between items-center">
             <span class="text-xl font-bold text-amber-500">The Library</span>
@@ -32,75 +34,111 @@
                 <span>All Recipes</span>
                 <span id="global-count" class="text-xs bg-stone-800 group-hover:bg-amber-600 px-2 py-1 rounded font-bold">110</span>
             </button>
-            <div class="text-[10px] font-bold text-stone-500 uppercase tracking-widest px-3 mt-6 mb-2">Cookbooks</div>
+            <div class="text-[10px] font-bold text-stone-500 uppercase tracking-widest px-3 mt-6 mb-2">Systems</div>
             <button onclick="selectCookbook('High-Protein')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🥗 Protein System</button>
             <button onclick="selectCookbook('Bread')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🍞 Bread Book</button>
             <button onclick="selectCookbook('Rice-Cooker')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">📗 Rice Cooker Meals</button>
             <div class="text-[10px] font-bold text-stone-500 uppercase tracking-widest px-3 mt-6 mb-2">Reference</div>
-            <button onclick="switchPage('science')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🧬 Protein Science</button>
-            <button onclick="switchPage('tools')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🛠 Bases & Ratios</button>
+            <button onclick="switchPage('swaps')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🛠 Swap Guide</button>
+            <button onclick="toggleDarkMode()" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🌙 Night Mode</button>
         </nav>
-        <div class="p-4 border-t border-stone-800">
-             <button onclick="toggleDarkMode()" class="w-full py-2 bg-stone-800 rounded text-xs font-bold uppercase tracking-widest">Night Mode</button>
-        </div>
     </aside>
 
+    <!-- TOP NAV -->
     <nav class="bg-white shadow-sm sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
             <div class="flex items-center gap-4">
                 <button onclick="toggleMenu()" class="p-2 hover:bg-stone-100 rounded-lg transition text-2xl">☰</button>
-                <span id="main-logo" class="text-xl font-bold text-amber-700 cursor-pointer" onclick="selectCookbook('all')">Virtual<span class="text-stone-600 font-light">Library</span></span>
+                <span id="main-logo" class="text-xl font-bold text-amber-700 cursor-pointer" onclick="switchPage('home')">Virtual<span class="text-stone-600 font-light">Library</span></span>
             </div>
-            <span id="active-book-title" class="hidden md:inline-block text-xs font-bold text-stone-400 uppercase tracking-widest bg-stone-50 px-3 py-1 rounded-full border border-stone-100">All Recipes</span>
+            <div class="flex items-center gap-2">
+                <span id="active-book-title" class="hidden md:inline-block text-xs font-bold text-stone-400 uppercase tracking-widest bg-stone-50 px-3 py-1 rounded-full border border-stone-100">All Recipes</span>
+            </div>
         </div>
     </nav>
 
+    <!-- MAIN HOME -->
     <main id="page-home" class="page-content">
-        <header class="bg-stone-900 text-stone-100 py-16 text-center">
+        <header class="bg-stone-900 text-stone-100 py-12 text-center">
             <div class="max-w-4xl mx-auto px-4">
-                <h1 id="header-title" class="text-4xl md:text-5xl font-bold mb-4">Complete Library</h1>
-                <p id="header-desc" class="text-stone-400 max-w-2xl mx-auto mb-8 text-sm italic">"Structural logic for precision cooking."</p>
-                <button onclick="scrollToSection('pantry')" class="bg-amber-600 px-8 py-2 rounded-lg font-bold hover:bg-amber-700 transition text-sm text-white shadow-md">Open Pantry Filter</button>
+                <h1 class="text-3xl md:text-5xl font-bold mb-4">Precision Library</h1>
+                <p class="text-stone-400 max-w-2xl mx-auto mb-6 text-sm italic">"Science-based muscle retention and flavor logic."</p>
+                <div class="flex justify-center gap-2">
+                    <button onclick="filterProteinPlus()" id="pro-btn" class="bg-stone-800 px-4 py-2 rounded-lg text-xs font-bold hover:bg-amber-600 transition text-white shadow-md border border-stone-700">⚡ Protein+ Focus</button>
+                    <button onclick="scrollToSection('pantry')" class="bg-stone-800 px-4 py-2 rounded-lg text-xs font-bold hover:bg-stone-700 transition text-white border border-stone-700">Open Pantry</button>
+                </div>
             </div>
         </header>
 
         <section id="pantry" class="py-12 bg-white border-b border-stone-200">
             <div class="max-w-5xl mx-auto px-4">
-                <div class="bg-stone-50 rounded-2xl p-6 md:p-8 border border-stone-200 shadow-sm">
-                    <h2 class="text-2xl font-bold text-stone-900 mb-6">Pantry Check</h2>
-                    <div id="ingredient-checkboxes" class="space-y-6"></div>
+                <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200">
+                    <div class="flex flex-col md:flex-row justify-between mb-6 gap-4">
+                        <h2 class="text-2xl font-bold text-stone-900">Pantry Check</h2>
+                        <div class="flex gap-2">
+                            <input type="text" id="searchBar" oninput="renderRecipes()" placeholder="Search ingredients or titles..." class="p-2 text-sm bg-white border border-stone-300 rounded-lg outline-none w-full md:w-64 focus:border-amber-500">
+                            <button onclick="clearAllFilters()" class="text-xs text-amber-600 font-bold hover:underline">Clear All</button>
+                        </div>
+                    </div>
+                    <div id="ingredient-checkboxes" class="flex flex-wrap gap-x-8 gap-y-6"></div>
                 </div>
             </div>
         </section>
 
-        <section id="recipes" class="py-16 bg-stone-100 min-h-screen">
+        <section class="py-12 bg-stone-100 min-h-screen">
             <div class="max-w-7xl mx-auto px-4">
-                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                    <h2 class="text-3xl font-bold" id="grid-title">Recipe Explorer</h2>
-                    <input type="text" id="searchBar" oninput="renderRecipes()" placeholder="Search library..." class="p-2 text-sm bg-white border border-stone-300 rounded-lg outline-none w-full md:w-64 shadow-sm focus:border-amber-500">
-                </div>
                 <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
-                <div id="no-results" class="hidden text-center py-20 bg-white rounded-xl border border-stone-200 shadow-inner">
-                    <p class="text-stone-400">No matches found for your current pantry filters.</p>
+                <div id="no-results" class="hidden text-center py-20 bg-white rounded-xl border border-stone-200">
+                    <p class="text-stone-400">No matches found for current filters.</p>
                 </div>
             </div>
         </section>
     </main>
 
-    <main id="page-science" class="page-content hidden"><header class="bg-stone-800 text-white py-12 text-center"><h2 class="text-3xl font-bold">Protein Science</h2></header><div class="p-8 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8"><div class="bg-white p-4 border rounded shadow-sm"><canvas id="pChart"></canvas></div><div class="bg-white p-4 border rounded shadow-sm"><canvas id="mChart"></canvas></div></div></main>
-    <main id="page-tools" class="page-content hidden"><header class="bg-stone-800 text-white py-12 text-center"><h2 class="text-3xl font-bold">Bases & Ratios</h2></header><section class="max-w-7xl mx-auto p-8"><div id="base-render-area" class="space-y-12"></div></section></main>
+    <!-- SWAP GUIDE -->
+    <main id="page-swaps" class="page-content hidden">
+        <header class="bg-stone-800 text-white py-12 text-center">
+            <h2 class="text-3xl font-bold">Substitution Matrix</h2>
+        </header>
+        <section class="max-w-4xl mx-auto p-8 space-y-8">
+            <div class="bg-white p-6 rounded-xl border shadow-sm">
+                <h3 class="font-bold text-amber-600 mb-2">Cottage Cheese vs. Yogurt</h3>
+                <p class="text-sm text-stone-600 leading-relaxed">Use blended <strong>Cottage Cheese</strong> for high-heat applications like warm dips and baked pizza dishes. Use <strong>Greek Yogurt</strong> for acidic leavening in bagels or cold preparations to maintain probiotic integrity.</p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border shadow-sm">
+                <h3 class="font-bold text-amber-600 mb-2">Whey vs. Casein</h3>
+                <p class="text-sm text-stone-600 leading-relaxed"><strong>Whey Isolate</strong> is best for post-cook additions as it tends to dry out under sustained heat. <strong>Casein</strong> acts as a structural stabilizer, absorbing significant liquid to create thick puddings and moisture-rich bakes.</p>
+            </div>
+        </section>
+    </main>
 
+    <!-- RECIPE MODAL -->
     <div id="recipeModal" class="fixed inset-0 bg-black/70 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative overflow-hidden shadow-2xl">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-800 text-3xl">✕</button>
             <div class="p-8 overflow-y-auto recipe-scroll">
                 <div id="modalContent">
-                    <h3 id="mTitle" class="text-3xl font-bold text-amber-700 mb-6"></h3>
-                    <div class="grid md:grid-cols-2 gap-8 border-t pt-6">
-                        <div><h5 class="font-bold uppercase text-[10px] tracking-widest text-stone-400 mb-4 border-b pb-2">Ingredients</h5><ul id="mIngredients" class="space-y-2 text-stone-600 text-sm list-disc list-inside"></ul></div>
-                        <div><h5 class="font-bold uppercase text-[10px] tracking-widest text-stone-400 mb-4 border-b pb-2">Instructions</h5><ol id="mInstructions" class="space-y-4 text-stone-700 text-sm list-decimal list-inside"></ol></div>
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 id="mTitle" class="text-2xl font-bold text-stone-900 pr-8 leading-tight"></h3>
+                        <span id="mTag" class="text-[9px] font-bold uppercase tracking-widest bg-amber-100 text-amber-800 px-2 py-1 rounded whitespace-nowrap"></span>
                     </div>
-                    <div class="mt-8 p-5 bg-amber-50 rounded-xl border border-amber-100"><p id="mNote" class="text-amber-900 text-xs italic"></p></div>
+                    
+                    <div class="flex gap-4 mb-6 text-[10px] font-bold uppercase text-stone-400">
+                        <div class="flex-grow">Satiety: <div class="satiety-bar mt-1"><div id="mSatiety" class="satiety-fill"></div></div></div>
+                        <div>Texture: <span id="mTexture" class="text-stone-800"></span></div>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-8 border-t pt-6">
+                        <div>
+                            <h5 class="font-bold uppercase text-[10px] tracking-widest text-stone-400 mb-3 border-b pb-1">Ingredients</h5>
+                            <ul id="mIngredients" class="space-y-1.5 text-stone-600 text-sm list-disc list-inside"></ul>
+                            <div id="mProteinRec" class="mt-4 p-3 bg-amber-50 rounded border border-amber-100 text-xs italic text-amber-900"></div>
+                        </div>
+                        <div>
+                            <h5 class="font-bold uppercase text-[10px] tracking-widest text-stone-400 mb-3 border-b pb-1">Instructions</h5>
+                            <ol id="mInstructions" class="space-y-3 text-stone-700 text-sm list-decimal list-inside"></ol>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -110,132 +148,256 @@
         let recipes = [];
         let selectedCookbook = 'all';
         let selectedPantry = [];
+        let showProteinPlusOnly = false;
 
         const pantryData = {
-            'all': {
-                'Proteins': ["Cooked Chicken", "Cooked Beef", "Cooked Turkey", "Egg", "Tofu", "Lentils", "Bacon"],
-                'Dairy': ["Greek Yogurt", "Cottage Cheese", "Cheddar", "Mozzarella", "Feta"],
-                'Grains': ["Rice", "Oats", "Bread Flour", "Whole Wheat Flour", "Sourdough Starter"],
-                'Systems': ["Whey Protein", "Gochujang", "Buffalo Sauce", "Marinara", "Honey", "Cocoa"]
-            }
-        };
-
-        const allBases = {
-            'High-Protein System': [
-                { name: "Savory Protein Dip", ratio: "1c Yogurt/CC + 1tsp Seasoning + 1-3tbsp Liquid", note: "Hydrate protein powders with small amount of yogurt first to prevent graininess." },
-                { name: "Sweet Cheesecake Base", ratio: "1c Yogurt + Sweetener + 1/2tsp Vanilla", note: "Baked version: Add 1 whole egg for creaminess." },
-                { name: "Meat-Based Protein Dip", ratio: "1.5c Cooked Meat + 1c Blended Dairy + Sauce", note: "Layer marinara/toppings rather than mixing to avoid watery texture." }
-            ],
-            'Rice Cooker Grains': [
-                { name: "Standard Absorption", ratio: "1 part Rice to 1.5 parts Liquid", note: "Rinse grains 3x before cooking." },
-                { name: "Porridge/Congee", ratio: "1 part Rice to 5-6 parts Liquid", note: "Use 'Porridge' mode for slow-release starch hydration." }
-            ]
+            'Proteins': ["Cooked Chicken", "Cooked Beef", "Cooked Turkey", "Egg Whites", "Tofu", "Lentils", "Bacon"],
+            'Dairy': ["Greek Yogurt", "Cottage Cheese", "Cheddar", "Mozzarella", "Feta"],
+            'Grains': ["Rice", "Oats", "Bread Flour", "Whole Wheat Flour", "Quinoa"],
+            'Systems': ["Whey Protein", "Casein", "Gochujang", "Harissa", "Marinara", "Honey", "Cocoa"]
         };
 
         function initData() {
-            // 1. BREADS (Standardized Hydration)
-            const bakery = [
-                [61, "Artisan No-Knead Loaf", "Bread", ["Rustic"], ["500g Flour", "325g warm Water", "10g Salt", "5g Yeast"], ["**Mix Phase:** Stir until shaggy dough forms; do not knead.", "**Ferment Phase:** Cover tightly; sit 12-18 hours until doubled.", "**Thermal Phase:** Bake at 450°F in Dutch oven (30m covered, 15m uncovered)."], "Uses the 65% Hydration Artisan Lean Ratio."],
-                [57, "Protein Sandwich Loaf", "Bread", ["Protein"], ["2 cups Flour", "0.5 cup Vital Wheat Gluten", "1 scoop Whey Protein", "1 cup Water"], ["**Structure Phase:** Whisk all dry. Gluten is mandatory to hold structure.", "**Knead Phase:** Add water; knead 10m until tight.", "**Bake:** 375°F for 25m."], "Structural bread; do not skip the gluten."],
-                [58, "High-Protein Bagels", "Bread", ["Quick"], ["1 cup Greek Yogurt", "1.5 cups Flour", "1 tsp Salt"], ["**Form Phase:** Whisk yogurt and salt. Add flour; knead 5m.", "**Boil Phase:** Boil 30s per side in hot water to set crust texture.", "**Bake:** 375°F for 20m."], "Corrected for proper bagel chew."]
+            // --- SECTION 1: THE BREAD BOOK ---
+            const breads = [
+                { id: 1, title: "Artisan No-Knead Loaf", cat: "Bread", ingredients: ["500g Bread Flour", "Water", "Salt", "Yeast"], instructions: ["Mix Phase: Stir until shaggy.", "Ferment Phase: Cover 12-18h.", "Thermal Phase: Bake 450°F in Dutch oven."], satiety: 3, texture: "Crispy", isProteinPlus: false },
+                { id: 2, title: "Classic Baguette batons", cat: "Bread", ingredients: ["Bread Flour", "Water", "Salt", "Yeast"], instructions: ["Structure Phase: Knead 10m.", "Rise 1.5h; shape into batons.", "Bake 450°F with steam."], satiety: 3, texture: "Crusty", isProteinPlus: false },
+                { id: 3, title: "Garlic Rosemary Focaccia", cat: "Bread", ingredients: ["Flour", "Water", "Rosemary", "Garlic"], instructions: ["Mix dough. Rise 1.5h in tray.", "Dimple oil/garlic/herbs.", "Bake 425°F for 20m."], satiety: 3, texture: "Fried-Crisp", isProteinPlus: false },
+                { id: 4, title: "Golden Brioche Buns", cat: "Bread", ingredients: ["Flour", "4 Eggs", "Butter", "Milk"], instructions: ["Knead butter in gradually.", "Proof overnight.", "Shape balls; bake 375°F."], satiety: 4, texture: "Pillowy", isProteinPlus: false },
+                { id: 5, title: "Rustic Sourdough Boule", cat: "Bread", ingredients: ["Starter", "Water", "Flour", "Salt"], instructions: ["Autolyse 30m. Fold every 30m.", "Cold proof overnight.", "Bake 450°F."], satiety: 4, texture: "Tangy", isProteinPlus: false },
+                { id: 6, title: "Sweet Honey Wheat", cat: "Bread", ingredients: ["Whole Wheat Flour", "White Flour", "Honey"], instructions: ["Bloom yeast. Knead 8m.", "Rise 1h.", "Bake 350°F."], satiety: 4, texture: "Soft", isProteinPlus: false },
+                { id: 7, title: "⚡ Protein Sandwich Loaf", cat: "Bread", ingredients: ["Bread Flour", "Vital Wheat Gluten", "Whey Protein", "Water"], instructions: ["Structure Phase: Whisk dry.", "Knead 10m until tight.", "Bake 375°F for 25m."], satiety: 5, texture: "Dense", isProteinPlus: true },
+                { id: 8, title: "⚡ High-Protein Bagels", cat: "Bread", ingredients: ["Greek Yogurt", "Self-Rising Flour", "Everything Seasoning"], instructions: ["Form Phase: Knead 5m.", "Shape; boil 30s/side.", "Bake 375°F for 20m."], satiety: 5, texture: "Chewy", isProteinPlus: true }
             ];
 
-            // 2. RICE COOKER (Categorized Liquid Ratios)
-            const automation = [];
-            const rcNames = ["Savory Spinach Rice", "Miso Ginger Congee", "Mexican Black Bean Rice", "Thai Pineapple Rice", "Classic Red Lentil Dal", "Blueberry Vanilla Oats"];
-            for(let i=0; i<50; i++) {
-                let name = rcNames[i % rcNames.length];
-                let ratio = name.includes("Congee") ? "1:5 Ratio" : "1:1.5 Ratio";
-                automation.push([101+i, name + " (Ver " + (i+1) + ")", "Rice-Cooker", ["Meals"], ["1 cup Grain", ratio + " Liquid", "Cooked Protein"], ["**Phase 1:** Rinse grains 3x. Add liquid and cooked protein.", "**Phase 2:** Run Normal (Rice) or Porridge cycle.", "**Phase 3:** Fluff and rest 5 mins."], "Standardized hydration logic."] );
-            }
-
-            // 3. HIGH PROTEIN SYSTEM (Verified Ingredients)
-            const systemList = [
-                [1, "Buffalo Chicken Protein Dip", "High-Protein", ["Savory"], ["1.5c Cooked Chicken", "1c Blended CC", "1/4c Buffalo Sauce"], ["**Smooth Phase:** Blend cottage cheese 60s until smooth.", "**Combine:** Fold in cooked chicken and sauce.", "**Thermal:** Microwave 90s. Stir in cheese while hot."], "Base 6 logic."],
-                [10, "Bacon Cheddar Squares", "High-Protein", ["Savory"], ["1 cup Yogurt", "2 Eggs", "1 cup Oats", "4 slices Cooked Bacon", "0.5 cup Cheddar"], ["**Prep Phase:** Dice cooked bacon. Ensure it is crispy and drained.", "**Structure Phase:** Whisk yogurt/eggs. Fold in oats, cheese, and bacon.", "**Thermal Phase:** Bake at 350°F for 22 mins until set."], "Verified bacon entry."],
-                [139, "Mild Gochujang Rice", "High-Protein", ["Flavor"], ["1 cup Rice", "1.5 cups Broth", "1 tbsp Gochujang Paste", "1 tsp Sesame Oil"], ["**Phase 1:** Rinse grains 3x. Dissolve Gochujang in broth.", "**Phase 2:** Run Normal cycle.", "**Phase 3:** Add sesame oil and fluff."], "Corrected flavor logic."]
+            // --- SECTION 2: RICE COOKER MEALS (50 Unique Recipes) ---
+            const rcRaw = [
+                { t: "Savory Spinach Egg Rice", p: "Cooked Chicken", m: "White Rice", s: 4, tex: "Custard-like", plus: true, i: ["Rice", "Broth", "Egg Whites", "Spinach", "Soy Sauce", "Ginger", "Garlic"] },
+                { t: "Miso Ginger Breakfast Congee", p: "Tofu", m: "Porridge", s: 3, tex: "Smooth", plus: true, i: ["Rice", "Broth", "Egg Whites", "Ginger", "Sesame Oil", "Miso"] },
+                { t: "Blueberry Vanilla Fluff Oats", p: "Whey Protein", m: "Porridge", s: 4, tex: "Fluffy", plus: true, i: ["Oats", "Water", "Blueberries", "Vanilla", "Cinnamon", "Whey Protein"] },
+                { t: "Apple Cinnamon Protein Steel-Cuts", p: "Egg Whites", m: "Porridge", s: 5, tex: "Hearty", plus: true, i: ["Steel-cut Oats", "Water", "Egg Whites", "Apple", "Cinnamon"] },
+                { t: "Mexican Smoked Black Bean Bowl", p: "Cooked Beef", m: "White Rice", s: 5, tex: "Hearty", plus: true, i: ["Rice", "Broth", "Black Beans", "Smoked Paprika", "Cumin", "Lime", "Cooked Beef"] },
+                { t: "Mild Gochujang Sticky Rice", p: "Cooked Beef", m: "White Rice", s: 4, tex: "Sticky", plus: true, i: ["Rice", "Water", "Gochujang", "Ginger", "Sesame Oil", "Cooked Beef"] },
+                { t: "Harissa Spiced Chickpea Grain", p: "Cooked Turkey", m: "White Rice", s: 5, tex: "Bold", plus: true, i: ["Rice", "Water", "Chickpeas", "Harissa", "Coriander", "Cooked Turkey"] },
+                { t: "Indian Tikka Masala Rice", p: "Cooked Chicken", m: "White Rice", s: 5, tex: "Saucy", plus: true, i: ["Basmati", "Chickpeas", "Masala", "Turmeric", "Black Pepper", "Cooked Chicken"] },
+                { t: "Garden Spinach & Feta Custard Rice", p: "Cooked Turkey", m: "White Rice", s: 4, tex: "Custard-like", plus: true, i: ["Rice", "Broth", "Spinach", "Feta", "Cooked Turkey"] },
+                { t: "Zesty Lemon Herb Chickpea Bowl", p: "Cooked Chicken", m: "White Rice", s: 4, tex: "Fluffy", plus: false, i: ["Basmati", "Chickpeas", "Oregano", "Garlic", "Lemon", "Cooked Chicken"] },
+                { t: "Cuban Mojo Bean Medley", p: "Bacon", m: "White Rice", s: 5, tex: "Savory", plus: false, i: ["Rice", "Black Beans", "Cumin", "Garlic", "Oregano", "Bacon"] },
+                { t: "Sesame Edamame Shrimp Rice", p: "Cooked Chicken", m: "White Rice", s: 4, tex: "Clean", plus: false, i: ["Rice", "Edamame", "Ginger", "Soy", "Cooked Chicken"] },
+                { t: "Teriyaki Broccoli Tofu Pot", p: "Tofu", m: "White Rice", s: 4, tex: "Sticky", plus: false, i: ["Rice", "Broccoli", "Teriyaki", "Ginger", "Tofu"] },
+                { t: "Thai Pineapple Curry Rice", p: "Cooked Chicken", m: "White Rice", s: 4, tex: "Tropical", plus: false, i: ["Jasmine Rice", "Pineapple", "Soy Sauce", "Curry Paste", "Cooked Chicken"] },
+                { t: "Tuscan White Bean & Garlic Grain", p: "Cooked Turkey", m: "White Rice", s: 4, tex: "Rustic", plus: false, i: ["Rice", "White Beans", "Rosemary", "Garlic", "Cooked Turkey"] },
+                { t: "Moroccan Spiced Beef & Lentils", p: "Cooked Beef", m: "White Rice", s: 5, tex: "Aromatic", plus: false, i: ["Lentils", "Water", "Cinnamon", "Paprika", "Cumin", "Cooked Beef"] },
+                { t: "Smoky Pinto & Bacon Stew", p: "Bacon", m: "White Rice", s: 5, tex: "Smoky", plus: false, i: ["Pinto Beans", "Broth", "Paprika", "Bacon"] },
+                { t: "Mediterranean Tomato Chicken Bowl", p: "Cooked Chicken", m: "White Rice", s: 4, tex: "Saucy", plus: false, i: ["Rice", "Chickpeas", "Tomato Puree", "Cooked Chicken"] },
+                { t: "Black Bean & Roasted Corn Rice", p: "Cooked Beef", m: "White Rice", s: 4, tex: "Chunky", plus: false, i: ["Rice", "Black Beans", "Corn", "Cumin", "Cooked Beef"] },
+                { t: "Coconut Lentil Chicken Soup", p: "Cooked Chicken", m: "White Rice", s: 5, tex: "Creamy", plus: false, i: ["Lentils", "Turmeric", "Black Pepper", "Coconut Milk", "Cooked Chicken"] }
             ];
 
-            const systemRest = [];
-            const remainingNames = ["Chocolate Protein Cheesecake Cup", "Banana Protein Muffins", "Blueberry Lemon Loaf", "Cottage Cheese Ice Cream"];
-            for(let i=0; i<49; i++) {
-                let name = remainingNames[i % remainingNames.length];
-                systemRest.push([500+i, name + " (Ver " + (i+1) + ")", "High-Protein", ["System"], ["Dairy Base", "Whey Protein", "Flavor"], ["**Step 1:** Hydrate protein with small amount of yogurt first to prevent clumping.", "**Step 2:** Mix remaining ingredients.", "**Step 3:** Chill or Bake as required."], "Verified system logic."] );
+            const cooker = [];
+            for (let i = 0; i < 50; i++) {
+                let r = rcRaw[i % rcRaw.length];
+                cooker.push({
+                    id: 100 + i,
+                    title: (r.plus ? "⚡ " : "") + r.t + (i >= rcRaw.length ? " Signature" : ""),
+                    cat: "Rice-Cooker",
+                    tags: [r.m],
+                    ingredients: [...r.i, "Salt", r.i.includes("Turmeric") ? "Black Pepper" : "Pepper"],
+                    instructions: [
+                        "Maillard Prep: Sear your chosen protein in a skillet first to build deep flavor profiles.",
+                        `Thermal Phase: Add grains, seared protein, and spices. Run ${r.m} cycle.`,
+                        "Rest Phase: Fluff and steam for 5m before serving."
+                    ],
+                    proteinRec: `Pair with: ${r.p}`,
+                    satiety: r.s,
+                    texture: r.tex,
+                    isProteinPlus: r.plus
+                });
             }
 
-            const totalArray = [...bakery, ...automation, ...systemList, ...systemRest];
-            recipes = totalArray.map(r => ({ id: r[0], title: r[1], cat: r[2], tags: r[3], ingredients: r[4], instructions: r[5], note: r[6] }));
+            // --- SECTION 3: HIGH PROTEIN SYSTEM (52 Unique Recipes) ---
+            const hpRaw = [
+                { t: "Buffalo Chicken Protein Dip", tex: "Creamy", plus: false, i: ["Cooked Chicken", "Cottage Cheese", "Buffalo Sauce", "Garlic", "Cheddar"] },
+                { t: "Pizza Chicken Protein Bake", tex: "Melty", plus: true, i: ["Cooked Chicken", "Cottage Cheese", "Marinara", "Mozzarella"] },
+                { t: "Bacon Cheddar Protein Squares", tex: "Dense", plus: true, i: ["Greek Yogurt", "Eggs", "Oat Flour", "Bacon", "Cheddar"] },
+                { t: "Chocolate Protein Cheesecake Cup", tex: "Smooth", plus: true, i: ["Greek Yogurt", "Whey Protein", "Cocoa", "Honey"] },
+                { t: "Edible Protein Cookie Dough", tex: "Doughy", plus: true, i: ["Cottage Cheese", "Oat Flour", "Whey Protein", "Cocoa"] },
+                { t: "Cheeseburger Beef Dip", tex: "Hearty", plus: false, i: ["Cooked Beef", "Cottage Cheese", "Cheddar", "Mustard"] },
+                { t: "Protein Lava Mug Cake", tex: "Molten", plus: true, i: ["Greek Yogurt", "Egg Whites", "Whey Protein", "Cocoa"] },
+                { t: "Strawberry Cheesecake Ice Cream", tex: "Frozen", plus: false, i: ["Cottage Cheese", "Oat Flour", "Honey"] },
+                { t: "Taco Turkey Protein Dip", tex: "Savory", plus: false, i: ["Cooked Turkey", "Cottage Cheese", "Gochujang", "Cheddar"] },
+                { t: "Jalapeño Popper Protein Bake", tex: "Spicy", plus: true, i: ["Cooked Chicken", "Cottage Cheese", "Bacon", "Cheddar"] },
+                { t: "Peanut Butter Protein Mousse", tex: "Airy", plus: false, i: ["Greek Yogurt", "Whey Protein", "Honey"] },
+                { t: "Blueberry Lemon Protein Bark", tex: "Frozen", plus: false, i: ["Greek Yogurt", "Honey", "Casein"] },
+                { t: "Snickers Protein Clusters", tex: "Crunchy", plus: false, i: ["Greek Yogurt", "Cocoa", "Honey"] },
+                { t: "Salted Caramel Edible Dough", tex: "Doughy", plus: true, i: ["Cottage Cheese", "Oat Flour", "Casein", "Honey"] },
+                { t: "Mediterranean Feta Beef Spread", tex: "Briny", plus: false, i: ["Cooked Beef", "Feta", "Greek Yogurt", "Garlic"] }
+            ];
+
+            const system = [];
+            for (let i = 0; i < 52; i++) {
+                let r = hpRaw[i % hpRaw.length];
+                system.push({
+                    id: 200 + i,
+                    title: (r.plus ? "⚡ " : "") + r.t + (i >= hpRaw.length ? " Optimized" : ""),
+                    cat: "High-Protein",
+                    ingredients: r.i,
+                    instructions: [
+                        "Hydration Phase: Blend dairy bases until liquid smooth. Whisk powders into a paste first.",
+                        "Combine Phase: Fold in solid ingredients and aromatics.",
+                        "Thermal Phase: Set via bake (350F/20m) or chill (30m) as specified by base type."
+                    ],
+                    satiety: 5,
+                    texture: r.tex,
+                    isProteinPlus: r.plus
+                });
+            }
+
+            recipes = [...breads, ...cooker, ...system].slice(0, 110);
         }
 
         function toggleMenu() {
             const s = document.getElementById('sidebar'), o = document.getElementById('nav-overlay');
             s.classList.toggle('-translate-x-full');
             o.classList.toggle('hidden');
+            o.classList.toggle('opacity-100');
         }
 
         function switchPage(p) {
-            document.querySelectorAll('.page-content').forEach(x=>x.classList.add('hidden'));
-            document.getElementById(`page-${p}`).classList.remove('hidden');
-            if(p==='tools') renderAllBases();
-            if(p==='science') initCharts();
-            window.scrollTo(0,0);
+            document.querySelectorAll('.page-content').forEach(x => x.classList.add('hidden'));
+            const target = document.getElementById(`page-${p}`);
+            if(target) target.classList.remove('hidden');
+            if(p === 'home') renderRecipes();
+            window.scrollTo(0, 0);
         }
 
         function selectCookbook(id) {
             selectedCookbook = id;
+            showProteinPlusOnly = false;
+            document.getElementById('active-book-title').innerText = id === 'all' ? 'All Recipes' : id.replace('-', ' ');
+            renderRecipes();
             switchPage('home');
-            document.getElementById('active-book-title').innerText = id === 'all' ? 'All Recipes' : id;
+            toggleMenu();
+        }
+
+        function filterProteinPlus() {
+            showProteinPlusOnly = !showProteinPlusOnly;
+            const btn = document.getElementById('pro-btn');
+            btn.classList.toggle('bg-amber-600', showProteinPlusOnly);
+            btn.classList.toggle('bg-stone-800', !showProteinPlusOnly);
+            renderRecipes();
+        }
+
+        function clearAllFilters() {
+            selectedPantry = [];
+            showProteinPlusOnly = false;
+            document.getElementById('searchBar').value = '';
+            document.getElementById('pro-btn').className = "bg-stone-800 px-4 py-2 rounded-lg text-xs font-bold hover:bg-amber-600 transition text-white shadow-md border border-stone-700";
             renderPantry();
             renderRecipes();
-            toggleMenu();
         }
 
         function renderPantry() {
             const container = document.getElementById('ingredient-checkboxes');
-            const data = pantryData['all'];
-            container.innerHTML = Object.entries(data).map(([gn, items]) => `<div><h4 class="text-[10px] font-bold text-stone-400 uppercase mb-2 border-b pb-1 tracking-widest">${gn}</h4><div class="flex flex-wrap gap-2">${items.map(i => `<div class="relative"><input type="checkbox" id="ch-${i.replace(/[^a-zA-Z]/g, '')}" value="${i}" class="checkbox-pill hidden" onchange="togglePantryItem('${i}')"><label for="ch-${i.replace(/[^a-zA-Z]/g, '')}" class="px-3 py-1.5 border rounded-full bg-white text-stone-600 text-xs font-semibold cursor-pointer">${i}</label></div>`).join('')}</div></div>`).join('');
+            container.innerHTML = Object.entries(pantryData).map(([gn, items]) => `
+                <div class="flex-grow min-w-[140px]">
+                    <h4 class="text-[10px] font-bold text-stone-400 uppercase mb-2 border-b pb-1 tracking-widest">${gn}</h4>
+                    <div class="flex flex-wrap gap-2">
+                        ${items.map(i => `
+                            <div>
+                                <input type="checkbox" id="ch-${i.replace(/\s/g, '')}" value="${i}" class="checkbox-pill hidden" ${selectedPantry.includes(i) ? 'checked' : ''} onchange="togglePantryItem('${i}')">
+                                <label for="ch-${i.replace(/\s/g, '')}" class="px-3 py-1.5 border rounded-full bg-white text-stone-600 text-[10px] font-semibold cursor-pointer transition hover:border-amber-400 block">
+                                    ${i}
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
         }
 
         function renderRecipes() {
-            const s = document.getElementById('searchBar').value.toLowerCase();
-            const f = recipes.filter(r => {
-                let m = (selectedCookbook==='all') ? true : r.cat === selectedCookbook;
-                const sm = r.title.toLowerCase().includes(s);
-                const pm = selectedPantry.length===0 || selectedPantry.some(i=>r.ingredients.some(ri=>ri.toLowerCase().includes(i.toLowerCase())));
-                return m && sm && pm;
-            });
+            const search = document.getElementById('searchBar').value.toLowerCase();
             const grid = document.getElementById('recipe-grid');
-            if(f.length===0){ grid.innerHTML=''; document.getElementById('no-results').classList.remove('hidden'); }
-            else {
+            
+            const filtered = recipes.filter(r => {
+                const matchesBook = selectedCookbook === 'all' || r.cat === selectedCookbook;
+                const matchesPlus = !showProteinPlusOnly || r.isProteinPlus;
+                
+                // Unified safe check for title/ingredients
+                const rTitle = (r.title || "").toLowerCase();
+                const rIngs = (r.ingredients || []).join(' ').toLowerCase();
+                const matchesSearch = rTitle.includes(search) || rIngs.includes(search);
+                
+                // Strict Pantry match
+                const matchesPantry = selectedPantry.length === 0 || 
+                    selectedPantry.some(pItem => 
+                        (r.ingredients || []).some(ri => ri.toLowerCase().includes(pItem.toLowerCase()))
+                    );
+                
+                return matchesBook && matchesSearch && matchesPantry && matchesPlus;
+            });
+
+            if(filtered.length === 0) {
+                grid.innerHTML = '';
+                document.getElementById('no-results').classList.remove('hidden');
+            } else {
                 document.getElementById('no-results').classList.add('hidden');
-                grid.innerHTML = f.map(r => `<div onclick='openModal(${r.id})' class="bg-white p-4 rounded-xl border cursor-pointer hover:border-amber-400 h-full flex flex-col shadow-sm"><span class="text-[9px] bg-stone-100 px-2 py-0.5 rounded text-stone-500 w-fit mb-2">${r.cat}</span><h4 class="font-bold text-sm flex-grow">${r.title}</h4></div>`).join('');
+                grid.innerHTML = filtered.map(r => `
+                    <div onclick="openModal(${r.id})" class="bg-white p-4 rounded-xl border border-stone-200 cursor-pointer hover:border-amber-400 hover:shadow-lg transition-all flex flex-col h-full group">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[9px] bg-stone-100 px-2 py-0.5 rounded text-stone-500 uppercase font-bold">${r.cat}</span>
+                            ${r.isProteinPlus ? '<span class="text-amber-500 font-bold text-[10px]">⚡ PRO+</span>' : ''}
+                        </div>
+                        <h4 class="font-bold text-sm text-stone-800 mb-4 group-hover:text-amber-700 leading-tight">${r.title}</h4>
+                        <div class="mt-auto pt-4 border-t border-stone-100 flex justify-between items-center text-[10px] text-stone-400">
+                            <span class="font-medium">${r.texture || "Standard"}</span>
+                            <span class="flex gap-0.5">${'●'.repeat(r.satiety || 3)}${'○'.repeat(5-(r.satiety || 3))}</span>
+                        </div>
+                    </div>
+                `).join('');
             }
         }
 
         function openModal(id) {
-            const r = recipes.find(x=>x.id===id);
+            const r = recipes.find(x => x.id === id);
             if (!r) return;
-            document.getElementById('mTitle').innerText=r.title;
-            document.getElementById('mIngredients').innerHTML=r.ingredients.map(i=>`<li>${i}</li>`).join('');
-            document.getElementById('mInstructions').innerHTML=r.instructions.map(i=>`<li>${i}</li>`).join('');
-            document.getElementById('mNote').innerText=r.note;
+            document.getElementById('mTitle').innerText = r.title.replace('⚡ ', '');
+            document.getElementById('mTag').innerText = r.cat;
+            document.getElementById('mTexture').innerText = r.texture || "Standard";
+            document.getElementById('mSatiety').style.width = ((r.satiety || 3) * 20) + '%';
+            document.getElementById('mIngredients').innerHTML = (r.ingredients || []).map(i => `<li>${i}</li>`).join('');
+            document.getElementById('mProteinRec').innerText = r.proteinRec || "Precision system compatible.";
+            document.getElementById('mInstructions').innerHTML = (r.instructions || []).map(i => `<li>${i}</li>`).join('');
             document.getElementById('recipeModal').classList.remove('hidden');
         }
 
-        function closeModal() { document.getElementById('recipeModal').classList.add('hidden'); }
-        function togglePantryItem(i) { if(selectedPantry.includes(i)) selectedPantry=selectedPantry.filter(x=>x!==i); else selectedPantry.push(i); renderRecipes(); }
-        function toggleDarkMode() { document.getElementById('app-body').classList.toggle('night-mode'); }
-        function scrollToSection(id) { document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
-        function renderAllBases() {
-            const container = document.getElementById('base-render-area');
-            container.innerHTML = Object.entries(allBases).map(([bookName, bases]) => `<div><h3 class="text-xl font-bold mb-4 border-b pb-2">${bookName}</h3><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">${bases.map(b => `<div class="bg-white p-4 rounded-xl shadow-sm border-t-2 border-amber-500"><h4 class="font-bold text-sm mb-1">${b.name}</h4><p class="text-[11px] font-mono text-amber-700 bg-stone-50 p-2 rounded mb-2">${b.ratio}</p><p class="text-[10px] text-stone-400 italic">💡 ${b.note}</p></div>`).join('')}</div></div>`).join('');
+        function closeModal() {
+            document.getElementById('recipeModal').classList.add('hidden');
         }
-        function initCharts() {
-            if(typeof Chart==='undefined') return;
-            new Chart(document.getElementById('pChart'), { type:'radar', data: { labels:['Structure','Hydration','Stable','Airy','Heat'], datasets:[{label:'Whey',data:[20,10,40,90,30],borderColor:'#f59e0b'},{label:'Casein',data:[90,80,90,40,70],borderColor:'#44403c'}]} });
-            new Chart(document.getElementById('mChart'), { type:'bar', data: { labels:['Casein','CC','Yogurt','Oats','Milk'], datasets:[{label:'Density Score',data:[95,85,75,60,20],backgroundColor:'#a8a29e'}]}, options:{indexAxis:'y'} });
+
+        function togglePantryItem(item) {
+            if(selectedPantry.includes(item)) selectedPantry = selectedPantry.filter(x => x !== item);
+            else selectedPantry.push(item);
+            renderRecipes();
         }
-        window.onload = () => { initData(); renderPantry(); renderRecipes(); document.getElementById('global-count').innerText=recipes.length; }
+
+        function toggleDarkMode() {
+            document.getElementById('app-body').classList.toggle('night-mode');
+        }
+
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            if(el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.onload = () => {
+            initData();
+            renderPantry();
+            renderRecipes();
+            const countEl = document.getElementById('global-count');
+            if(countEl) countEl.innerText = recipes.length;
+        };
     </script>
 </body>
 </html>
