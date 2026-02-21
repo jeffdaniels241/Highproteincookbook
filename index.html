@@ -32,12 +32,13 @@
         <nav class="flex-grow p-4 space-y-2 overflow-y-auto recipe-scroll">
             <button onclick="selectCookbook('all')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition flex justify-between items-center group">
                 <span>All Recipes</span>
-                <span id="global-count" class="text-xs bg-stone-800 group-hover:bg-amber-600 px-2 py-1 rounded font-bold">110</span>
+                <span id="global-count" class="text-xs bg-stone-800 group-hover:bg-amber-600 px-2 py-1 rounded font-bold">132</span>
             </button>
             <div class="text-[10px] font-bold text-stone-500 uppercase tracking-widest px-3 mt-6 mb-2">Systems</div>
             <button onclick="selectCookbook('High-Protein')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🥗 Protein System</button>
-            <button onclick="selectCookbook('Bread')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🍞 Bread Book</button>
             <button onclick="selectCookbook('Rice-Cooker')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">📗 Rice Cooker Meals</button>
+            <button onclick="selectCookbook('RC-Breads')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🥖 Rice Cooker Breads</button>
+            <button onclick="selectCookbook('Bread')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🍞 Oven Breads</button>
             <div class="text-[10px] font-bold text-stone-500 uppercase tracking-widest px-3 mt-6 mb-2">Reference</div>
             <button onclick="switchPage('swaps')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🛠 Swap Guide</button>
             <button onclick="toggleDarkMode()" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🌙 Night Mode</button>
@@ -95,19 +96,48 @@
         </section>
     </main>
 
-    <!-- SWAP GUIDE -->
+    <!-- SWAP GUIDE & TROUBLESHOOTING -->
     <main id="page-swaps" class="page-content hidden">
         <header class="bg-stone-800 text-white py-12 text-center">
-            <h2 class="text-3xl font-bold">Substitution Matrix</h2>
+            <h2 class="text-3xl font-bold">Substitution Matrix & Troubleshooting</h2>
         </header>
         <section class="max-w-4xl mx-auto p-8 space-y-8">
-            <div class="bg-white p-6 rounded-xl border shadow-sm">
-                <h3 class="font-bold text-amber-600 mb-2">Cottage Cheese vs. Yogurt</h3>
-                <p class="text-sm text-stone-600">Use blended <strong>Cottage Cheese</strong> for high-heat (dips, bakes). Use <strong>Greek Yogurt</strong> for acidic leavening (bagels) or cold snacks.</p>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <h3 class="font-bold text-amber-600 mb-2">Cottage Cheese vs. Yogurt</h3>
+                    <p class="text-sm text-stone-600 leading-relaxed">Use blended <strong>Cottage Cheese</strong> for high-heat applications like warm dips and baked pizza dishes. Use <strong>Greek Yogurt</strong> for acidic leavening in bagels or cold preparations.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                    <h3 class="font-bold text-amber-600 mb-2">Whey vs. Casein</h3>
+                    <p class="text-sm text-stone-600 leading-relaxed"><strong>Whey Isolate</strong> is best for post-cook additions. <strong>Casein</strong> acts as a structural stabilizer, absorbing significant liquid to create thick puddings and moisture-rich bakes.</p>
+                </div>
             </div>
-            <div class="bg-white p-6 rounded-xl border shadow-sm">
-                <h3 class="font-bold text-amber-600 mb-2">Whey vs. Casein</h3>
-                <p class="text-sm text-stone-600"><strong>Whey</strong> dries out under heat. <strong>Casein</strong> absorbs 3x its weight in liquid, perfect for thick baked protein dishes.</p>
+
+            <!-- Rice Cooker Bread Troubleshooting -->
+            <div class="bg-white p-6 rounded-xl border shadow-sm mt-8">
+                <h3 class="font-bold text-amber-600 mb-4 text-xl">Rice Cooker Bread Troubleshooting</h3>
+                <div class="space-y-4">
+                    <div class="border-b pb-3 border-stone-100">
+                        <h4 class="font-bold text-stone-800 text-sm">Center is gummy or wet</h4>
+                        <p class="text-sm text-stone-600 mt-1"><strong>Causes:</strong> Undercooked, sliced too soon, or batter too wet.</p>
+                        <p class="text-sm text-amber-700 mt-1"><strong>Fix:</strong> Run extra cook time in 10–20 min chunks. Cool longer before slicing. Reduce liquid 2-4 tbsp next time.</p>
+                    </div>
+                    <div class="border-b pb-3 border-stone-100">
+                        <h4 class="font-bold text-stone-800 text-sm">Loaf is dense/heavy (Yeast breads)</h4>
+                        <p class="text-sm text-stone-600 mt-1"><strong>Causes:</strong> Underproofed, yeast is old, or dough was too dry.</p>
+                        <p class="text-sm text-amber-700 mt-1"><strong>Fix:</strong> Let the final rise in the pot get visibly puffy. Add water 1 tbsp at a time until dough feels tacky next time.</p>
+                    </div>
+                    <div class="border-b pb-3 border-stone-100">
+                        <h4 class="font-bold text-stone-800 text-sm">Top is pale or soft</h4>
+                        <p class="text-sm text-stone-600 mt-1"><strong>Causes:</strong> Normal for rice cooker moisture environment.</p>
+                        <p class="text-sm text-amber-700 mt-1"><strong>Fix:</strong> Invert the loaf back into the pot and cook 5–15 minutes, or finish under an oven broiler.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-stone-800 text-sm">Bread sticks to pot</h4>
+                        <p class="text-sm text-stone-600 mt-1"><strong>Causes:</strong> Insufficient greasing or high sugar content.</p>
+                        <p class="text-sm text-amber-700 mt-1"><strong>Fix:</strong> Grease more thoroughly, use a parchment round at the bottom, and rest 10 minutes before turning out.</p>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
@@ -138,6 +168,7 @@
                         <div>
                             <h5 class="font-bold uppercase text-[10px] tracking-widest text-stone-400 mb-3 border-b pb-1">Ingredients</h5>
                             <ul id="mIngredients" class="space-y-1.5 text-stone-600 text-sm list-none"></ul>
+                            <div id="mProteinRec" class="mt-4 p-3 bg-amber-50 rounded border border-amber-100 text-xs italic text-amber-900"></div>
                         </div>
                         <div>
                             <h5 class="font-bold uppercase text-[10px] tracking-widest text-stone-400 mb-3 border-b pb-1">Instructions</h5>
@@ -159,13 +190,13 @@
 
         const pantryData = {
             'Proteins': ["Cooked Chicken", "Cooked Beef", "Cooked Turkey", "Egg Whites", "Tofu", "Lentils", "Bacon"],
-            'Dairy': ["Greek Yogurt", "Cottage Cheese", "Cheddar", "Mozzarella", "Feta"],
-            'Grains': ["Rice", "Oats", "Bread Flour", "Whole Wheat Flour", "Quinoa"],
-            'Systems': ["Whey Protein", "Casein", "Gochujang", "Harissa", "Marinara", "Honey", "Cocoa"]
+            'Dairy': ["Greek Yogurt", "Cottage Cheese", "Cheddar", "Mozzarella", "Feta", "Milk", "Butter"],
+            'Grains': ["Rice", "Oats", "Bread Flour", "All-Purpose Flour", "Whole Wheat Flour", "Quinoa"],
+            'Systems': ["Whey Protein", "Casein", "Gochujang", "Harissa", "Marinara", "Honey", "Cocoa", "Yeast"]
         };
 
         function initData() {
-            // SECTION 1: THE BREAD BOOK (8 Unique Recipes)
+            // SECTION 1: THE BREAD BOOK (8 Traditional Oven Breads)
             const breads = [
                 { id: 1, title: "Artisan No-Knead Loaf", cat: "Bread", baseS: 1, ingredients: ["500g Bread Flour", "325g Water", "10g Salt", "5g Yeast"], instructions: ["Mix dry ingredients.", "Cover and rise 12h.", "Bake 450F in preheated Dutch oven."], satiety: 3, texture: "Crispy", isProteinPlus: false },
                 { id: 2, title: "Classic French Baguette", cat: "Bread", baseS: 2, ingredients: ["500g Bread Flour", "300g Water", "10g Salt", "7g Yeast"], instructions: ["Knead 10m until smooth.", "Rise 1.5h.", "Shape and bake 450F with steam."], satiety: 3, texture: "Crusty", isProteinPlus: false },
@@ -173,14 +204,40 @@
                 { id: 4, title: "Enriched Brioche Buns", cat: "Bread", baseS: 8, ingredients: ["500g Bread Flour", "4 Eggs", "100g Butter", "50ml Milk", "10g Yeast"], instructions: ["Enrichment Phase: Knead butter in gradually.", "Cold proof overnight.", "Bake 375F for 15m."], satiety: 4, texture: "Pillowy", isProteinPlus: false },
                 { id: 5, title: "Tangy Sourdough Boule", cat: "Bread", baseS: 1, ingredients: ["100g Starter", "350g Water", "500g Bread Flour", "10g Salt"], instructions: ["Autolyse 30m.", "Fold every 30m (4 sets).", "Bake 450F in Dutch oven."], satiety: 4, texture: "Tangy", isProteinPlus: false },
                 { id: 6, title: "Sweet Honey Wheat Loaf", cat: "Bread", baseS: 1, ingredients: ["300g Whole Wheat Flour", "200g Bread Flour", "2 tbsp Honey", "300g Water", "7g Yeast"], instructions: ["Bloom yeast in honey/water.", "Knead 8m; rise 1h.", "Bake 350F for 30m."], satiety: 4, texture: "Soft", isProteinPlus: false },
-                { id: 7, title: "⚡ Protein Sandwich Loaf", cat: "Bread", baseS: 1, ingredients: ["2c Bread Flour (~265g)", "0.5c Vital Wheat Gluten", "1 scoop Whey Protein", "1c Water", "1 tsp Salt"], instructions: ["Whisk dry ingredients.", "Knead 10m until elastic.", "Bake 375F for 25m."], satiety: 5, texture: "Dense", isProteinPlus: true },
+                { id: 7, title: "⚡ Protein Sandwich Loaf", cat: "Bread", baseS: 1, ingredients: ["2c Bread Flour (~265g)", "0.5c Vital Wheat Gluten", "1 scoop Whey Protein", "1c Water", "1 tsp Salt"], instructions: ["Structure Phase: Whisk dry ingredients.", "Knead 10m until elastic.", "Bake 375F for 25m."], satiety: 5, texture: "Dense", isProteinPlus: true },
                 { id: 8, title: "⚡ High-Protein Bagels", cat: "Bread", baseS: 4, ingredients: ["1c Greek Yogurt", "1.5c Self-Rising Flour", "1 tsp Salt", "Everything Bagel Seasoning"], instructions: ["Form Phase: Knead 5m.", "Boil 30s per side.", "Bake 375F for 20m."], satiety: 5, texture: "Chewy", isProteinPlus: true }
             ];
 
-            // SECTION 2: RICE COOKER (50 Unique Detailed Recipes)
+            // SECTION 1.5: RICE COOKER BREADS (22 Variations)
+            const rcBreads = [
+                { id: 301, title: "No-Knead Soft Yeast Loaf", cat: "RC-Breads", baseS: 1, ingredients: ["3c Bread Flour", "1.25 tsp Yeast", "1.25 tsp Salt", "1 tbsp Sugar", "1c Warm Water", "2 tbsp Oil"], instructions: ["Mix dry, add water/oil until shaggy.", "Rest 20m, fold 4-6 times.", "Rise 60-90m. Transfer to greased rice cooker pot.", "Rise 30-45m. Run cook cycle. If underdone, add 10-20m."], satiety: 3, texture: "Soft", isProteinPlus: false },
+                { id: 302, title: "Herb & Garlic Yeast Loaf", cat: "RC-Breads", baseS: 1, ingredients: ["3c Bread Flour", "1.25 tsp Yeast", "1.25 tsp Salt", "1 tbsp Sugar", "1c Warm Water", "2 tbsp Oil", "1 tbsp Italian Herbs", "1 tsp Garlic Powder"], instructions: ["Mix dry including herbs/garlic.", "Add water/oil. Rest 20m, fold.", "Rise 60-90m. Transfer to greased pot.", "Rise 30-45m. Run cook cycle."], satiety: 3, texture: "Aromatic", isProteinPlus: false },
+                { id: 303, title: "Cheddar Yeast Loaf", cat: "RC-Breads", baseS: 1, ingredients: ["3c Bread Flour", "1.25 tsp Yeast", "1.25 tsp Salt", "1 tbsp Sugar", "1c Warm Water", "2 tbsp Oil", "1c Cheddar"], instructions: ["Mix dry, add wet.", "Rest 20m. Fold in cheddar.", "Rise 60-90m. Transfer to pot.", "Rise 30-45m. Run cook cycle."], satiety: 4, texture: "Cheesy", isProteinPlus: false },
+                { id: 304, title: "Jalapeño Cheddar Yeast Loaf", cat: "RC-Breads", baseS: 1, ingredients: ["3c Bread Flour", "1.25 tsp Yeast", "1.25 tsp Salt", "1 tbsp Sugar", "1c Warm Water", "2 tbsp Oil", "0.75c Cheddar", "0.33c Diced Jalapeño"], instructions: ["Mix dry, add wet.", "Rest 20m. Fold in cheddar and jalapeño.", "Rise 60-90m. Transfer to pot.", "Rise 30-45m. Run cook cycle."], satiety: 4, texture: "Spicy", isProteinPlus: false },
+                { id: 305, title: "Milk Bread Style Loaf", cat: "RC-Breads", baseS: 1, ingredients: ["3c Bread Flour", "1.25 tsp Yeast", "1.25 tsp Salt", "2 tbsp Sugar", "1c Milk", "2 tbsp Oil"], instructions: ["Mix dry, add warm milk/oil.", "Rest 20m, fold.", "Rise 60-90m. Transfer to pot.", "Rise 30-45m. Run cook cycle."], satiety: 3, texture: "Very Soft", isProteinPlus: false },
+                { id: 306, title: "Honey Wheat Loaf", cat: "RC-Breads", baseS: 1, ingredients: ["2c Bread Flour", "1c Whole Wheat Flour", "1.25 tsp Yeast", "1.25 tsp Salt", "2 tbsp Honey", "1c Warm Water", "2 tbsp Oil"], instructions: ["Mix dry, add wet (adjust water if dry).", "Rest 20m, fold.", "Rise 60-90m. Transfer to pot.", "Rise 30-45m. Run cook cycle."], satiety: 4, texture: "Dense", isProteinPlus: false },
+                { id: 307, title: "Olive & Rosemary Loaf", cat: "RC-Breads", baseS: 1, ingredients: ["3c Bread Flour", "1.25 tsp Yeast", "1.25 tsp Salt", "1 tbsp Sugar", "1c Warm Water", "2 tbsp Oil", "0.5c Chopped Olives", "1 tsp Dried Rosemary"], instructions: ["Mix dry, add wet.", "Rest 20m. Fold in olives/rosemary.", "Rise 60-90m. Transfer to pot.", "Rise 30-45m. Run cook cycle."], satiety: 3, texture: "Rustic", isProteinPlus: false },
+                { id: 308, title: "Everything Bagel Yeast Loaf", cat: "RC-Breads", baseS: 1, ingredients: ["3c Bread Flour", "1.25 tsp Yeast", "1.25 tsp Salt", "1 tbsp Sugar", "1c Warm Water", "2 tbsp Oil", "2 tbsp Everything Bagel Seasoning"], instructions: ["Mix dry with seasoning.", "Rest 20m, fold.", "Rise 60-90m. Transfer to pot.", "Rise 30-45m. Run cook cycle."], satiety: 3, texture: "Savory", isProteinPlus: false },
+                { id: 309, title: "Sweet Quick Bread Base", cat: "RC-Breads", baseS: 1, ingredients: ["2c All-Purpose Flour", "2 tsp Baking Powder", "0.5 tsp Salt", "0.75c Sugar", "2 Eggs", "0.75c Milk", "0.33c Oil", "1 tsp Vanilla"], instructions: ["Grease pot well.", "Mix dry ingredients. Whisk wet ingredients.", "Fold wet into dry until just combined.", "Run cook cycle. Add 10-20m chunks until set."], satiety: 3, texture: "Cake-like", isProteinPlus: false },
+                { id: 310, title: "Banana Quick Bread", cat: "RC-Breads", baseS: 1, ingredients: ["2c All-Purpose Flour", "2 tsp Baking Powder", "0.5 tsp Salt", "0.75c Sugar", "2 Eggs", "0.5c Milk", "0.33c Oil", "1.5c Mashed Bananas", "1 tsp Cinnamon"], instructions: ["Mix dry ingredients.", "Whisk wet ingredients including bananas.", "Fold wet into dry. Do not overmix.", "Run cook cycle until set."], satiety: 3, texture: "Moist", isProteinPlus: false },
+                { id: 311, title: "Pumpkin Spice Bread", cat: "RC-Breads", baseS: 1, ingredients: ["2c All-Purpose Flour", "2 tsp Baking Powder", "0.5 tsp Salt", "0.75c Sugar", "2 Eggs", "0.5c Milk", "0.33c Oil", "1c Pumpkin Puree", "1 tsp Cinnamon", "0.5 tsp Ginger"], instructions: ["Mix dry ingredients and spices.", "Whisk wet ingredients including pumpkin.", "Fold wet into dry.", "Run cook cycle until set."], satiety: 3, texture: "Spiced", isProteinPlus: false },
+                { id: 312, title: "Lemon Poppy Seed Bread", cat: "RC-Breads", baseS: 1, ingredients: ["2c All-Purpose Flour", "2 tsp Baking Powder", "0.5 tsp Salt", "0.75c Sugar", "2 Eggs", "0.75c Milk", "0.33c Oil", "2 tbsp Lemon Zest", "2 tbsp Lemon Juice", "2 tbsp Poppy Seeds"], instructions: ["Mix dry including seeds/zest.", "Whisk wet including lemon juice.", "Fold wet into dry.", "Run cook cycle until set."], satiety: 3, texture: "Bright", isProteinPlus: false },
+                { id: 313, title: "Blueberry Yogurt Bread", cat: "RC-Breads", baseS: 1, ingredients: ["2c All-Purpose Flour", "2 tsp Baking Powder", "0.5 tsp Salt", "0.75c Sugar", "2 Eggs", "0.5c Greek Yogurt", "0.25c Milk", "0.33c Oil", "1c Blueberries"], instructions: ["Toss blueberries in 1 tbsp flour.", "Mix remaining dry. Whisk wet.", "Fold wet into dry, gently fold in berries.", "Run cook cycle until set."], satiety: 3, texture: "Fruity", isProteinPlus: false },
+                { id: 314, title: "Apple Cinnamon Bread", cat: "RC-Breads", baseS: 1, ingredients: ["2c All-Purpose Flour", "2 tsp Baking Powder", "0.5 tsp Salt", "0.75c Sugar", "2 Eggs", "0.75c Milk", "0.33c Oil", "1c Diced Apple", "2 tsp Cinnamon", "0.5c Walnuts"], instructions: ["Mix dry including cinnamon/walnuts.", "Whisk wet. Fold wet into dry.", "Fold in patted-dry diced apple.", "Run cook cycle until set."], satiety: 4, texture: "Chunky", isProteinPlus: false },
+                { id: 315, title: "Chocolate Chip Quick Bread", cat: "RC-Breads", baseS: 1, ingredients: ["2c All-Purpose Flour", "2 tsp Baking Powder", "0.5 tsp Salt", "0.75c Sugar", "2 Eggs", "0.75c Milk", "0.33c Oil", "1 tsp Vanilla", "1c Chocolate Chips"], instructions: ["Mix dry ingredients.", "Whisk wet ingredients.", "Fold wet into dry, gently mix in chips.", "Run cook cycle until set."], satiety: 3, texture: "Sweet", isProteinPlus: false },
+                { id: 316, title: "Savory Cheddar-Chive Bread", cat: "RC-Breads", baseS: 1, ingredients: ["2c All-Purpose Flour", "1 tbsp Baking Powder", "1 tsp Salt", "0.5 tsp Black Pepper", "2 Eggs", "1c Milk", "0.33c Oil", "1c Cheddar", "0.25c Chives"], instructions: ["Mix dry ingredients.", "Whisk wet ingredients. Fold wet into dry.", "Fold in cheddar and chives.", "Run cook cycle until set."], satiety: 4, texture: "Savory", isProteinPlus: false },
+                { id: 317, title: "Jalapeño Corn-Cheddar Bread", cat: "RC-Breads", baseS: 1, ingredients: ["1.5c All-Purpose Flour", "0.5c Cornmeal", "1 tbsp Baking Powder", "1 tsp Salt", "2 Eggs", "1c Milk", "0.33c Oil", "1c Cheddar", "0.33c Diced Jalapeño"], instructions: ["Mix dry ingredients including cornmeal.", "Whisk wet. Fold wet into dry.", "Fold in cheddar and jalapeño.", "Run cook cycle until set."], satiety: 4, texture: "Crumbly", isProteinPlus: false },
+                { id: 318, title: "Olive & Feta Quick Bread", cat: "RC-Breads", baseS: 1, ingredients: ["2c All-Purpose Flour", "1 tbsp Baking Powder", "0.75 tsp Salt", "2 Eggs", "1c Milk", "0.33c Oil", "0.75c Feta", "0.5c Chopped Olives"], instructions: ["Mix dry ingredients.", "Whisk wet. Fold wet into dry.", "Fold in feta and olives.", "Run cook cycle until set."], satiety: 4, texture: "Briny", isProteinPlus: false },
+                { id: 319, title: "Sun-Dried Tomato & Basil Bread", cat: "RC-Breads", baseS: 1, ingredients: ["2c All-Purpose Flour", "1 tbsp Baking Powder", "1 tsp Salt", "2 Eggs", "1c Milk", "0.33c Oil", "1c Cheddar", "0.5c Sun-Dried Tomatoes", "1 tsp Dried Basil"], instructions: ["Mix dry ingredients.", "Whisk wet. Fold wet into dry.", "Fold in cheese, tomatoes, basil.", "Run cook cycle until set."], satiety: 4, texture: "Rich", isProteinPlus: false },
+                { id: 320, title: "Mantou Steamed Buns", cat: "RC-Breads", baseS: 8, ingredients: ["3c All-Purpose Flour", "2 tsp Yeast", "2 tbsp Sugar", "0.5 tsp Salt", "1c Warm Milk", "1 tbsp Oil"], instructions: ["Mix all into rough dough.", "Rest 10m, fold 6-10 times.", "Rise 45-60m until puffy. Shape into 8 buns.", "Steam in rice cooker basket with water below for 12-18m."], satiety: 3, texture: "Fluffy", isProteinPlus: false },
+                { id: 321, title: "Scallion Oil Steamed Buns", cat: "RC-Breads", baseS: 8, ingredients: ["3c All-Purpose Flour", "2 tsp Yeast", "2 tbsp Sugar", "0.5 tsp Salt", "1c Warm Milk", "1 tbsp Oil", "0.5c Chopped Scallions", "1 tsp Sesame Oil"], instructions: ["Mix basic dough, rest 10m.", "Fold in scallions and sesame oil. Rise 45-60m.", "Shape into 8 buns.", "Steam in basket for 12-18m."], satiety: 3, texture: "Aromatic", isProteinPlus: false },
+                { id: 322, title: "Sweet Vanilla Steamed Buns", cat: "RC-Breads", baseS: 8, ingredients: ["3c All-Purpose Flour", "2 tsp Yeast", "3 tbsp Sugar", "0.5 tsp Salt", "1c Warm Milk", "1 tbsp Oil", "1 tsp Vanilla"], instructions: ["Mix all into dough, rest 10m.", "Fold 6-10 times. Rise 45-60m.", "Shape into 8 buns.", "Steam in basket for 12-18m."], satiety: 3, texture: "Sweet", isProteinPlus: false }
+            ];
+
+            // SECTION 2: RICE COOKER MEALS (50 Detailed Recipes)
             const rcSource = [
-                { t: "Savory Spinach Egg Rice", i: ["1c Rice", "1.75c Broth", "0.5c Egg Whites", "1c Spinach", "1 tbsp Soy Sauce", "1 tsp Garlic"], m: "White Rice", s: 4, tex: "Custard-like", plus: true, p: "Cooked Chicken Sausage" },
-                { t: "Miso Ginger Breakfast Congee", i: ["0.5c Rice", "3c Broth", "0.5c Egg Whites", "1 tsp Ginger", "1 tsp Sesame Oil", "2 tbsp Miso"], m: "Porridge", s: 3, tex: "Smooth", plus: true, p: "Diced Tofu" },
+                { t: "Savory Spinach Egg Rice", i: ["1c Rice", "1.75c Broth", "0.5c Egg Whites", "1c Spinach", "1 tbsp Soy Sauce", "1 tsp Garlic"], m: "White Rice", s: 4, tex: "Custard-like", plus: true, p: "Cooked Chicken" },
+                { t: "Miso Ginger Breakfast Congee", i: ["0.5c Rice", "3c Broth", "0.5c Egg Whites", "1 tsp Ginger", "1 tsp Sesame Oil", "2 tbsp Miso"], m: "Porridge", s: 3, tex: "Smooth", plus: true, p: "Tofu" },
                 { t: "Coconut Almond Oatmeal", i: ["1c Oats", "2c Water", "0.5c Coconut Milk", "2 tbsp Almonds", "1 tsp Maple Syrup"], m: "Porridge", s: 3, tex: "Creamy", plus: false, p: "1 scoop Collagen" },
                 { t: "Blueberry Vanilla Oats", i: ["1c Oats", "2c Water", "0.5c Blueberries", "0.5 tsp Vanilla", "1 tsp Honey"], m: "Porridge", s: 4, tex: "Fluffy", plus: true, p: "Vanilla Whey" },
                 { t: "Apple Cinnamon Steel-Cut Oats", i: ["1c Steel-cut Oats", "2.5c Water", "0.5c Egg Whites", "1 Apple", "0.5 tsp Cinnamon"], m: "Porridge", s: 5, tex: "Hearty", plus: true, p: "Egg Whites" },
@@ -211,7 +268,7 @@
                 { t: "Smoky Pinto Bean & Bacon Stew", i: ["1c Pinto Beans", "3c Broth", "1 tsp Smoked Paprika", "0.5c Bacon"], m: "White Rice", s: 5, tex: "Smoky", plus: false, p: "Bacon" },
                 { t: "Mediterranean Tomato Chickpea Stew", i: ["1c Chickpeas", "3c Broth", "0.5c Tomato Puree", "1 tsp Oregano"], m: "White Rice", s: 4, tex: "Saucy", plus: false, p: "Grilled Chicken" },
                 { t: "Black Bean & Roasted Corn Rice", i: ["1c Rice", "1.75c Broth", "1c Black Beans", "1c Corn", "1 tsp Cumin"], m: "White Rice", s: 4, tex: "Chunky", plus: false, p: "Ground Turkey" },
-                { t: "Thai Green Curry Rice Pot", i: ["1 Jasmine", "1.5c Water", "0.5c Coconut Milk", "1 tbsp Green Curry Paste"], m: "White Rice", s: 4, tex: "Coconut", plus: false, p: "Sliced Chicken" },
+                { t: "Thai Green Curry Rice Pot", i: ["1c Jasmine", "1.5c Water", "0.5c Coconut Milk", "1 tbsp Green Curry Paste"], m: "White Rice", s: 4, tex: "Coconut", plus: false, p: "Sliced Chicken" },
                 { t: "Japanese Golden Beef Curry Pot", i: ["1c Rice", "2c Water", "1c Potato", "0.5 block Curry Roux"], m: "White Rice", s: 5, tex: "Velvety", plus: false, p: "Diced Beef" },
                 { t: "Indian Tikka Masala Chickpea Rice", i: ["1c Basmati", "1.5c Water", "1c Chickpeas", "1 tbsp Masala Spices"], m: "White Rice", s: 5, tex: "Spiced", plus: true, p: "Chicken Breast" },
                 { t: "Yellow Lentil Coconut Curry Bowl", i: ["1c Red Lentils", "3c Water", "1 tsp Curry Spices", "0.5c Coconut Milk"], m: "White Rice", s: 5, tex: "Creamy", plus: false, p: "White Fish" },
@@ -236,12 +293,13 @@
                 title: (r.plus ? "⚡ " : "") + r.t,
                 cat: "Rice-Cooker",
                 baseS: 4,
-                ingredients: [...r.i, r.p, "Salt", r.i.join().includes("Turmeric") ? "Black Pepper" : "Pepper"],
+                ingredients: [...r.i, "0.5 tsp Salt", r.i.join().includes("Turmeric") ? "0.25 tsp Black Pepper" : "0.25 tsp Pepper"],
                 instructions: [
                     "Maillard Prep: Sear " + r.p + " in a skillet first to build depth of flavor.",
                     `Thermal Phase: Add grains, seared protein, and spices. Run ${r.m} cycle.`,
                     "Rest Phase: Fluff and let steam for 5m before serving."
                 ],
+                proteinRec: `Pair with: ${r.p}`,
                 satiety: r.s,
                 texture: r.tex,
                 isProteinPlus: r.plus
@@ -249,58 +307,58 @@
 
             // SECTION 3: HIGH PROTEIN SYSTEM (52 Unique Recipes)
             const hpSource = [
-                { t: "Buffalo Chicken Protein Dip", i: ["1.5c Chicken", "0.75c Blended CC", "1/4c Buffalo Sauce", "Garlic"], tex: "Creamy", plus: false },
-                { t: "Pizza Chicken Protein Bake", i: ["1.5c Chicken", "0.75c Blended CC", "0.5c Marinara", "Mozzarella"], tex: "Melty", plus: true },
-                { t: "Bacon Cheddar Protein Squares", i: ["1c Yogurt", "2 Eggs", "0.5c Oat Flour", "Bacon", "Cheddar"], tex: "Dense", plus: true },
-                { t: "Chocolate Protein Cheesecake Cup", i: ["1c Yogurt", "1 scoop Whey", "1 tbsp Cocoa", "Honey"], tex: "Smooth", plus: true },
-                { t: "High Protein Edible Cookie Dough", i: ["0.75c Blended CC", "0.5c Oat Flour", "1 scoop Whey", "Mini Chips"], tex: "Doughy", plus: true },
-                { t: "Cheeseburger Protein Dip", i: ["1lb Beef", "0.75c Blended CC", "Cheddar", "Mustard"], tex: "Hearty", plus: false },
-                { t: "Protein Lava Mug Cake", i: ["0.25c Yogurt", "1 Egg White", "2 tbsp Whey", "Cocoa", "Choco Square"], tex: "Molten", plus: true },
-                { t: "Strawberry Cheesecake Ice Cream", i: ["1.5c Blended CC", "0.5c Strawberries", "Graham Crumbs"], tex: "Frozen", plus: false },
-                { t: "PB & J Protein Yogurt Bowl", i: ["1c Yogurt", "1 tbsp PB", "1 tbsp Jelly", "1 scoop Whey"], tex: "Creamy", plus: false },
-                { t: "Jalapeño Popper Protein Bake", i: ["1c Chicken", "0.75c Blended CC", "Jalapeños", "Cheddar"], tex: "Spicy", plus: true },
-                { t: "Taco Turkey Protein Dip", i: ["1lb Turkey", "0.75c Blended CC", "Taco Spice", "Cheddar"], tex: "Savory", plus: false },
-                { t: "Lemon Meringue Yogurt Cup", i: ["1c Yogurt", "2 tbsp Lemon Juice", "1 tsp Zest", "1 scoop Whey"], tex: "Light", plus: false },
-                { t: "Everything Bagel Yogurt Dip", i: ["1c Yogurt", "1 tbsp Bagel Spice", "1/4c Feta", "Cucumber"], tex: "Textured", plus: false },
-                { t: "Caramel Macchiato Mousse", i: ["1c Yogurt", "1 scoop Whey", "1 tsp Espresso", "Caramel Sauce"], tex: "Airy", plus: false },
-                { t: "Pumpkin Spice Protein Pudding", i: ["1c Yogurt", "0.5c Pumpkin", "1 scoop Whey", "Pumpkin Spice"], tex: "Smooth", plus: false },
-                { t: "Garlic Herb Cheese Dip", i: ["1c Blended CC", "1 tsp Garlic", "1 tbsp Chives", "1 tbsp Parsley"], tex: "Savory", plus: false },
-                { t: "Blueberry Lemon Protein Bark", i: ["1.5c Yogurt", "0.5c Blueberries", "Lemon Zest", "Honey"], tex: "Frozen", plus: false },
-                { t: "Snickers Yogurt Clusters", i: ["1c Yogurt", "2 tbsp Peanuts", "1 tbsp Cocoa", "Honey"], tex: "Crunchy", plus: false },
-                { t: "Salted Protein Fudge Squares", i: ["1c Whey", "0.5c Nut Butter", "0.25c Cocoa", "Sea Salt"], tex: "Dense", plus: false },
-                { t: "Mango Lassi Protein Parfait", i: ["1c Yogurt", "0.5c Mango", "1 scoop Whey", "Cardamom"], tex: "Fresh", plus: false },
-                { t: "Savory Sausage Breakfast Bake", i: ["1lb Turkey Sausage", "4 Eggs", "1c Yogurt", "Cheddar"], tex: "Firm", plus: true },
-                { t: "Vanilla Bean CC Ice Cream", i: ["1.5c CC", "1 tsp Vanilla", "1 scoop Whey", "Sweetener"], tex: "Icy", plus: false },
-                { t: "Mocha Almond Protein Bars", i: ["1c Whey", "0.5c Almond Butter", "1 tsp Espresso", "Almonds"], tex: "Chewy", plus: false },
-                { t: "Raspberry White Choco Mousse", i: ["1c Yogurt", "1 scoop Whey", "Raspberries", "White Chips"], tex: "Fluffy", plus: false },
-                { t: "Ranch Chicken Protein Spread", i: ["1c Chicken", "0.5c Yogurt", "1 tbsp Ranch Powder"], tex: "Smooth", plus: false },
-                { t: "Key Lime Cheesecake Cup", i: ["1c Yogurt", "1 tbsp Lime", "Graham Crumbs", "1 scoop Whey"], tex: "Tart", plus: false },
-                { t: "Maple Walnut Protein Oats", i: ["0.5c Oats", "1 scoop Whey", "Maple Syrup", "Walnuts"], tex: "Hearty", plus: false },
-                { t: "Mediterranean Feta Dip", i: ["1c Blended CC", "0.5c Feta", "Oregano", "Olives"], tex: "Chunky", plus: false },
-                { t: "Chocolate Peanut Butter Swirl", i: ["1c Yogurt", "1 tbsp PB", "1 tbsp Cocoa", "1 scoop Whey"], tex: "Creamy", plus: false },
-                { t: "Apple Cinnamon Protein Crumble", i: ["1 Apple", "0.5c Oats", "1 scoop Whey", "Cinnamon"], tex: "Crunchy", plus: false },
-                { t: "Smoked Paprika Chicken Dip", i: ["1c Chicken", "0.75c CC", "1 tsp Paprika", "Garlic"], tex: "Bold", plus: false },
-                { t: "Pistachio Honey Parfait", i: ["1c Yogurt", "2 tbsp Pistachios", "Honey", "1 scoop Whey"], tex: "Smooth", plus: false },
-                { t: "Zesty Lime Protein Bars", i: ["1c Whey", "0.5c Cashew Butter", "1 tbsp Lime", "Zest"], tex: "Dense", plus: false },
-                { t: "Chili Lime Protein Dip", i: ["1c Yogurt", "1 tsp Chili Powder", "1 tbsp Lime", "Cilantro"], tex: "Zesty", plus: false },
-                { t: "Birthday Cake Protein Mousse", i: ["1c Yogurt", "1 scoop Whey", "Sprinkles", "Vanilla"], tex: "Puffy", plus: false },
-                { t: "Spinach Artichoke Protein Bake", i: ["1c Spinach", "1c Artichokes", "1c CC", "Mozzarella"], tex: "Melty", plus: true },
-                { t: "Dark Choco Cherry Bark", i: ["1.5c Yogurt", "1/4c Cocoa", "Cherries", "Honey"], tex: "Crunchy", plus: false },
-                { t: "Sweet Potato Protein Mash", i: ["1 Sweet Potato", "1 scoop Whey", "Cinnamon", "Honey"], tex: "Smooth", plus: false },
-                { t: "Honey Mustard Chicken Dip", i: ["1c Chicken", "0.5c Yogurt", "1 tbsp Mustard", "Honey"], tex: "Tangy", plus: false },
-                { t: "Peppermint Choco Protein Cup", i: ["1c Yogurt", "1 scoop Whey", "Cocoa", "Mint Extract"], tex: "Cool", plus: false },
-                { t: "Ginger Snap Protein Mousse", i: ["1c Yogurt", "1 scoop Whey", "Ginger", "Cinnamon", "Molasses"], tex: "Spiced", plus: false },
-                { t: "Buffalo Cauliflower Dip", i: ["1c Cauliflower", "0.75c CC", "Buffalo Sauce", "Garlic"], tex: "Chunky", plus: false },
-                { t: "Chai Latte Yogurt Bowl", i: ["1c Yogurt", "1 scoop Whey", "Chai Spices", "Walnuts"], tex: "Smooth", plus: false },
-                { t: "Red Velvet Protein Mug Cake", i: ["0.25c Yogurt", "1 Egg White", "2 tbsp Whey", "Cocoa", "Beet Powder"], tex: "Soft", plus: true },
-                { t: "Sun-Dried Tomato Turkey Bake", i: ["1lb Turkey", "0.5c CC", "Tomato", "Basil"], tex: "Savory", plus: true },
-                { t: "Black Forest Protein Pudding", i: ["1c Yogurt", "1 scoop Whey", "Cocoa", "Cherries"], tex: "Rich", plus: false },
-                { t: "Lemon Poppyseed Muffins", i: ["1c Yogurt", "2 Eggs", "1 scoop Whey", "Poppyseeds"], tex: "Spongy", plus: false },
-                { t: "Tandoori Chicken Spread", i: ["1c Chicken", "0.5c Yogurt", "1 tbsp Tandoori Spice"], tex: "Bold", plus: false },
-                { t: "Carrot Cake Protein Cup", i: ["1c Yogurt", "1 scoop Whey", "Carrots", "Walnuts", "Cinnamon"], tex: "Smooth", plus: false },
-                { t: "Savory Dill Yogurt Crema", i: ["1c Yogurt", "1 tbsp Dill", "Garlic", "Lemon Juice"], tex: "Light", plus: false },
-                { t: "Salted Caramel Edible Dough", i: ["1c CC", "0.5c Oat Flour", "Caramel Extract", "Salt"], tex: "Doughy", plus: true },
-                { t: "Mediterranean Olive Dip", i: ["1c Blended CC", "2 tbsp Olives", "Garlic", "Lemon"], tex: "Briny", plus: false }
+                { t: "Buffalo Chicken Protein Dip", i: ["1.5c Cooked Chicken", "0.75c Blended Cottage Cheese", "0.25c Buffalo Sauce", "0.5 tsp Garlic", "0.25c Cheddar"], tex: "Creamy", plus: false },
+                { t: "Pizza Chicken Protein Bake", i: ["1.5c Cooked Chicken", "0.75c Blended Cottage Cheese", "0.5c Marinara", "0.5c Mozzarella"], tex: "Melty", plus: true },
+                { t: "Bacon Cheddar Protein Squares", i: ["1c Greek Yogurt", "2 Eggs", "0.5c Oat Flour", "4 slices Bacon", "0.5c Cheddar"], tex: "Dense", plus: true },
+                { t: "Chocolate Protein Cheesecake Cup", i: ["1c Greek Yogurt", "1 scoop Whey Protein", "1 tbsp Cocoa", "1 tbsp Honey"], tex: "Smooth", plus: true },
+                { t: "High Protein Edible Cookie Dough", i: ["0.75c Blended Cottage Cheese", "0.5c Oat Flour", "1 scoop Whey Protein", "2 tbsp Mini Chips"], tex: "Doughy", plus: true },
+                { t: "Cheeseburger Protein Dip", i: ["1lb Cooked Beef", "0.75c Blended Cottage Cheese", "0.5c Cheddar", "1 tbsp Mustard"], tex: "Hearty", plus: false },
+                { t: "Protein Lava Mug Cake", i: ["0.25c Greek Yogurt", "1 Egg White", "2 tbsp Whey Protein", "1 tbsp Cocoa", "1 square Chocolate"], tex: "Molten", plus: true },
+                { t: "Strawberry Cheesecake Ice Cream", i: ["1.5c Blended Cottage Cheese", "0.5c Strawberries", "0.25c Graham Crumbs"], tex: "Frozen", plus: false },
+                { t: "PB & J Protein Yogurt Bowl", i: ["1c Greek Yogurt", "1 tbsp PB", "1 tbsp Jelly", "1 scoop Whey Protein"], tex: "Creamy", plus: false },
+                { t: "Jalapeño Popper Protein Bake", i: ["1c Cooked Chicken", "0.75c Blended Cottage Cheese", "0.25c Jalapeños", "0.5c Cheddar"], tex: "Spicy", plus: true },
+                { t: "Taco Turkey Protein Dip", i: ["1lb Cooked Turkey", "0.75c Blended Cottage Cheese", "1 tbsp Taco Spice", "0.5c Cheddar"], tex: "Savory", plus: false },
+                { t: "Lemon Meringue Yogurt Cup", i: ["1c Greek Yogurt", "2 tbsp Lemon Juice", "1 tsp Zest", "1 scoop Whey Protein"], tex: "Light", plus: false },
+                { t: "Everything Bagel Yogurt Dip", i: ["1c Greek Yogurt", "1 tbsp Bagel Spice", "0.25c Feta", "0.5c Cucumber"], tex: "Textured", plus: false },
+                { t: "Caramel Macchiato Mousse", i: ["1c Greek Yogurt", "1 scoop Whey Protein", "1 tsp Espresso", "1 tbsp Caramel Sauce"], tex: "Airy", plus: false },
+                { t: "Pumpkin Spice Protein Pudding", i: ["1c Greek Yogurt", "0.5c Pumpkin", "1 scoop Whey Protein", "1 tsp Pumpkin Spice"], tex: "Smooth", plus: false },
+                { t: "Garlic Herb Cheese Dip", i: ["1c Blended Cottage Cheese", "1 tsp Garlic", "1 tbsp Chives", "1 tbsp Parsley"], tex: "Savory", plus: false },
+                { t: "Blueberry Lemon Protein Bark", i: ["1.5c Greek Yogurt", "0.5c Blueberries", "1 tsp Lemon Zest", "1 tbsp Honey"], tex: "Frozen", plus: false },
+                { t: "Snickers Yogurt Clusters", i: ["1c Greek Yogurt", "2 tbsp Peanuts", "1 tbsp Cocoa", "1 tbsp Honey"], tex: "Crunchy", plus: false },
+                { t: "Salted Protein Fudge Squares", i: ["1c Whey Protein", "0.5c Nut Butter", "0.25c Cocoa", "0.5 tsp Sea Salt"], tex: "Dense", plus: false },
+                { t: "Mango Lassi Protein Parfait", i: ["1c Greek Yogurt", "0.5c Mango", "1 scoop Whey Protein", "0.25 tsp Cardamom"], tex: "Fresh", plus: false },
+                { t: "Savory Sausage Breakfast Bake", i: ["1lb Cooked Turkey", "4 Eggs", "1c Greek Yogurt", "0.5c Cheddar"], tex: "Firm", plus: true },
+                { t: "Vanilla Bean CC Ice Cream", i: ["1.5c Cottage Cheese", "1 tsp Vanilla", "1 scoop Whey Protein", "1 tbsp Sweetener"], tex: "Icy", plus: false },
+                { t: "Mocha Almond Protein Bars", i: ["1c Whey Protein", "0.5c Almond Butter", "1 tsp Espresso", "0.25c Almonds"], tex: "Chewy", plus: false },
+                { t: "Raspberry White Choco Mousse", i: ["1c Greek Yogurt", "1 scoop Whey Protein", "0.5c Raspberries", "2 tbsp White Chips"], tex: "Fluffy", plus: false },
+                { t: "Ranch Chicken Protein Spread", i: ["1c Cooked Chicken", "0.5c Greek Yogurt", "1 tbsp Ranch Powder"], tex: "Smooth", plus: false },
+                { t: "Key Lime Cheesecake Cup", i: ["1c Greek Yogurt", "1 tbsp Lime", "0.25c Graham Crumbs", "1 scoop Whey Protein"], tex: "Tart", plus: false },
+                { t: "Maple Walnut Protein Oats", i: ["0.5c Oats", "1 scoop Whey Protein", "1 tbsp Maple Syrup", "2 tbsp Walnuts"], tex: "Hearty", plus: false },
+                { t: "Mediterranean Feta Dip", i: ["1c Blended Cottage Cheese", "0.5c Feta", "1 tsp Oregano", "0.25c Olives"], tex: "Chunky", plus: false },
+                { t: "Chocolate Peanut Butter Swirl", i: ["1c Greek Yogurt", "1 tbsp PB", "1 tbsp Cocoa", "1 scoop Whey Protein"], tex: "Creamy", plus: false },
+                { t: "Apple Cinnamon Protein Crumble", i: ["1 Apple", "0.5c Oats", "1 scoop Whey Protein", "1 tsp Cinnamon"], tex: "Crunchy", plus: false },
+                { t: "Smoked Paprika Chicken Dip", i: ["1c Cooked Chicken", "0.75c Cottage Cheese", "1 tsp Paprika", "1 tsp Garlic"], tex: "Bold", plus: false },
+                { t: "Pistachio Honey Parfait", i: ["1c Greek Yogurt", "2 tbsp Pistachios", "1 tbsp Honey", "1 scoop Whey Protein"], tex: "Smooth", plus: false },
+                { t: "Zesty Lime Protein Bars", i: ["1c Whey Protein", "0.5c Cashew Butter", "1 tbsp Lime", "1 tsp Zest"], tex: "Dense", plus: false },
+                { t: "Chili Lime Protein Dip", i: ["1c Greek Yogurt", "1 tsp Chili Powder", "1 tbsp Lime", "1 tbsp Cilantro"], tex: "Zesty", plus: false },
+                { t: "Birthday Cake Protein Mousse", i: ["1c Greek Yogurt", "1 scoop Whey Protein", "1 tbsp Sprinkles", "1 tsp Vanilla"], tex: "Puffy", plus: false },
+                { t: "Spinach Artichoke Protein Bake", i: ["1c Spinach", "0.5c Artichokes", "1c Cottage Cheese", "0.5c Mozzarella"], tex: "Melty", plus: true },
+                { t: "Dark Choco Cherry Bark", i: ["1.5c Greek Yogurt", "0.25c Cocoa", "0.5c Cherries", "1 tbsp Honey"], tex: "Crunchy", plus: false },
+                { t: "Sweet Potato Protein Mash", i: ["1 Sweet Potato", "1 scoop Whey Protein", "1 tsp Cinnamon", "1 tbsp Honey"], tex: "Smooth", plus: false },
+                { t: "Honey Mustard Chicken Dip", i: ["1c Cooked Chicken", "0.5c Greek Yogurt", "1 tbsp Mustard", "1 tbsp Honey"], tex: "Tangy", plus: false },
+                { t: "Peppermint Choco Protein Cup", i: ["1c Greek Yogurt", "1 scoop Whey Protein", "1 tbsp Cocoa", "0.25 tsp Mint Extract"], tex: "Cool", plus: false },
+                { t: "Ginger Snap Protein Mousse", i: ["1c Greek Yogurt", "1 scoop Whey Protein", "0.5 tsp Ginger", "0.5 tsp Cinnamon"], tex: "Spiced", plus: false },
+                { t: "Buffalo Cauliflower Dip", i: ["1c Cauliflower", "0.75c Cottage Cheese", "0.25c Buffalo Sauce", "1 tsp Garlic"], tex: "Chunky", plus: false },
+                { t: "Chai Latte Yogurt Bowl", i: ["1c Greek Yogurt", "1 scoop Whey Protein", "1 tsp Chai Spices", "2 tbsp Walnuts"], tex: "Smooth", plus: false },
+                { t: "Red Velvet Protein Mug Cake", i: ["0.25c Greek Yogurt", "1 Egg White", "2 tbsp Whey Protein", "1 tbsp Cocoa"], tex: "Soft", plus: true },
+                { t: "Sun-Dried Tomato Turkey Bake", i: ["1lb Cooked Turkey", "0.5c Cottage Cheese", "0.25c Sun-Dried Tomatoes", "1 tbsp Basil"], tex: "Savory", plus: true },
+                { t: "Black Forest Protein Pudding", i: ["1c Greek Yogurt", "1 scoop Whey Protein", "1 tbsp Cocoa", "0.25c Cherries"], tex: "Rich", plus: false },
+                { t: "Lemon Poppyseed Muffins", i: ["1c Greek Yogurt", "2 Eggs", "1 scoop Whey Protein", "1 tbsp Poppy Seeds"], tex: "Spongy", plus: false },
+                { t: "Tandoori Chicken Spread", i: ["1c Cooked Chicken", "0.5c Greek Yogurt", "1 tbsp Tandoori Spice", "1 tsp Lemon"], tex: "Bold", plus: false },
+                { t: "Carrot Cake Protein Cup", i: ["1c Greek Yogurt", "1 scoop Whey Protein", "0.25c Carrots", "1 tbsp Walnuts"], tex: "Smooth", plus: false },
+                { t: "Savory Dill Yogurt Crema", i: ["1c Greek Yogurt", "1 tbsp Dill", "1 tsp Garlic", "1 tbsp Lemon Juice"], tex: "Light", plus: false },
+                { t: "Salted Caramel Edible Dough", i: ["1c Cottage Cheese", "0.5c Oat Flour", "0.5 tsp Caramel Extract", "0.25 tsp Salt"], tex: "Doughy", plus: true },
+                { t: "Mediterranean Olive Dip", i: ["1c Blended Cottage Cheese", "2 tbsp Olives", "1 tsp Garlic", "1 tsp Lemon"], tex: "Briny", plus: false }
             ];
 
             const system = hpSource.map((r, i) => ({
@@ -319,7 +377,7 @@
                 isProteinPlus: r.plus
             }));
 
-            recipes = [...breads, ...cooker, ...system];
+            recipes = [...breads, ...rcBreads, ...cooker, ...system];
         }
 
         // --- FILTER & UI LOGIC ---
@@ -347,7 +405,7 @@
                 grid.innerHTML = filtered.map(r => `
                     <div onclick="openModal(${r.id})" class="bg-white p-4 rounded-xl border border-stone-200 cursor-pointer hover:border-amber-400 hover:shadow-lg transition-all flex flex-col h-full group">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] bg-stone-100 px-2 py-0.5 rounded text-stone-500 uppercase font-bold">${r.cat}</span>
+                            <span class="text-[9px] bg-stone-100 px-2 py-0.5 rounded text-stone-500 uppercase font-bold">${r.cat.replace('-', ' ')}</span>
                             ${r.isProteinPlus ? '<span class="text-amber-500 font-bold text-[10px]">⚡ PRO+</span>' : ''}
                         </div>
                         <h4 class="font-bold text-sm text-stone-800 mb-4 group-hover:text-amber-700 leading-tight">${r.title}</h4>
@@ -387,7 +445,7 @@
         function updateModalUI() {
             const r = activeRecipe;
             document.getElementById('mTitle').innerText = r.title.replace('⚡ ', '');
-            document.getElementById('mTag').innerText = r.cat;
+            document.getElementById('mTag').innerText = r.cat.replace('-', ' ');
             document.getElementById('mTexture').innerText = r.texture || "Standard";
             document.getElementById('mSatiety').style.width = ((r.satiety || 3) * 20) + '%';
             document.getElementById('mServings').innerText = currentServings;
@@ -401,6 +459,14 @@
             `).join('');
 
             document.getElementById('mInstructions').innerHTML = (r.instructions || []).map(i => `<li>${i}</li>`).join('');
+            
+            const pRecEl = document.getElementById('mProteinRec');
+            if(r.proteinRec) {
+                pRecEl.innerText = r.proteinRec;
+                pRecEl.classList.remove('hidden');
+            } else {
+                pRecEl.classList.add('hidden');
+            }
         }
 
         function adjustServings(delta) {
@@ -424,7 +490,15 @@
             btn.classList.toggle('bg-stone-800', !showProteinPlusOnly);
             renderRecipes(); 
         }
-        function selectCookbook(id) { selectedCookbook = id; switchPage('home'); toggleMenu(); }
+        function selectCookbook(id) { 
+            selectedCookbook = id; 
+            switchPage('home'); 
+            const activeTitleEl = document.getElementById('active-book-title');
+            if (id === 'all') activeTitleEl.innerText = 'All Recipes';
+            else if (id === 'RC-Breads') activeTitleEl.innerText = 'Rice Cooker Breads';
+            else activeTitleEl.innerText = id.replace('-', ' ');
+            toggleMenu(); 
+        }
         function toggleDarkMode() { document.getElementById('app-body').classList.toggle('night-mode'); }
         function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
         function switchPage(p) { document.querySelectorAll('.page-content').forEach(x => x.classList.add('hidden')); document.getElementById(`page-${p}`).classList.remove('hidden'); renderRecipes(); }
