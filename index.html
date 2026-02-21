@@ -12,19 +12,33 @@
         .recipe-scroll::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
         .checkbox-pill:checked + label { background-color: var(--accent); color: white; border-color: var(--accent); }
         .sidebar-transition { transition: transform 0.3s ease-in-out; }
+        
+        /* Dark Mode */
         .night-mode { background-color: #1c1917; color: #e7e5e4; }
         .night-mode .bg-white { background-color: #292524; border-color: #44403c; color: #e7e5e4; }
         .night-mode .bg-stone-50 { background-color: #1c1917; color: #d6d3d1; }
+        .night-mode .text-stone-800, .night-mode .text-stone-900 { color: #f5f5f4; }
+        .night-mode .text-stone-600 { color: #a8a29e; }
+        
         .satiety-bar { height: 4px; border-radius: 2px; background: #e7e5e4; overflow: hidden; }
         .satiety-fill { height: 100%; background: var(--accent); }
+
+        /* Print Isolation Logic */
+        @media print {
+            body * { visibility: hidden; }
+            #recipeModal, #recipeModal * { visibility: visible; color: #000 !important; background: transparent !important; box-shadow: none !important; }
+            #recipeModal { position: absolute; left: 0; top: 0; width: 100%; max-height: none; padding: 0; margin: 0; }
+            .no-print { display: none !important; }
+            .satiety-bar { border: 1px solid #000; }
+        }
     </style>
 </head>
 <body id="app-body" class="bg-stone-50 text-stone-800 font-sans leading-relaxed overflow-x-hidden">
 
-    <div id="nav-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+    <div id="nav-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/50 z-[60] hidden opacity-0 transition-opacity duration-300 no-print"></div>
 
     <!-- SIDEBAR -->
-    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-stone-900 text-stone-100 z-[70] sidebar-transition -translate-x-full shadow-2xl flex flex-col">
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 bg-stone-900 text-stone-100 z-[70] sidebar-transition -translate-x-full shadow-2xl flex flex-col no-print">
         <div class="p-6 border-b border-stone-800 flex justify-between items-center">
             <span class="text-xl font-bold text-amber-500">The Library</span>
             <button onclick="toggleMenu()" class="text-2xl text-stone-400 hover:text-white">✕</button>
@@ -46,20 +60,20 @@
     </aside>
 
     <!-- TOP NAV -->
-    <nav class="bg-white shadow-sm sticky top-0 z-50">
+    <nav class="bg-white shadow-sm sticky top-0 z-50 no-print transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
             <div class="flex items-center gap-4">
-                <button onclick="toggleMenu()" class="p-2 hover:bg-stone-100 rounded-lg transition text-2xl">☰</button>
-                <span id="main-logo" class="text-xl font-bold text-amber-700 cursor-pointer" onclick="switchPage('home')">Virtual<span class="text-stone-600 font-light">Library</span></span>
+                <button onclick="toggleMenu()" class="p-2 hover:bg-stone-100 rounded-lg transition text-2xl dark:hover:bg-stone-700">☰</button>
+                <span id="main-logo" class="text-xl font-bold text-amber-700 cursor-pointer" onclick="switchPage('home')">Virtual<span class="text-stone-500 font-light">Library</span></span>
             </div>
             <div class="flex items-center gap-2">
-                <span id="active-book-title" class="hidden md:inline-block text-xs font-bold text-stone-400 uppercase tracking-widest bg-stone-50 px-3 py-1 rounded-full border border-stone-100">All Recipes</span>
+                <span id="active-book-title" class="hidden md:inline-block text-xs font-bold text-stone-400 uppercase tracking-widest bg-stone-50 px-3 py-1 rounded-full border border-stone-200 dark:border-stone-700">All Recipes</span>
             </div>
         </div>
     </nav>
 
     <!-- HOME PAGE -->
-    <main id="page-home" class="page-content">
+    <main id="page-home" class="page-content no-print">
         <header class="bg-stone-900 text-stone-100 py-12 text-center">
             <div class="max-w-4xl mx-auto px-4">
                 <h1 id="header-title" class="text-3xl md:text-5xl font-bold mb-4 text-white">Precision Library</h1>
@@ -71,16 +85,16 @@
             </div>
         </header>
 
-        <section id="pantry" class="py-12 bg-white border-b border-stone-200">
+        <section id="pantry" class="py-12 bg-white border-b border-stone-200 transition-colors duration-300">
             <div class="max-w-6xl mx-auto px-4">
-                <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 shadow-sm">
+                <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 shadow-sm transition-colors duration-300">
                     <div class="flex flex-col md:flex-row justify-between mb-6 gap-4 border-b border-stone-200 pb-4">
                         <div>
                             <h2 class="text-2xl font-bold text-stone-900">Pantry Check</h2>
                             <p class="text-xs text-stone-500 mt-1">Select the ingredients you have. The system will filter for recipes that use <strong class="text-amber-600">ALL</strong> selected items.</p>
                         </div>
                         <div class="flex items-start gap-3">
-                            <input type="text" id="searchBar" oninput="renderRecipes()" placeholder="Search ingredients or titles..." class="p-2 text-sm bg-white border border-stone-300 rounded-lg outline-none w-full md:w-64 focus:border-amber-500">
+                            <input type="text" id="searchBar" oninput="renderRecipes()" placeholder="Search ingredients or titles..." class="p-2 text-sm bg-white border border-stone-300 rounded-lg outline-none w-full md:w-64 focus:border-amber-500 dark:bg-stone-800 dark:border-stone-600 dark:text-white">
                             <button onclick="clearAllFilters()" class="text-xs text-amber-600 font-bold hover:underline whitespace-nowrap mt-2">Clear All</button>
                         </div>
                     </div>
@@ -89,10 +103,10 @@
             </div>
         </section>
 
-        <section class="py-12 bg-stone-100 min-h-screen">
+        <section class="py-12 bg-stone-100 min-h-screen transition-colors duration-300">
             <div class="max-w-7xl mx-auto px-4">
                 <div id="recipe-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
-                <div id="no-results" class="hidden text-center py-20 bg-white rounded-xl border border-stone-200">
+                <div id="no-results" class="hidden text-center py-20 bg-white rounded-xl border border-stone-200 transition-colors duration-300">
                     <p class="text-stone-400">No matches found for current filters.</p>
                 </div>
             </div>
@@ -100,37 +114,36 @@
     </main>
 
     <!-- SWAP GUIDE & TROUBLESHOOTING -->
-    <main id="page-swaps" class="page-content hidden">
+    <main id="page-swaps" class="page-content hidden no-print">
         <header class="bg-stone-800 text-white py-12 text-center">
             <h2 class="text-3xl font-bold">Substitution Matrix & Troubleshooting</h2>
         </header>
         <section class="max-w-4xl mx-auto p-8 space-y-8">
             <div class="grid md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                <div class="bg-white p-6 rounded-xl border shadow-sm transition-colors duration-300">
                     <h3 class="font-bold text-amber-600 mb-2">Cottage Cheese vs. Yogurt</h3>
                     <p class="text-sm text-stone-600 leading-relaxed">Use blended <strong>Cottage Cheese</strong> for high-heat applications like warm dips and baked pizza dishes. Use <strong>Greek Yogurt</strong> for acidic leavening in bagels or cold preparations.</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl border shadow-sm">
+                <div class="bg-white p-6 rounded-xl border shadow-sm transition-colors duration-300">
                     <h3 class="font-bold text-amber-600 mb-2">Whey vs. Casein</h3>
                     <p class="text-sm text-stone-600 leading-relaxed"><strong>Whey Isolate</strong> is best for post-cook additions. <strong>Casein</strong> acts as a structural stabilizer, absorbing significant liquid to create thick puddings and moisture-rich bakes.</p>
                 </div>
             </div>
 
-            <!-- Rice Cooker Bread Troubleshooting -->
-            <div class="bg-white p-6 rounded-xl border shadow-sm mt-8">
+            <div class="bg-white p-6 rounded-xl border shadow-sm mt-8 transition-colors duration-300">
                 <h3 class="font-bold text-amber-600 mb-4 text-xl">Rice Cooker Bread Troubleshooting</h3>
                 <div class="space-y-4">
-                    <div class="border-b pb-3 border-stone-100">
+                    <div class="border-b pb-3 border-stone-100 dark:border-stone-700">
                         <h4 class="font-bold text-stone-800 text-sm">Center is gummy or wet</h4>
                         <p class="text-sm text-stone-600 mt-1"><strong>Causes:</strong> Undercooked, sliced too soon, or batter too wet.</p>
                         <p class="text-sm text-amber-700 mt-1"><strong>Fix:</strong> Run extra cook time in 10–20 min chunks. Cool longer before slicing. Reduce liquid 2-4 tbsp next time.</p>
                     </div>
-                    <div class="border-b pb-3 border-stone-100">
+                    <div class="border-b pb-3 border-stone-100 dark:border-stone-700">
                         <h4 class="font-bold text-stone-800 text-sm">Loaf is dense/heavy (Yeast breads)</h4>
                         <p class="text-sm text-stone-600 mt-1"><strong>Causes:</strong> Underproofed, yeast is old, or dough was too dry.</p>
                         <p class="text-sm text-amber-700 mt-1"><strong>Fix:</strong> Let the final rise in the pot get visibly puffy. Add water 1 tbsp at a time until dough feels tacky next time.</p>
                     </div>
-                    <div class="border-b pb-3 border-stone-100">
+                    <div class="border-b pb-3 border-stone-100 dark:border-stone-700">
                         <h4 class="font-bold text-stone-800 text-sm">Top is pale or soft</h4>
                         <p class="text-sm text-stone-600 mt-1"><strong>Causes:</strong> Normal for rice cooker moisture environment.</p>
                         <p class="text-sm text-amber-700 mt-1"><strong>Fix:</strong> Invert the loaf back into the pot and cook 5–15 minutes, or finish under an oven broiler.</p>
@@ -146,36 +159,39 @@
     </main>
 
     <!-- RECIPE MODAL -->
-    <div id="recipeModal" class="fixed inset-0 bg-black/70 z-[100] hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative overflow-hidden shadow-2xl">
-            <button onclick="closeModal()" class="absolute top-4 right-4 text-stone-400 hover:text-stone-800 text-3xl">✕</button>
-            <div class="p-8 overflow-y-auto recipe-scroll">
+    <div id="recipeModal" class="fixed inset-0 bg-black/70 z-[100] hidden flex items-center justify-center p-4 print:bg-white print:static print:block print:p-0">
+        <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col relative overflow-hidden shadow-2xl transition-colors duration-300 print:shadow-none print:w-full print:max-w-full">
+            <div class="absolute top-4 right-4 flex gap-4 no-print">
+                <button onclick="window.print()" title="Print Recipe" class="text-stone-400 hover:text-stone-800 text-xl transition">🖨️</button>
+                <button onclick="closeModal()" title="Close" class="text-stone-400 hover:text-stone-800 text-2xl font-bold transition">✕</button>
+            </div>
+            <div class="p-8 overflow-y-auto recipe-scroll print:overflow-visible">
                 <div id="modalContent">
                     <div class="flex justify-between items-start mb-4">
-                        <h3 id="mTitle" class="text-2xl font-bold text-stone-900 pr-8 leading-tight"></h3>
-                        <span id="mTag" class="text-[9px] font-bold uppercase tracking-widest bg-amber-100 text-amber-800 px-2 py-1 rounded whitespace-nowrap"></span>
+                        <h3 id="mTitle" class="text-2xl font-bold text-stone-900 pr-16 leading-tight print:text-black"></h3>
+                        <span id="mTag" class="text-[9px] font-bold uppercase tracking-widest bg-amber-100 text-amber-800 px-2 py-1 rounded whitespace-nowrap print:border print:border-amber-800"></span>
                     </div>
                     
-                    <div class="flex flex-wrap gap-6 mb-6 text-[10px] font-bold uppercase text-stone-400 items-center">
-                        <div class="flex-grow max-w-[150px]">Satiety: <div class="satiety-bar mt-1"><div id="mSatiety" class="satiety-fill"></div></div></div>
-                        <div>Texture: <span id="mTexture" class="text-stone-800"></span></div>
-                        <div class="flex items-center gap-3 bg-stone-50 px-3 py-2 rounded-lg border border-stone-200">
+                    <div class="flex flex-wrap gap-6 mb-6 text-[10px] font-bold uppercase text-stone-400 items-center print:text-stone-600">
+                        <div class="flex-grow max-w-[150px] no-print">Satiety: <div class="satiety-bar mt-1"><div id="mSatiety" class="satiety-fill"></div></div></div>
+                        <div class="no-print">Texture: <span id="mTexture" class="text-stone-800"></span></div>
+                        <div class="flex items-center gap-3 bg-stone-50 px-3 py-2 rounded-lg border border-stone-200 dark:bg-stone-800 dark:border-stone-700 print:border-none print:p-0 print:bg-transparent">
                             <span class="text-stone-500">Servings:</span>
-                            <button onclick="adjustServings(-1)" class="w-6 h-6 flex items-center justify-center bg-white border border-stone-300 rounded hover:bg-amber-50 text-stone-800">−</button>
-                            <span id="mServings" class="text-stone-900 font-bold w-4 text-center">4</span>
-                            <button onclick="adjustServings(1)" class="w-6 h-6 flex items-center justify-center bg-white border border-stone-300 rounded hover:bg-amber-50 text-stone-800">+</button>
+                            <button onclick="adjustServings(-1)" class="w-6 h-6 flex items-center justify-center bg-white border border-stone-300 rounded hover:bg-amber-50 text-stone-800 no-print dark:bg-stone-700 dark:border-stone-600 dark:text-white">−</button>
+                            <span id="mServings" class="text-stone-900 font-bold w-4 text-center print:w-auto">4</span>
+                            <button onclick="adjustServings(1)" class="w-6 h-6 flex items-center justify-center bg-white border border-stone-300 rounded hover:bg-amber-50 text-stone-800 no-print dark:bg-stone-700 dark:border-stone-600 dark:text-white">+</button>
                         </div>
                     </div>
 
-                    <div class="grid md:grid-cols-2 gap-8 border-t pt-6">
+                    <div class="grid md:grid-cols-2 gap-8 border-t border-stone-200 pt-6 dark:border-stone-700 print:border-stone-300">
                         <div>
-                            <h5 class="font-bold uppercase text-[10px] tracking-widest text-stone-400 mb-3 border-b pb-1">Ingredients</h5>
-                            <ul id="mIngredients" class="space-y-1.5 text-stone-600 text-sm list-none"></ul>
-                            <div id="mProteinRec" class="mt-4 p-3 bg-amber-50 rounded border border-amber-100 text-xs italic text-amber-900"></div>
+                            <h5 class="font-bold uppercase text-[10px] tracking-widest text-stone-400 mb-3 border-b border-stone-100 pb-1 dark:border-stone-700 print:border-stone-300 print:text-stone-800">Ingredients</h5>
+                            <ul id="mIngredients" class="space-y-1.5 text-stone-600 text-sm list-none print:text-black"></ul>
+                            <div id="mProteinRec" class="mt-4 p-3 bg-amber-50 rounded border border-amber-100 text-xs italic text-amber-900 dark:bg-amber-900/30 dark:border-amber-900 dark:text-amber-200 print:bg-transparent print:border-stone-300 print:text-black"></div>
                         </div>
                         <div>
-                            <h5 class="font-bold uppercase text-[10px] tracking-widest text-stone-400 mb-3 border-b pb-1">Instructions</h5>
-                            <ol id="mInstructions" class="space-y-3 text-stone-700 text-sm list-decimal list-inside"></ol>
+                            <h5 class="font-bold uppercase text-[10px] tracking-widest text-stone-400 mb-3 border-b border-stone-100 pb-1 dark:border-stone-700 print:border-stone-300 print:text-stone-800">Instructions</h5>
+                            <ol id="mInstructions" class="space-y-3 text-stone-700 text-sm list-decimal list-inside print:text-black"></ol>
                         </div>
                     </div>
                 </div>
@@ -199,67 +215,48 @@
         };
 
         function initData() {
-            // SECTION 1: THE BREAD BOOK (Expanded 39 Oven Breads)
             const breads = [
-                // Priority High-Protein
                 { id: 1, title: "⚡ Protein Sandwich Loaf", cat: "Bread", baseS: 1, ingredients: ["2c Bread Flour (~265g)", "0.5c Vital Wheat Gluten", "1 scoop Whey Protein", "1c Water", "1 tsp Salt"], instructions: ["Structure Phase: Whisk dry ingredients.", "Knead 10m until elastic.", "Bake 375°F for 25m."], satiety: 5, texture: "Dense", isProteinPlus: true },
                 { id: 2, title: "⚡ High-Protein Bagels", cat: "Bread", baseS: 4, ingredients: ["1c Greek Yogurt", "1.5c Self-Rising Flour", "1 tsp Salt", "1 tbsp Everything Bagel Seasoning"], instructions: ["Form Phase: Knead 5m.", "Boil 30s per side.", "Bake 375°F for 20m."], satiety: 5, texture: "Chewy", isProteinPlus: true },
-                
-                // Leavened Breads
                 { id: 3, title: "Basic White Bread", cat: "Bread", baseS: 1, ingredients: ["4 cups all-purpose flour", "2 tsp salt", "2 tbsp sugar", "2 tsp instant yeast", "1.5 cups warm water", "2 tbsp oil or butter"], instructions: ["Mix dry ingredients. Add warm water and oil.", "Knead 8-10 minutes until smooth.", "Rise 1-2 hours, punch down, shape into loaf.", "Place in greased pan, rise 45 minutes.", "Bake at 375°F for 30-35 minutes."], satiety: 3, texture: "Soft", isProteinPlus: false },
                 { id: 4, title: "French Baguette", cat: "Bread", baseS: 2, ingredients: ["4 cups bread flour", "1.5 cups warm water", "2 tsp salt", "2 tsp instant yeast"], instructions: ["Mix ingredients, knead 10 minutes.", "Rise 1-2 hours until doubled.", "Shape into baguettes, rise 45 minutes.", "Slash tops and bake at 450°F with steam for 20-25 minutes."], satiety: 3, texture: "Crusty", isProteinPlus: false },
                 { id: 5, title: "Ciabatta", cat: "Bread", baseS: 1, ingredients: ["4 cups bread flour", "1.5 cups warm water", "2 tsp salt", "2 tsp instant yeast", "2 tbsp olive oil"], instructions: ["Mix into sticky dough.", "Rest 30 min, stretch & fold 3-4 times.", "Rise 1-2 hours.", "Shape, rise 30 minutes.", "Bake at 425°F for 25-30 minutes."], satiety: 3, texture: "Airy", isProteinPlus: false },
                 { id: 6, title: "Dinner Rolls", cat: "Bread", baseS: 12, ingredients: ["4 cups flour", "2 tbsp sugar", "2 tsp salt", "2 tsp yeast", "1.5 cups warm milk", "3 tbsp butter"], instructions: ["Mix ingredients into dough.", "Knead and rise 1 hour.", "Shape into rolls and rise 30-45 minutes.", "Bake at 375°F for 20 minutes."], satiety: 3, texture: "Pillowy", isProteinPlus: false },
                 { id: 7, title: "Soft Pretzels", cat: "Bread", baseS: 8, ingredients: ["4 cups flour", "2 tsp salt", "2 tsp yeast", "1 tbsp sugar", "1.5 cups warm water", "1 Baking soda bath"], instructions: ["Mix and knead dough 8 minutes.", "Rise 1 hour.", "Shape pretzels and dip in baking soda bath.", "Bake at 425°F for 12-15 minutes."], satiety: 4, texture: "Chewy", isProteinPlus: false },
-                
-                // Unleavened Breads
                 { id: 8, title: "Chapati", cat: "Bread", baseS: 8, ingredients: ["2 cups whole wheat flour", "0.5 tsp salt", "0.75 cup warm water"], instructions: ["Mix ingredients into dough.", "Knead 5 minutes, rest 30 minutes.", "Roll thin and cook on skillet."], satiety: 4, texture: "Flat", isProteinPlus: false },
                 { id: 9, title: "Tortillas", cat: "Bread", baseS: 8, ingredients: ["2 cups flour", "0.5 tsp salt", "3 tbsp oil", "0.75 cup warm water"], instructions: ["Mix and knead briefly.", "Rest 20 minutes.", "Roll thin and cook on skillet."], satiety: 3, texture: "Soft", isProteinPlus: false },
                 { id: 10, title: "Matzo", cat: "Bread", baseS: 4, ingredients: ["2 cups flour", "0.5 cup water", "0.25 tsp salt"], instructions: ["Mix quickly.", "Roll very thin.", "Bake at 475°F 3-4 minutes per side."], satiety: 2, texture: "Crispy", isProteinPlus: false },
                 { id: 11, title: "Roti", cat: "Bread", baseS: 8, ingredients: ["2 cups whole wheat flour", "0.5 tsp salt", "0.75 cup warm water"], instructions: ["Mix and knead 5 minutes.", "Rest 20 minutes.", "Roll thin and cook until puffed."], satiety: 4, texture: "Flat", isProteinPlus: false },
                 { id: 12, title: "Lavash", cat: "Bread", baseS: 6, ingredients: ["3 cups flour", "1 tsp salt", "1 cup water", "2 tbsp olive oil"], instructions: ["Mix and knead briefly.", "Rest 20 minutes.", "Roll thin and bake or cook until crisp."], satiety: 3, texture: "Crispy", isProteinPlus: false },
-                
-                // Quick Breads
                 { id: 13, title: "Oven Banana Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups flour", "1 tsp baking soda", "0.5 tsp salt", "0.5 cup butter", "1 cup sugar", "2 eggs", "3 ripe bananas"], instructions: ["Cream butter and sugar.", "Add eggs and bananas.", "Fold in dry ingredients.", "Bake at 350°F for 60 minutes."], satiety: 3, texture: "Moist", isProteinPlus: false },
                 { id: 14, title: "Oven Cornbread", cat: "Bread", baseS: 8, ingredients: ["1 cup cornmeal", "1 cup flour", "1 tbsp baking powder", "0.5 tsp salt", "1 cup milk", "1 egg", "0.25 cup oil"], instructions: ["Mix dry ingredients.", "Add wet ingredients.", "Pour into pan.", "Bake at 400°F for 20-25 minutes."], satiety: 3, texture: "Crumbly", isProteinPlus: false },
                 { id: 15, title: "Zucchini Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups flour", "1 tsp baking soda", "1 tsp baking powder", "1 cup sugar", "2 eggs", "1 cup shredded zucchini", "0.5 cup oil"], instructions: ["Mix dry ingredients.", "Combine wet ingredients.", "Combine all and bake at 350°F for 55-60 minutes."], satiety: 3, texture: "Moist", isProteinPlus: false },
                 { id: 16, title: "Irish Soda Bread", cat: "Bread", baseS: 1, ingredients: ["4 cups flour", "1 tsp salt", "1 tsp baking soda", "1.75 cups buttermilk"], instructions: ["Mix dry ingredients.", "Add buttermilk.", "Shape loaf and cut cross.", "Bake at 425°F for 35-40 minutes."], satiety: 4, texture: "Dense", isProteinPlus: false },
                 { id: 17, title: "Oven Pumpkin Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups flour", "1 tsp baking soda", "1 tsp cinnamon", "1 cup pumpkin puree", "1 cup sugar", "2 eggs", "0.5 cup oil"], instructions: ["Mix dry ingredients.", "Combine wet ingredients.", "Combine and bake at 350°F for 55-60 minutes."], satiety: 3, texture: "Moist", isProteinPlus: false },
-                
-                // Flatbreads
                 { id: 18, title: "Pita Bread", cat: "Bread", baseS: 6, ingredients: ["3 cups flour", "1 tsp salt", "1 tsp sugar", "2 tsp yeast", "1 cup warm water", "2 tbsp olive oil"], instructions: ["Mix dough and knead 8 minutes.", "Rise 1 hour.", "Roll into circles.", "Bake at 475°F until puffed."], satiety: 3, texture: "Puffy", isProteinPlus: false },
                 { id: 19, title: "Naan", cat: "Bread", baseS: 6, ingredients: ["3 cups flour", "1 tsp salt", "2 tsp sugar", "2 tsp yeast", "0.5 cup yogurt", "0.75 cup warm water", "2 tbsp oil"], instructions: ["Mix dough.", "Rise 1 hour.", "Roll into ovals.", "Cook on skillet until golden."], satiety: 4, texture: "Soft/Chewy", isProteinPlus: false },
                 { id: 20, title: "Oven Focaccia", cat: "Bread", baseS: 1, ingredients: ["4 cups flour", "2 tsp salt", "2 tsp yeast", "1.5 cups warm water", "0.25 cup olive oil"], instructions: ["Mix dough.", "Rise 1-2 hours.", "Spread in pan.", "Bake at 425°F for 25 minutes."], satiety: 3, texture: "Fried-Crisp", isProteinPlus: false },
                 { id: 21, title: "Paratha", cat: "Bread", baseS: 6, ingredients: ["2 cups whole wheat flour", "0.75 cup warm water", "2 tbsp Ghee or oil"], instructions: ["Mix dough and rest.", "Roll, fold with ghee, roll again.", "Cook on skillet."], satiety: 4, texture: "Flaky", isProteinPlus: false },
                 { id: 22, title: "Arepas", cat: "Bread", baseS: 6, ingredients: ["2 cups masarepa", "1 tsp salt", "1.5 cups warm water"], instructions: ["Mix into dough.", "Shape patties.", "Cook on skillet."], satiety: 4, texture: "Crispy-Outside", isProteinPlus: false },
-                
-                // Enriched Breads
                 { id: 23, title: "Oven Brioche", cat: "Bread", baseS: 1, ingredients: ["4 cups bread flour", "0.25 cup sugar", "1 tsp salt", "2.5 tsp yeast", "4 eggs", "0.5 cup milk", "1 cup butter"], instructions: ["Mix dough.", "Knead and add butter gradually.", "Rise 1-2 hours.", "Bake at 375°F for 30-35 minutes."], satiety: 4, texture: "Pillowy", isProteinPlus: false },
                 { id: 24, title: "Challah", cat: "Bread", baseS: 1, ingredients: ["4 cups bread flour", "0.25 cup sugar", "2.5 tsp yeast", "2 eggs", "1 cup water", "0.25 cup oil"], instructions: ["Mix dough.", "Rise 1-2 hours.", "Braid and rise again.", "Bake at 375°F for 25-30 minutes."], satiety: 4, texture: "Soft", isProteinPlus: false },
                 { id: 25, title: "Oven Milk Bread", cat: "Bread", baseS: 1, ingredients: ["3.5 cups bread flour", "0.25 cup sugar", "2.5 tsp yeast", "1 cup milk", "1 egg", "0.25 cup butter"], instructions: ["Mix dough.", "Rise 1-2 hours.", "Bake at 350°F for 30-35 minutes."], satiety: 3, texture: "Cloud-like", isProteinPlus: false },
                 { id: 26, title: "Cinnamon Rolls", cat: "Bread", baseS: 12, ingredients: ["4 cups flour", "0.25 cup sugar", "2.5 tsp yeast", "1 cup milk", "2 eggs", "0.25 cup butter"], instructions: ["Mix dough and rise.", "Roll, fill, slice.", "Bake at 350°F for 25-30 minutes."], satiety: 3, texture: "Gooey", isProteinPlus: false },
                 { id: 27, title: "Panettone", cat: "Bread", baseS: 1, ingredients: ["4 cups flour", "0.5 cup sugar", "2.5 tsp yeast", "1 cup milk", "3 eggs", "0.5 cup butter", "1 cup dried fruit"], instructions: ["Mix dough.", "Rise 2 hours.", "Bake at 350°F for 40-45 minutes."], satiety: 4, texture: "Airy", isProteinPlus: false },
-                
-                // Whole Grain
                 { id: 28, title: "Whole Wheat Bread", cat: "Bread", baseS: 1, ingredients: ["3 cups whole wheat flour", "1 cup flour", "2 tsp yeast", "2 tbsp honey", "1.5 cups water"], instructions: ["Mix dough.", "Rise 1-2 hours.", "Bake at 375°F for 30-35 minutes."], satiety: 4, texture: "Dense", isProteinPlus: false },
                 { id: 29, title: "Multigrain Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups bread flour", "2 cups whole wheat flour", "0.5 cup oats", "0.25 cup seeds", "2 tsp yeast", "2 cups water"], instructions: ["Mix and knead.", "Rise 1-2 hours.", "Bake at 375°F for 35 minutes."], satiety: 5, texture: "Hearty", isProteinPlus: false },
                 { id: 30, title: "Rye Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups rye flour", "2 cups bread flour", "2 tsp yeast", "1.5 cups water"], instructions: ["Mix dough.", "Rise.", "Bake at 375°F for 35-40 minutes."], satiety: 4, texture: "Firm", isProteinPlus: false },
                 { id: 31, title: "Oatmeal Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups flour", "2 cups whole wheat flour", "1 cup oats", "2 tsp yeast", "1.5 cups milk"], instructions: ["Mix dough.", "Rise 1-2 hours.", "Bake at 375°F for 35 minutes."], satiety: 4, texture: "Chewy", isProteinPlus: false },
                 { id: 32, title: "Barley Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups barley flour", "2 cups bread flour", "2 tsp yeast", "1.5 cups water"], instructions: ["Mix and knead.", "Rise.", "Bake at 375°F for 35 minutes."], satiety: 4, texture: "Dense", isProteinPlus: false },
-                
-                // Sourdough
                 { id: 33, title: "Artisan Sourdough", cat: "Bread", baseS: 1, ingredients: ["4 cups bread flour", "1.5 cups water", "1 cup sourdough starter", "2 tsp salt"], instructions: ["Mix ingredients.", "Stretch and fold.", "Rise 8-12 hours.", "Bake in Dutch oven at 450°F."], satiety: 4, texture: "Crusty", isProteinPlus: false },
                 { id: 34, title: "Whole Wheat Sourdough", cat: "Bread", baseS: 1, ingredients: ["2 cups whole wheat flour", "2 cups bread flour", "1 cup starter", "1.5 cups water"], instructions: ["Mix and fold.", "Rise overnight.", "Bake at 450°F."], satiety: 5, texture: "Dense", isProteinPlus: false },
                 { id: 35, title: "Rye Sourdough", cat: "Bread", baseS: 1, ingredients: ["2 cups rye flour", "2 cups bread flour", "1 cup starter", "1.5 cups water"], instructions: ["Mix and fold.", "Rise overnight.", "Bake at 450°F."], satiety: 5, texture: "Firm", isProteinPlus: false },
                 { id: 36, title: "Sourdough Focaccia", cat: "Bread", baseS: 1, ingredients: ["4 cups flour", "1 cup starter", "1.5 cups water", "0.25 cup olive oil"], instructions: ["Mix and fold.", "Rise overnight.", "Bake at 425°F."], satiety: 4, texture: "Fried-Crisp", isProteinPlus: false },
                 { id: 37, title: "Sourdough Pizza Dough", cat: "Bread", baseS: 4, ingredients: ["4 cups flour", "1 cup starter", "1.5 cups water", "2 tbsp olive oil"], instructions: ["Mix dough.", "Rise 6-8 hours.", "Bake at 500°F."], satiety: 4, texture: "Chewy/Crisp", isProteinPlus: false },
-                
-                // Cultural & Regional (Unique)
                 { id: 38, title: "Injera", cat: "Bread", baseS: 8, ingredients: ["2 cups teff flour", "2 cups water", "0.5 cup starter"], instructions: ["Ferment 1-3 days.", "Cook thin batter on skillet."], satiety: 4, texture: "Spongy", isProteinPlus: false },
                 { id: 39, title: "Oven Bao Buns", cat: "Bread", baseS: 8, ingredients: ["3 cups flour", "1 cup milk", "2 tsp yeast"], instructions: ["Mix and rise.", "Steam 12-15 minutes."], satiety: 3, texture: "Fluffy", isProteinPlus: false }
             ];
 
-            // SECTION 1.5: RICE COOKER BREADS (22 Variations)
             const rcBreads = [
                 { id: 301, title: "No-Knead Soft Yeast Loaf", cat: "RC-Breads", baseS: 1, ingredients: ["3c Bread Flour", "1.25 tsp Yeast", "1.25 tsp Salt", "1 tbsp Sugar", "1c Warm Water", "2 tbsp Oil"], instructions: ["Mix dry, add water/oil until shaggy.", "Rest 20m, fold 4-6 times.", "Rise 60-90m. Transfer to greased rice cooker pot.", "Rise 30-45m. Run cook cycle. If underdone, add 10-20m."], satiety: 3, texture: "Soft", isProteinPlus: false },
                 { id: 302, title: "Herb & Garlic Yeast Loaf", cat: "RC-Breads", baseS: 1, ingredients: ["3c Bread Flour", "1.25 tsp Yeast", "1.25 tsp Salt", "1 tbsp Sugar", "1c Warm Water", "2 tbsp Oil", "1 tbsp Italian Herbs", "1 tsp Garlic Powder"], instructions: ["Mix dry including herbs/garlic.", "Add water/oil. Rest 20m, fold.", "Rise 60-90m. Transfer to greased pot.", "Rise 30-45m. Run cook cycle."], satiety: 3, texture: "Aromatic", isProteinPlus: false },
@@ -285,7 +282,6 @@
                 { id: 322, title: "Sweet Vanilla Steamed Buns", cat: "RC-Breads", baseS: 8, ingredients: ["3c All-Purpose Flour", "2 tsp Yeast", "3 tbsp Sugar", "0.5 tsp Salt", "1c Warm Milk", "1 tbsp Oil", "1 tsp Vanilla"], instructions: ["Mix all into dough, rest 10m.", "Fold 6-10 times. Rise 45-60m.", "Shape into 8 buns.", "Steam in basket for 12-18m."], satiety: 3, texture: "Sweet", isProteinPlus: false }
             ];
 
-            // SECTION 2: RICE COOKER MEALS (50 Detailed Recipes)
             const rcSource = [
                 { t: "Savory Spinach Egg Rice", i: ["1c Rice", "1.75c Broth", "0.5c Egg Whites", "1c Spinach", "1 tbsp Soy Sauce", "1 tsp Garlic"], m: "White Rice", s: 4, tex: "Custard-like", plus: true, p: "Cooked Chicken" },
                 { t: "Miso Ginger Breakfast Congee", i: ["0.5c Rice", "3c Broth", "0.5c Egg Whites", "1 tsp Ginger", "1 tsp Sesame Oil", "2 tbsp Miso"], m: "Porridge", s: 3, tex: "Smooth", plus: true, p: "Tofu" },
@@ -333,7 +329,7 @@
                 { t: "Creamy Tomato Basil Chicken Soup", i: ["1.5c Tomato Puree", "3c Broth", "1 tsp Garlic", "0.5c Milk"], m: "White Rice", s: 4, tex: "Silky", plus: false, p: "Shredded Chicken" },
                 { t: "Potato & Ham Corn Chowder", i: ["2 Potatoes", "1c Corn", "3c Broth", "0.5c Milk"], m: "White Rice", s: 5, tex: "Thick", plus: false, p: "Diced Ham" },
                 { t: "White Bean & Turkey Veggie Soup", i: ["1c White Beans", "3.5c Broth", "1 tsp Thyme", "1 tsp Garlic"], m: "White Rice", s: 4, tex: "Hearty", plus: false, p: "Ground Turkey" },
-                { t: "Moroccan Chickpea & Lamb Soup", i: ["1c Chickpeas", "0.5c Lentils", "4c Broth", "1 tsp Cumin"], m: "White Rice", s: 5, tex: "Aromatic", plus: false, p: "Lamb Strips" },
+                { t: "Moroccan Chickpea & Lamb Soup",  i: ["1c Chickpeas", "0.5c Lentils", "4c Broth", "1 tsp Cumin"], m: "White Rice", s: 5, tex: "Aromatic", plus: false, p: "Lamb Strips" },
                 { t: "Miso Vegetable & Shrimp Soup", i: ["4c Water", "1c Mixed Veg", "2 tbsp Miso", "1 tsp Ginger"], m: "White Rice", s: 3, tex: "Light", plus: false, p: "Small Shrimp" },
                 { t: "Burrito Beef & Black Bean Soup", i: ["0.5c Rice", "1c Beans", "1c Corn", "1 tbsp Chili Powder"], m: "White Rice", s: 5, tex: "Zesty", plus: false, p: "Lean Beef" },
                 { t: "Coconut Lentil Chicken Soup Bowl", i: ["1c Lentils", "3c Broth", "0.5c Coconut Milk", "0.5 tsp Turmeric"], m: "White Rice", s: 5, tex: "Creamy", plus: false, p: "Diced Chicken" }
@@ -356,7 +352,6 @@
                 isProteinPlus: r.plus
             }));
 
-            // SECTION 3: HIGH PROTEIN SYSTEM (52 Unique Recipes)
             const hpSource = [
                 { t: "Buffalo Chicken Protein Dip", i: ["1.5c Cooked Chicken", "0.75c Blended Cottage Cheese", "0.25c Buffalo Sauce", "0.5 tsp Garlic", "0.25c Cheddar"], tex: "Creamy", plus: false },
                 { t: "Pizza Chicken Protein Bake", i: ["1.5c Cooked Chicken", "0.75c Blended Cottage Cheese", "0.5c Marinara", "0.5c Mozzarella"], tex: "Melty", plus: true },
@@ -429,6 +424,20 @@
             }));
 
             recipes = [...breads, ...rcBreads, ...cooker, ...system];
+            
+            // Load LocalStorage State
+            const savedPantry = localStorage.getItem('virtualLibraryPantry');
+            if (savedPantry) selectedPantry = JSON.parse(savedPantry);
+            
+            const savedProMode = localStorage.getItem('virtualLibraryPro');
+            if (savedProMode === 'true') {
+                showProteinPlusOnly = true;
+                document.getElementById('pro-btn').classList.replace('bg-stone-800', 'bg-amber-600');
+            }
+
+            if(localStorage.getItem('virtualLibraryDark') === 'true') {
+                document.getElementById('app-body').classList.add('night-mode');
+            }
         }
 
         // --- FILTER & UI LOGIC ---
@@ -456,13 +465,13 @@
             } else {
                 document.getElementById('no-results').classList.add('hidden');
                 grid.innerHTML = filtered.map(r => `
-                    <div onclick="openModal(${r.id})" class="bg-white p-4 rounded-xl border border-stone-200 cursor-pointer hover:border-amber-400 hover:shadow-lg transition-all flex flex-col h-full group">
+                    <div onclick="openModal(${r.id})" class="bg-white p-4 rounded-xl border border-stone-200 cursor-pointer hover:border-amber-400 hover:shadow-lg transition-all flex flex-col h-full group dark:hover:border-amber-600">
                         <div class="flex justify-between items-start mb-2">
-                            <span class="text-[9px] bg-stone-100 px-2 py-0.5 rounded text-stone-500 uppercase font-bold">${r.cat.replace('-', ' ')}</span>
+                            <span class="text-[9px] bg-stone-100 px-2 py-0.5 rounded text-stone-500 uppercase font-bold dark:bg-stone-800 dark:text-stone-400">${r.cat.replace('-', ' ')}</span>
                             ${r.isProteinPlus ? '<span class="text-amber-500 font-bold text-[10px]">⚡ PRO+</span>' : ''}
                         </div>
-                        <h4 class="font-bold text-sm text-stone-800 mb-4 group-hover:text-amber-700 leading-tight">${r.title}</h4>
-                        <div class="mt-auto pt-4 border-t border-stone-100 flex justify-between items-center text-[10px] text-stone-400">
+                        <h4 class="font-bold text-sm text-stone-800 mb-4 group-hover:text-amber-700 leading-tight dark:group-hover:text-amber-500">${r.title}</h4>
+                        <div class="mt-auto pt-4 border-t border-stone-100 flex justify-between items-center text-[10px] text-stone-400 dark:border-stone-700">
                             <span class="font-medium">${r.texture || "Standard"}</span>
                             <span class="flex gap-0.5">${'●'.repeat(r.satiety || 3)}${'○'.repeat(5-(r.satiety || 3))}</span>
                         </div>
@@ -505,7 +514,7 @@
             
             const scaledIngs = (r.ingredients || []).map(ing => scaleIngredient(ing, currentServings, r.baseS));
             document.getElementById('mIngredients').innerHTML = scaledIngs.map(i => `
-                <li class="flex items-start gap-2 border-b border-stone-50 pb-1">
+                <li class="flex items-start gap-2 border-b border-stone-50 pb-1 dark:border-stone-700 print:border-stone-300">
                     <span class="text-amber-500">•</span>
                     <span>${i}</span>
                 </li>
@@ -536,13 +545,16 @@
         }
 
         function closeModal() { document.getElementById('recipeModal').classList.add('hidden'); }
+        
         function filterProteinPlus() { 
             showProteinPlusOnly = !showProteinPlusOnly; 
+            localStorage.setItem('virtualLibraryPro', showProteinPlusOnly);
             const btn = document.getElementById('pro-btn');
             btn.classList.toggle('bg-amber-600', showProteinPlusOnly);
             btn.classList.toggle('bg-stone-800', !showProteinPlusOnly);
             renderRecipes(); 
         }
+        
         function selectCookbook(id) { 
             selectedCookbook = id; 
             switchPage('home'); 
@@ -552,21 +564,38 @@
             else activeTitleEl.innerText = id.replace('-', ' ');
             toggleMenu(); 
         }
-        function toggleDarkMode() { document.getElementById('app-body').classList.toggle('night-mode'); }
+        
+        function toggleDarkMode() { 
+            const body = document.getElementById('app-body');
+            body.classList.toggle('night-mode'); 
+            localStorage.setItem('virtualLibraryDark', body.classList.contains('night-mode'));
+        }
+        
         function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+        
         function switchPage(p) { document.querySelectorAll('.page-content').forEach(x => x.classList.add('hidden')); document.getElementById(`page-${p}`).classList.remove('hidden'); renderRecipes(); }
-        function clearAllFilters() { selectedPantry = []; showProteinPlusOnly = false; renderPantry(); renderRecipes(); }
+        
+        function clearAllFilters() { 
+            selectedPantry = []; 
+            localStorage.setItem('virtualLibraryPantry', JSON.stringify(selectedPantry));
+            showProteinPlusOnly = false; 
+            localStorage.setItem('virtualLibraryPro', false);
+            document.getElementById('searchBar').value = '';
+            document.getElementById('pro-btn').className = "bg-stone-800 px-4 py-2 rounded-lg text-xs font-bold hover:bg-amber-600 transition text-white shadow-md border border-stone-700";
+            renderPantry(); 
+            renderRecipes(); 
+        }
 
         function renderPantry() {
             const container = document.getElementById('ingredient-checkboxes');
             container.innerHTML = Object.entries(pantryData).map(([gn, items]) => `
                 <div class="flex-grow min-w-[140px]">
-                    <h4 class="text-[10px] font-bold text-stone-400 uppercase mb-2 border-b pb-1 tracking-widest">${gn}</h4>
+                    <h4 class="text-[10px] font-bold text-stone-400 uppercase mb-2 border-b pb-1 tracking-widest dark:border-stone-700">${gn}</h4>
                     <div class="flex flex-wrap gap-2">
                         ${items.map(i => `
                             <div>
                                 <input type="checkbox" id="ch-${i.replace(/\s/g, '')}" value="${i}" class="checkbox-pill hidden" ${selectedPantry.includes(i) ? 'checked' : ''} onchange="togglePantryItem('${i}')">
-                                <label for="ch-${i.replace(/\s/g, '')}" class="px-3 py-1.5 border rounded-full bg-white text-stone-600 text-[10px] font-semibold cursor-pointer transition hover:border-amber-400 block">${i}</label>
+                                <label for="ch-${i.replace(/\s/g, '')}" class="px-3 py-1.5 border rounded-full bg-white text-stone-600 text-[10px] font-semibold cursor-pointer transition hover:border-amber-400 block dark:bg-stone-800 dark:border-stone-700 dark:text-stone-300 dark:hover:border-amber-500">${i}</label>
                             </div>
                         `).join('')}
                     </div>
@@ -577,6 +606,9 @@
         function togglePantryItem(item) {
             if(selectedPantry.includes(item)) selectedPantry = selectedPantry.filter(x => x !== item);
             else selectedPantry.push(item);
+            
+            // Save state
+            localStorage.setItem('virtualLibraryPantry', JSON.stringify(selectedPantry));
             renderRecipes();
         }
 
