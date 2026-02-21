@@ -32,7 +32,7 @@
         <nav class="flex-grow p-4 space-y-2 overflow-y-auto recipe-scroll">
             <button onclick="selectCookbook('all')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition flex justify-between items-center group">
                 <span>All Recipes</span>
-                <span id="global-count" class="text-xs bg-stone-800 group-hover:bg-amber-600 px-2 py-1 rounded font-bold">132</span>
+                <span id="global-count" class="text-xs bg-stone-800 group-hover:bg-amber-600 px-2 py-1 rounded font-bold">163</span>
             </button>
             <div class="text-[10px] font-bold text-stone-500 uppercase tracking-widest px-3 mt-6 mb-2">Systems</div>
             <button onclick="selectCookbook('High-Protein')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🥗 Protein System</button>
@@ -72,16 +72,19 @@
         </header>
 
         <section id="pantry" class="py-12 bg-white border-b border-stone-200">
-            <div class="max-w-5xl mx-auto px-4">
+            <div class="max-w-6xl mx-auto px-4">
                 <div class="bg-stone-50 rounded-2xl p-6 border border-stone-200 shadow-sm">
-                    <div class="flex flex-col md:flex-row justify-between mb-6 gap-4">
-                        <h2 class="text-2xl font-bold text-stone-900">Pantry Check</h2>
-                        <div class="flex gap-2">
+                    <div class="flex flex-col md:flex-row justify-between mb-6 gap-4 border-b border-stone-200 pb-4">
+                        <div>
+                            <h2 class="text-2xl font-bold text-stone-900">Pantry Check</h2>
+                            <p class="text-xs text-stone-500 mt-1">Select the ingredients you have. The system will filter for recipes that use <strong class="text-amber-600">ALL</strong> selected items.</p>
+                        </div>
+                        <div class="flex items-start gap-3">
                             <input type="text" id="searchBar" oninput="renderRecipes()" placeholder="Search ingredients or titles..." class="p-2 text-sm bg-white border border-stone-300 rounded-lg outline-none w-full md:w-64 focus:border-amber-500">
-                            <button onclick="clearAllFilters()" class="text-xs text-amber-600 font-bold hover:underline">Clear All</button>
+                            <button onclick="clearAllFilters()" class="text-xs text-amber-600 font-bold hover:underline whitespace-nowrap mt-2">Clear All</button>
                         </div>
                     </div>
-                    <div id="ingredient-checkboxes" class="flex flex-wrap gap-x-8 gap-y-6"></div>
+                    <div id="ingredient-checkboxes" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
                 </div>
             </div>
         </section>
@@ -196,16 +199,64 @@
         };
 
         function initData() {
-            // SECTION 1: THE BREAD BOOK (8 Traditional Oven Breads)
+            // SECTION 1: THE BREAD BOOK (Expanded 39 Oven Breads)
             const breads = [
-                { id: 1, title: "Artisan No-Knead Loaf", cat: "Bread", baseS: 1, ingredients: ["500g Bread Flour", "325g Water", "10g Salt", "5g Yeast"], instructions: ["Mix dry ingredients.", "Cover and rise 12h.", "Bake 450F in preheated Dutch oven."], satiety: 3, texture: "Crispy", isProteinPlus: false },
-                { id: 2, title: "Classic French Baguette", cat: "Bread", baseS: 2, ingredients: ["500g Bread Flour", "300g Water", "10g Salt", "7g Yeast"], instructions: ["Knead 10m until smooth.", "Rise 1.5h.", "Shape and bake 450F with steam."], satiety: 3, texture: "Crusty", isProteinPlus: false },
-                { id: 3, title: "Garlic & Herb Focaccia", cat: "Bread", baseS: 1, ingredients: ["400g Bread Flour", "320g Water", "10g Salt", "Rosemary", "4 cloves Garlic"], instructions: ["Mix wet dough.", "Rise 1.5h in tray.", "Dimple and bake 425F for 20m."], satiety: 3, texture: "Fried-Crisp", isProteinPlus: false },
-                { id: 4, title: "Enriched Brioche Buns", cat: "Bread", baseS: 8, ingredients: ["500g Bread Flour", "4 Eggs", "100g Butter", "50ml Milk", "10g Yeast"], instructions: ["Enrichment Phase: Knead butter in gradually.", "Cold proof overnight.", "Bake 375F for 15m."], satiety: 4, texture: "Pillowy", isProteinPlus: false },
-                { id: 5, title: "Tangy Sourdough Boule", cat: "Bread", baseS: 1, ingredients: ["100g Starter", "350g Water", "500g Bread Flour", "10g Salt"], instructions: ["Autolyse 30m.", "Fold every 30m (4 sets).", "Bake 450F in Dutch oven."], satiety: 4, texture: "Tangy", isProteinPlus: false },
-                { id: 6, title: "Sweet Honey Wheat Loaf", cat: "Bread", baseS: 1, ingredients: ["300g Whole Wheat Flour", "200g Bread Flour", "2 tbsp Honey", "300g Water", "7g Yeast"], instructions: ["Bloom yeast in honey/water.", "Knead 8m; rise 1h.", "Bake 350F for 30m."], satiety: 4, texture: "Soft", isProteinPlus: false },
-                { id: 7, title: "⚡ Protein Sandwich Loaf", cat: "Bread", baseS: 1, ingredients: ["2c Bread Flour (~265g)", "0.5c Vital Wheat Gluten", "1 scoop Whey Protein", "1c Water", "1 tsp Salt"], instructions: ["Structure Phase: Whisk dry ingredients.", "Knead 10m until elastic.", "Bake 375F for 25m."], satiety: 5, texture: "Dense", isProteinPlus: true },
-                { id: 8, title: "⚡ High-Protein Bagels", cat: "Bread", baseS: 4, ingredients: ["1c Greek Yogurt", "1.5c Self-Rising Flour", "1 tsp Salt", "Everything Bagel Seasoning"], instructions: ["Form Phase: Knead 5m.", "Boil 30s per side.", "Bake 375F for 20m."], satiety: 5, texture: "Chewy", isProteinPlus: true }
+                // Priority High-Protein
+                { id: 1, title: "⚡ Protein Sandwich Loaf", cat: "Bread", baseS: 1, ingredients: ["2c Bread Flour (~265g)", "0.5c Vital Wheat Gluten", "1 scoop Whey Protein", "1c Water", "1 tsp Salt"], instructions: ["Structure Phase: Whisk dry ingredients.", "Knead 10m until elastic.", "Bake 375°F for 25m."], satiety: 5, texture: "Dense", isProteinPlus: true },
+                { id: 2, title: "⚡ High-Protein Bagels", cat: "Bread", baseS: 4, ingredients: ["1c Greek Yogurt", "1.5c Self-Rising Flour", "1 tsp Salt", "1 tbsp Everything Bagel Seasoning"], instructions: ["Form Phase: Knead 5m.", "Boil 30s per side.", "Bake 375°F for 20m."], satiety: 5, texture: "Chewy", isProteinPlus: true },
+                
+                // Leavened Breads
+                { id: 3, title: "Basic White Bread", cat: "Bread", baseS: 1, ingredients: ["4 cups all-purpose flour", "2 tsp salt", "2 tbsp sugar", "2 tsp instant yeast", "1.5 cups warm water", "2 tbsp oil or butter"], instructions: ["Mix dry ingredients. Add warm water and oil.", "Knead 8-10 minutes until smooth.", "Rise 1-2 hours, punch down, shape into loaf.", "Place in greased pan, rise 45 minutes.", "Bake at 375°F for 30-35 minutes."], satiety: 3, texture: "Soft", isProteinPlus: false },
+                { id: 4, title: "French Baguette", cat: "Bread", baseS: 2, ingredients: ["4 cups bread flour", "1.5 cups warm water", "2 tsp salt", "2 tsp instant yeast"], instructions: ["Mix ingredients, knead 10 minutes.", "Rise 1-2 hours until doubled.", "Shape into baguettes, rise 45 minutes.", "Slash tops and bake at 450°F with steam for 20-25 minutes."], satiety: 3, texture: "Crusty", isProteinPlus: false },
+                { id: 5, title: "Ciabatta", cat: "Bread", baseS: 1, ingredients: ["4 cups bread flour", "1.5 cups warm water", "2 tsp salt", "2 tsp instant yeast", "2 tbsp olive oil"], instructions: ["Mix into sticky dough.", "Rest 30 min, stretch & fold 3-4 times.", "Rise 1-2 hours.", "Shape, rise 30 minutes.", "Bake at 425°F for 25-30 minutes."], satiety: 3, texture: "Airy", isProteinPlus: false },
+                { id: 6, title: "Dinner Rolls", cat: "Bread", baseS: 12, ingredients: ["4 cups flour", "2 tbsp sugar", "2 tsp salt", "2 tsp yeast", "1.5 cups warm milk", "3 tbsp butter"], instructions: ["Mix ingredients into dough.", "Knead and rise 1 hour.", "Shape into rolls and rise 30-45 minutes.", "Bake at 375°F for 20 minutes."], satiety: 3, texture: "Pillowy", isProteinPlus: false },
+                { id: 7, title: "Soft Pretzels", cat: "Bread", baseS: 8, ingredients: ["4 cups flour", "2 tsp salt", "2 tsp yeast", "1 tbsp sugar", "1.5 cups warm water", "1 Baking soda bath"], instructions: ["Mix and knead dough 8 minutes.", "Rise 1 hour.", "Shape pretzels and dip in baking soda bath.", "Bake at 425°F for 12-15 minutes."], satiety: 4, texture: "Chewy", isProteinPlus: false },
+                
+                // Unleavened Breads
+                { id: 8, title: "Chapati", cat: "Bread", baseS: 8, ingredients: ["2 cups whole wheat flour", "0.5 tsp salt", "0.75 cup warm water"], instructions: ["Mix ingredients into dough.", "Knead 5 minutes, rest 30 minutes.", "Roll thin and cook on skillet."], satiety: 4, texture: "Flat", isProteinPlus: false },
+                { id: 9, title: "Tortillas", cat: "Bread", baseS: 8, ingredients: ["2 cups flour", "0.5 tsp salt", "3 tbsp oil", "0.75 cup warm water"], instructions: ["Mix and knead briefly.", "Rest 20 minutes.", "Roll thin and cook on skillet."], satiety: 3, texture: "Soft", isProteinPlus: false },
+                { id: 10, title: "Matzo", cat: "Bread", baseS: 4, ingredients: ["2 cups flour", "0.5 cup water", "0.25 tsp salt"], instructions: ["Mix quickly.", "Roll very thin.", "Bake at 475°F 3-4 minutes per side."], satiety: 2, texture: "Crispy", isProteinPlus: false },
+                { id: 11, title: "Roti", cat: "Bread", baseS: 8, ingredients: ["2 cups whole wheat flour", "0.5 tsp salt", "0.75 cup warm water"], instructions: ["Mix and knead 5 minutes.", "Rest 20 minutes.", "Roll thin and cook until puffed."], satiety: 4, texture: "Flat", isProteinPlus: false },
+                { id: 12, title: "Lavash", cat: "Bread", baseS: 6, ingredients: ["3 cups flour", "1 tsp salt", "1 cup water", "2 tbsp olive oil"], instructions: ["Mix and knead briefly.", "Rest 20 minutes.", "Roll thin and bake or cook until crisp."], satiety: 3, texture: "Crispy", isProteinPlus: false },
+                
+                // Quick Breads
+                { id: 13, title: "Oven Banana Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups flour", "1 tsp baking soda", "0.5 tsp salt", "0.5 cup butter", "1 cup sugar", "2 eggs", "3 ripe bananas"], instructions: ["Cream butter and sugar.", "Add eggs and bananas.", "Fold in dry ingredients.", "Bake at 350°F for 60 minutes."], satiety: 3, texture: "Moist", isProteinPlus: false },
+                { id: 14, title: "Oven Cornbread", cat: "Bread", baseS: 8, ingredients: ["1 cup cornmeal", "1 cup flour", "1 tbsp baking powder", "0.5 tsp salt", "1 cup milk", "1 egg", "0.25 cup oil"], instructions: ["Mix dry ingredients.", "Add wet ingredients.", "Pour into pan.", "Bake at 400°F for 20-25 minutes."], satiety: 3, texture: "Crumbly", isProteinPlus: false },
+                { id: 15, title: "Zucchini Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups flour", "1 tsp baking soda", "1 tsp baking powder", "1 cup sugar", "2 eggs", "1 cup shredded zucchini", "0.5 cup oil"], instructions: ["Mix dry ingredients.", "Combine wet ingredients.", "Combine all and bake at 350°F for 55-60 minutes."], satiety: 3, texture: "Moist", isProteinPlus: false },
+                { id: 16, title: "Irish Soda Bread", cat: "Bread", baseS: 1, ingredients: ["4 cups flour", "1 tsp salt", "1 tsp baking soda", "1.75 cups buttermilk"], instructions: ["Mix dry ingredients.", "Add buttermilk.", "Shape loaf and cut cross.", "Bake at 425°F for 35-40 minutes."], satiety: 4, texture: "Dense", isProteinPlus: false },
+                { id: 17, title: "Oven Pumpkin Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups flour", "1 tsp baking soda", "1 tsp cinnamon", "1 cup pumpkin puree", "1 cup sugar", "2 eggs", "0.5 cup oil"], instructions: ["Mix dry ingredients.", "Combine wet ingredients.", "Combine and bake at 350°F for 55-60 minutes."], satiety: 3, texture: "Moist", isProteinPlus: false },
+                
+                // Flatbreads
+                { id: 18, title: "Pita Bread", cat: "Bread", baseS: 6, ingredients: ["3 cups flour", "1 tsp salt", "1 tsp sugar", "2 tsp yeast", "1 cup warm water", "2 tbsp olive oil"], instructions: ["Mix dough and knead 8 minutes.", "Rise 1 hour.", "Roll into circles.", "Bake at 475°F until puffed."], satiety: 3, texture: "Puffy", isProteinPlus: false },
+                { id: 19, title: "Naan", cat: "Bread", baseS: 6, ingredients: ["3 cups flour", "1 tsp salt", "2 tsp sugar", "2 tsp yeast", "0.5 cup yogurt", "0.75 cup warm water", "2 tbsp oil"], instructions: ["Mix dough.", "Rise 1 hour.", "Roll into ovals.", "Cook on skillet until golden."], satiety: 4, texture: "Soft/Chewy", isProteinPlus: false },
+                { id: 20, title: "Oven Focaccia", cat: "Bread", baseS: 1, ingredients: ["4 cups flour", "2 tsp salt", "2 tsp yeast", "1.5 cups warm water", "0.25 cup olive oil"], instructions: ["Mix dough.", "Rise 1-2 hours.", "Spread in pan.", "Bake at 425°F for 25 minutes."], satiety: 3, texture: "Fried-Crisp", isProteinPlus: false },
+                { id: 21, title: "Paratha", cat: "Bread", baseS: 6, ingredients: ["2 cups whole wheat flour", "0.75 cup warm water", "2 tbsp Ghee or oil"], instructions: ["Mix dough and rest.", "Roll, fold with ghee, roll again.", "Cook on skillet."], satiety: 4, texture: "Flaky", isProteinPlus: false },
+                { id: 22, title: "Arepas", cat: "Bread", baseS: 6, ingredients: ["2 cups masarepa", "1 tsp salt", "1.5 cups warm water"], instructions: ["Mix into dough.", "Shape patties.", "Cook on skillet."], satiety: 4, texture: "Crispy-Outside", isProteinPlus: false },
+                
+                // Enriched Breads
+                { id: 23, title: "Oven Brioche", cat: "Bread", baseS: 1, ingredients: ["4 cups bread flour", "0.25 cup sugar", "1 tsp salt", "2.5 tsp yeast", "4 eggs", "0.5 cup milk", "1 cup butter"], instructions: ["Mix dough.", "Knead and add butter gradually.", "Rise 1-2 hours.", "Bake at 375°F for 30-35 minutes."], satiety: 4, texture: "Pillowy", isProteinPlus: false },
+                { id: 24, title: "Challah", cat: "Bread", baseS: 1, ingredients: ["4 cups bread flour", "0.25 cup sugar", "2.5 tsp yeast", "2 eggs", "1 cup water", "0.25 cup oil"], instructions: ["Mix dough.", "Rise 1-2 hours.", "Braid and rise again.", "Bake at 375°F for 25-30 minutes."], satiety: 4, texture: "Soft", isProteinPlus: false },
+                { id: 25, title: "Oven Milk Bread", cat: "Bread", baseS: 1, ingredients: ["3.5 cups bread flour", "0.25 cup sugar", "2.5 tsp yeast", "1 cup milk", "1 egg", "0.25 cup butter"], instructions: ["Mix dough.", "Rise 1-2 hours.", "Bake at 350°F for 30-35 minutes."], satiety: 3, texture: "Cloud-like", isProteinPlus: false },
+                { id: 26, title: "Cinnamon Rolls", cat: "Bread", baseS: 12, ingredients: ["4 cups flour", "0.25 cup sugar", "2.5 tsp yeast", "1 cup milk", "2 eggs", "0.25 cup butter"], instructions: ["Mix dough and rise.", "Roll, fill, slice.", "Bake at 350°F for 25-30 minutes."], satiety: 3, texture: "Gooey", isProteinPlus: false },
+                { id: 27, title: "Panettone", cat: "Bread", baseS: 1, ingredients: ["4 cups flour", "0.5 cup sugar", "2.5 tsp yeast", "1 cup milk", "3 eggs", "0.5 cup butter", "1 cup dried fruit"], instructions: ["Mix dough.", "Rise 2 hours.", "Bake at 350°F for 40-45 minutes."], satiety: 4, texture: "Airy", isProteinPlus: false },
+                
+                // Whole Grain
+                { id: 28, title: "Whole Wheat Bread", cat: "Bread", baseS: 1, ingredients: ["3 cups whole wheat flour", "1 cup flour", "2 tsp yeast", "2 tbsp honey", "1.5 cups water"], instructions: ["Mix dough.", "Rise 1-2 hours.", "Bake at 375°F for 30-35 minutes."], satiety: 4, texture: "Dense", isProteinPlus: false },
+                { id: 29, title: "Multigrain Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups bread flour", "2 cups whole wheat flour", "0.5 cup oats", "0.25 cup seeds", "2 tsp yeast", "2 cups water"], instructions: ["Mix and knead.", "Rise 1-2 hours.", "Bake at 375°F for 35 minutes."], satiety: 5, texture: "Hearty", isProteinPlus: false },
+                { id: 30, title: "Rye Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups rye flour", "2 cups bread flour", "2 tsp yeast", "1.5 cups water"], instructions: ["Mix dough.", "Rise.", "Bake at 375°F for 35-40 minutes."], satiety: 4, texture: "Firm", isProteinPlus: false },
+                { id: 31, title: "Oatmeal Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups flour", "2 cups whole wheat flour", "1 cup oats", "2 tsp yeast", "1.5 cups milk"], instructions: ["Mix dough.", "Rise 1-2 hours.", "Bake at 375°F for 35 minutes."], satiety: 4, texture: "Chewy", isProteinPlus: false },
+                { id: 32, title: "Barley Bread", cat: "Bread", baseS: 1, ingredients: ["2 cups barley flour", "2 cups bread flour", "2 tsp yeast", "1.5 cups water"], instructions: ["Mix and knead.", "Rise.", "Bake at 375°F for 35 minutes."], satiety: 4, texture: "Dense", isProteinPlus: false },
+                
+                // Sourdough
+                { id: 33, title: "Artisan Sourdough", cat: "Bread", baseS: 1, ingredients: ["4 cups bread flour", "1.5 cups water", "1 cup sourdough starter", "2 tsp salt"], instructions: ["Mix ingredients.", "Stretch and fold.", "Rise 8-12 hours.", "Bake in Dutch oven at 450°F."], satiety: 4, texture: "Crusty", isProteinPlus: false },
+                { id: 34, title: "Whole Wheat Sourdough", cat: "Bread", baseS: 1, ingredients: ["2 cups whole wheat flour", "2 cups bread flour", "1 cup starter", "1.5 cups water"], instructions: ["Mix and fold.", "Rise overnight.", "Bake at 450°F."], satiety: 5, texture: "Dense", isProteinPlus: false },
+                { id: 35, title: "Rye Sourdough", cat: "Bread", baseS: 1, ingredients: ["2 cups rye flour", "2 cups bread flour", "1 cup starter", "1.5 cups water"], instructions: ["Mix and fold.", "Rise overnight.", "Bake at 450°F."], satiety: 5, texture: "Firm", isProteinPlus: false },
+                { id: 36, title: "Sourdough Focaccia", cat: "Bread", baseS: 1, ingredients: ["4 cups flour", "1 cup starter", "1.5 cups water", "0.25 cup olive oil"], instructions: ["Mix and fold.", "Rise overnight.", "Bake at 425°F."], satiety: 4, texture: "Fried-Crisp", isProteinPlus: false },
+                { id: 37, title: "Sourdough Pizza Dough", cat: "Bread", baseS: 4, ingredients: ["4 cups flour", "1 cup starter", "1.5 cups water", "2 tbsp olive oil"], instructions: ["Mix dough.", "Rise 6-8 hours.", "Bake at 500°F."], satiety: 4, texture: "Chewy/Crisp", isProteinPlus: false },
+                
+                // Cultural & Regional (Unique)
+                { id: 38, title: "Injera", cat: "Bread", baseS: 8, ingredients: ["2 cups teff flour", "2 cups water", "0.5 cup starter"], instructions: ["Ferment 1-3 days.", "Cook thin batter on skillet."], satiety: 4, texture: "Spongy", isProteinPlus: false },
+                { id: 39, title: "Oven Bao Buns", cat: "Bread", baseS: 8, ingredients: ["3 cups flour", "1 cup milk", "2 tsp yeast"], instructions: ["Mix and rise.", "Steam 12-15 minutes."], satiety: 3, texture: "Fluffy", isProteinPlus: false }
             ];
 
             // SECTION 1.5: RICE COOKER BREADS (22 Variations)
@@ -391,8 +442,10 @@
                 const rTitle = (r.title || "").toLowerCase();
                 const rIngs = (r.ingredients || []).join(' ').toLowerCase();
                 const matchesSearch = rTitle.includes(search) || rIngs.includes(search);
-                const matchesPantry = (selectedPantry.length === 0 || 
-                    selectedPantry.some(pItem => rIngs.includes(pItem.toLowerCase())));
+                
+                // STRICT "AND" PANTRY FILTER
+                const matchesPantry = selectedPantry.length === 0 || 
+                    selectedPantry.every(pItem => rIngs.includes(pItem.toLowerCase()));
                 
                 return matchesBook && matchesSearch && matchesPantry && matchesPlus;
             });
