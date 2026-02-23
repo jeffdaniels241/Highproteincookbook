@@ -51,7 +51,8 @@
             </button>
             <div class="text-[10px] font-bold text-stone-500 uppercase tracking-widest px-3 mt-6 mb-2">Systems</div>
             <button onclick="window.selectCookbook('High-Protein')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🥗 Protein System</button>
-            <button onclick="window.selectCookbook('Rice-Cooker')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">📗 Rice Cooker Meals</button>
+            <button onclick="window.selectCookbook('RC-Breakfast')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🌅 RC Breakfast</button>
+            <button onclick="window.selectCookbook('Rice-Cooker')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🍲 RC Mains</button>
             <button onclick="window.selectCookbook('RC-Breads')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🥖 Rice Cooker Breads</button>
             <button onclick="window.selectCookbook('Bread')" class="w-full text-left px-4 py-3 rounded-lg hover:bg-stone-800 transition">🍞 Oven Breads</button>
             
@@ -233,7 +234,8 @@
                             <label class="block text-xs font-bold text-stone-500 uppercase tracking-widest mb-2">Cookbook Category</label>
                             <select id="newCat" class="w-full p-2 border border-stone-300 rounded focus:border-amber-500 outline-none text-sm bg-white">
                                 <option value="High-Protein">🥗 Protein System</option>
-                                <option value="Rice-Cooker">📗 Rice Cooker Meals</option>
+                                <option value="RC-Breakfast">🌅 RC Breakfast</option>
+                                <option value="Rice-Cooker">🍲 RC Mains</option>
                                 <option value="RC-Breads">🥖 Rice Cooker Breads</option>
                                 <option value="Bread">🍞 Oven Breads</option>
                             </select>
@@ -445,22 +447,25 @@
                 { t: "Coconut Lentil Chicken Soup Bowl", i: ["1c Lentils", "3c Broth", "0.5c Coconut Milk", "0.5 tsp Turmeric"], m: "White Rice", s: 5, tex: "Creamy", plus: false, p: "Diced Chicken" }
             ];
 
-            const cooker = rcSource.map((r, i) => ({
-                id: 100 + i,
-                title: (r.plus ? "⚡ " : "") + r.t,
-                cat: "Rice-Cooker",
-                baseS: 4,
-                ingredients: [...r.i, "0.5 tsp Salt", r.i.join().includes("Turmeric") ? "0.25 tsp Black Pepper" : "0.25 tsp Pepper"],
-                instructions: [
-                    "Maillard Prep: Sear " + r.p + " in a skillet first to build depth of flavor.",
-                    `Thermal Phase: Add grains, seared protein, and spices. Run ${r.m} cycle.`,
-                    "Rest Phase: Fluff and let steam for 5m before serving."
-                ],
-                proteinRec: `Pair with: ${r.p}`,
-                satiety: r.s,
-                texture: r.tex,
-                isProteinPlus: r.plus
-            }));
+            const cooker = rcSource.map((r, i) => {
+                const isBreakfast = r.m === "Porridge" || r.t.includes("Breakfast") || r.t.includes("Oat") || r.t === "Savory Spinach Egg Rice";
+                return {
+                    id: 100 + i,
+                    title: (r.plus ? "⚡ " : "") + r.t,
+                    cat: isBreakfast ? "RC-Breakfast" : "Rice-Cooker",
+                    baseS: 4,
+                    ingredients: [...r.i, "0.5 tsp Salt", r.i.join().includes("Turmeric") ? "0.25 tsp Black Pepper" : "0.25 tsp Pepper"],
+                    instructions: [
+                        "Maillard Prep: Sear " + r.p + " in a skillet first to build depth of flavor.",
+                        `Thermal Phase: Add grains, seared protein, and spices. Run ${r.m} cycle.`,
+                        "Rest Phase: Fluff and let steam for 5m before serving."
+                    ],
+                    proteinRec: `Pair with: ${r.p}`,
+                    satiety: r.s,
+                    texture: r.tex,
+                    isProteinPlus: r.plus
+                };
+            });
 
             const hpSource = [
                 { t: "Buffalo Chicken Protein Dip", i: ["1.5c Cooked Chicken", "0.75c Blended Cottage Cheese", "0.25c Buffalo Sauce", "0.5 tsp Garlic", "0.25c Cheddar"], tex: "Creamy", plus: false },
@@ -748,6 +753,8 @@
             const activeTitleEl = document.getElementById('active-book-title');
             if (id === 'all') activeTitleEl.innerText = 'All Recipes';
             else if (id === 'RC-Breads') activeTitleEl.innerText = 'Rice Cooker Breads';
+            else if (id === 'RC-Breakfast') activeTitleEl.innerText = 'RC Breakfast';
+            else if (id === 'Rice-Cooker') activeTitleEl.innerText = 'RC Mains';
             else activeTitleEl.innerText = id.replace('-', ' ');
             window.toggleMenu(); 
         };
