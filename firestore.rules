@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Shared master recipe data (read-only for all authenticated users) ──
+    match /artifacts/{appId}/public/{document=**} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // ── Per-user private data (only the owner can read/write) ──
+    match /artifacts/{appId}/users/{userId}/{document=**} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Deny everything else
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+
+// HOW TO DEPLOY THESE RULES:
+// 1. Go to https://console.firebase.google.com/project/proteincookbook/firestore/rules
+// 2. Replace the existing rules with the content above.
+// 3. Click "Publish".
