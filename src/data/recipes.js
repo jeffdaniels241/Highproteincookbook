@@ -17,6 +17,7 @@ export function autoTag(r) {
   if (r.texture === 'Frozen' || title.includes('ice cream') || title.includes('bark')) tags.push('freezer');
   if (r.cat === 'High-Protein' && !inst.includes('bake'))    tags.push('no-cook');
   if (r.cat === 'RC-Breakfast' || title.includes('breakfast') || title.includes('oat')) tags.push('breakfast');
+  if (r.cat === 'Sides & Snacks') tags.push('sides');
 
   return tags;
 }
