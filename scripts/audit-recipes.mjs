@@ -56,12 +56,12 @@ This report records baseline red flags in the raw recipe source before correctiv
 
 ## Corrective pass
 
-- Replaced the shared instructions for all 58 rice-cooker recipes with family-specific setup, cycle handling, water guidance, doneness, protein timing, safety, rest, and storage instructions.
+- Replaced the shared instructions for all 61 rice-cooker recipes with family-specific setup, cycle handling, water guidance, doneness, protein timing, safety, rest, and storage instructions.
 - Added explicit liquid and protein corrections to the burrito beef soup, shrimp recipes, quick breads, lentil recipes, and breakfast egg recipes.
 - Added center-temperature endpoints to rice-cooker yeast loaves and quick breads.
 - Corrected steamed-bun water level, spacing, lid handling, and resting.
 - Replaced inherited baked-dip instructions with blend-and-chill methods; repaired sweet-potato mash, egg muffins, and marinades.
-- Added npm run validate, which verifies 127 normalized records, 58 recipe-specific rice-cooker guides, stable IDs/slugs, and required audit metadata.
+- Added npm run validate, which verifies 130 normalized records, 61 recipe-specific rice-cooker guides, stable IDs/slugs, and required audit metadata.
 
 ## Standards applied
 

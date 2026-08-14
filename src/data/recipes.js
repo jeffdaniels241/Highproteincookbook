@@ -2,6 +2,7 @@ import { breads }  from './breads.js';
 import { rcBreads } from './rcbreads.js';
 import { rcSource, buildCookerRecipes } from './cooker.js';
 import { hpSource,  buildProteinRecipes } from './protein.js';
+import { additions } from './additions.js';
 
 // Auto-generate tags for any recipe object
 export function autoTag(r) {
@@ -25,7 +26,7 @@ export function autoTag(r) {
 export function getMasterRecipes() {
   const cooker  = buildCookerRecipes(rcSource);
   const protein = buildProteinRecipes(hpSource);
-  const all = [...breads, ...rcBreads, ...cooker, ...protein];
+  const all = [...breads, ...rcBreads, ...cooker, ...protein, ...additions];
   // Attach tags to every recipe
   return all.map(r => ({ ...r, tags: autoTag(r) }));
 }

@@ -1,10 +1,12 @@
 import { getMasterRecipes } from './recipes.js';
 import { getAuditOverride } from './auditOverrides.ts';
+import { getLibraryCuration, type LibraryVisibility } from './libraryCuration.ts';
 
 export type RecipeStatus = 'adapted' | 'concept' | 'tested';
 export type RecipeCategory = 'Bread' | 'RC-Breads' | 'RC-Breakfast' | 'Rice-Cooker' | 'High-Protein' | 'Sides & Snacks';
 export type RecipeMethod = 'rice-cooker' | 'oven' | 'stovetop' | 'no-cook' | 'freeze' | 'blend-and-chill' | 'microwave';
 export type AuditVerdict = 'promising' | 'needs-revision' | 'not-rice-cooker';
+export type ProteinTier = 'high' | 'forward' | 'standard';
 export type Nutrition = { calories: number; protein: number; carbs: number; fat: number; status: 'estimated' };
 export type RecipeAudit = { verdict: AuditVerdict; method: RecipeMethod; finding: string; sources: string[]; requiresKitchenTest: boolean };
 
@@ -23,7 +25,11 @@ export type Recipe = {
   ingredients: string[];
   instructions: string[];
   nutrition: Nutrition;
+  proteinTier: ProteinTier;
   audit: RecipeAudit;
+  visibility: LibraryVisibility;
+  parentId?: number;
+  collectionLabel?: string;
   isVegetarian: boolean;
   proteinPairing?: string;
   texture?: string;
@@ -69,7 +75,9 @@ function cookerDetails(raw: any, category: RecipeCategory) {
 function normalize(raw: any): Recipe {
   const category = raw.cat as RecipeCategory;
   if (!categories.has(category)) throw new Error(`Unknown category: ${category}`);
-  const title = cleanText(raw.title);
+  const sourceTitle = cleanText(raw.title);
+  const curation = getLibraryCuration(raw);
+  const title = curation.displayTitle || sourceTitle;
   const isRice = riceCategories.has(category);
   const isBread = category === 'Bread' || category === 'RC-Breads';
   const amount = Number(raw.baseS || 4);
@@ -89,9 +97,13 @@ function normalize(raw: any): Recipe {
     sources: ['USDA FSIS safe-temperature guidance', 'Zojirushi rice-cooker manuals and grain guidance', 'King Arthur Baking hydration guidance'],
     requiresKitchenTest: true,
   };
+  const nutrition = estimateNutrition(raw);
+  const proteinTier: ProteinTier = nutrition.protein >= 25 ? 'high' : nutrition.protein >= 18 ? 'forward' : 'standard';
   return {
     id: raw.id,
-    slug: slugify(title),
+    // Slugs are derived from the original title so renaming a recipe does not
+    // break saved favorites or shared links.
+    slug: slugify(sourceTitle),
     title,
     category,
     description: `${raw.texture || 'Practical'} ${category === 'Bread' ? 'bread' : category === 'High-Protein' ? 'high-protein recipe' : 'rice-cooker-friendly meal'} with a ${audit.verdict === 'promising' ? 'promising' : 'revised'} method for a real kitchen test.`,
@@ -103,8 +115,12 @@ function normalize(raw: any): Recipe {
     totalMinutes: prepMinutes + cookMinutes,
     ingredients,
     instructions,
-    nutrition: estimateNutrition(raw),
+    nutrition,
+    proteinTier,
     audit,
+    visibility: curation.visibility,
+    parentId: curation.parentId,
+    collectionLabel: curation.collectionLabel,
     isVegetarian: !`${title} ${raw.ingredients.join(' ')}`.toLowerCase().match(/chicken|turkey|beef|pork|bacon|ham|sausage|lamb|shrimp|fish|salmon|anchov|meat|gelatin/),
     proteinPairing: raw.proteinRec,
     texture: raw.texture,
@@ -116,7 +132,7 @@ export const recipes: Recipe[] = getMasterRecipes().map(normalize);
 export const categoryOrder: RecipeCategory[] = ['RC-Breakfast', 'Rice-Cooker', 'RC-Breads', 'High-Protein', 'Sides & Snacks', 'Bread'];
 export const categoryLabels: Record<RecipeCategory, string> = {
   Bread: 'Oven & Skillet Breads', 'RC-Breads': 'Rice-Cooker Breads', 'RC-Breakfast': 'Rice-Cooker Breakfast',
-  'Rice-Cooker': 'Rice-Cooker Mains', 'High-Protein': 'High-Protein', 'Sides & Snacks': 'Sides & Snacks',
+  'Rice-Cooker': 'Rice-Cooker Meals', 'High-Protein': 'Protein Kitchen', 'Sides & Snacks': 'Sides & Snacks',
 };
 
 export function findRecipe(slug: string) { return recipes.find((recipe) => recipe.slug === slug); }
@@ -129,6 +145,8 @@ export function validateRecipes() {
     if (ids.has(recipe.id)) errors.push(`Duplicate id ${recipe.id}`); ids.add(recipe.id);
     if (slugs.has(recipe.slug)) errors.push(`Duplicate slug ${recipe.slug}`); slugs.add(recipe.slug);
     if (!recipe.title || !recipe.ingredients.length || !recipe.instructions.length || !recipe.yield.amount) errors.push(`Incomplete recipe ${recipe.id}`);
+    if (!recipe.proteinTier || !recipe.visibility) errors.push(`Missing curation metadata ${recipe.id}`);
+    if (recipe.visibility === 'variation' && (!recipe.parentId || !recipes.some((parent) => parent.id === recipe.parentId))) errors.push(`Variation ${recipe.id} has no valid parent`);
     if (!recipe.audit.finding || !recipe.audit.method || !recipe.audit.sources.length) errors.push(`Missing audit metadata ${recipe.id}`);
     if (recipe.riceCooker && (!recipe.riceCooker.mode || !recipe.riceCooker.capacity || !recipe.riceCooker.timing || !recipe.riceCooker.doneness || !recipe.riceCooker.safety)) errors.push(`Incomplete rice-cooker guidance ${recipe.id}`);
   }

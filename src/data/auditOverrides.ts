@@ -78,6 +78,39 @@ function safetyFor(raw: any) {
 function riceOverride(raw: any): AuditOverride {
   const title = titleOf(raw);
   const id = raw.id;
+  if (id === 136) return {
+    verdict: 'promising', method: 'rice-cooker', finding: 'A complete late-addition meal: the rice, beans, corn, and salsa cook together, while cooked chicken is added afterward so it stays moist and can be reheated safely.',
+    prepMinutes: 15, cookMinutes: 45,
+    instructions: [
+      'Setup: rinse 1 cup rice. Add rice, 1¼ cups broth, rinsed canned beans, frozen corn, salsa, cumin, chili powder, and salt to a 5.5–6 cup cooker. Keep below the manufacturer fill line.',
+      'Cook: select White Rice and keep the lid closed. When the cooker moves to Warm, leave it closed for 10 minutes, then check that the rice is tender and no broth remains.',
+      'Finish: fold in 12 oz cooked shredded chicken, close the lid, and select Cook for about 5 minutes. Stir once and verify the finished bowl reaches 165°F before serving.',
+      'Serve and store: finish with lime. Cool in shallow containers, refrigerate within 2 hours, use within 3–4 days, and reheat to 165°F.',
+    ],
+    riceCooker: { capacity: cookerCapacity, mode: 'White Rice; no delayed start', timing: 'About 35–50 minutes, followed by a 10-minute covered rest and a 5-minute chicken reheating stage.', doneness: 'Rice is tender, broth is absorbed, and the finished chicken mixture reaches 165°F.', safety: 'Use canned/cooked beans and already-cooked chicken. Reheat the finished bowl to 165°F; never hold chicken on Warm for hours.', storage },
+  };
+  if (id === 137) return {
+    verdict: 'promising', method: 'rice-cooker', finding: 'A practical vegetarian meal with tofu and edamame added in a controlled order so the rice does not become waterlogged and the sauce stays bright.',
+    prepMinutes: 20, cookMinutes: 45,
+    instructions: [
+      'Setup: press and cube 14 oz extra-firm tofu. Add rinsed rice, 1¼ cups total water or broth, tofu, and small broccoli florets to a 5.5–6 cup cooker; keep below the fill line.',
+      'Cook: select White Rice and do not stir after closing the lid. When the cooker moves to Warm, rest closed for 10 minutes and check that the rice is tender with no standing liquid.',
+      'Finish: add thawed edamame, soy sauce, rice vinegar, ginger, and sesame oil. Close the lid and select Cook for about 5 minutes, until the edamame is hot throughout.',
+      'Serve and store: top with scallions. Cool in shallow containers, refrigerate within 2 hours, use within 3–4 days, and reheat to 165°F.',
+    ],
+    riceCooker: { capacity: cookerCapacity, mode: 'White Rice; add sauce and edamame late', timing: 'About 35–50 minutes, followed by a 10-minute rest and a 5-minute finishing stage.', doneness: 'Rice is tender, tofu is hot, broccoli is tender-crisp, and edamame is hot throughout.', safety: 'Use pressed extra-firm tofu and thawed edamame. Refrigerate promptly and reheat leftovers to 165°F.', storage },
+  };
+  if (id === 138) return {
+    verdict: 'promising', method: 'rice-cooker', finding: 'A clear steam-basket meal that keeps raw salmon above the rice, uses a measurable endpoint, and avoids relying on Warm to finish seafood.',
+    prepMinutes: 15, cookMinutes: 45,
+    instructions: [
+      'Setup: rinse 1 cup jasmine rice and add it with 1¼ cups water to a 5.5–6 cup cooker. Season 1 lb salmon cut into four portions with soy sauce and ginger, then place it in a lightly oiled steam basket above the rice.',
+      'Cook: select White Rice and keep the lid closed. When the cooker moves to Warm, check the thickest salmon portion with a thermometer; it must be opaque and reach 145°F.',
+      'Finish: if the salmon is under 145°F, select Cook for a 5-minute extension and check again. Rest the rice 10 minutes, fluff with sesame oil, and add the edamame only for the final warm-through.',
+      'Serve and store: add cucumber, scallion, and lime. Cool in shallow containers, refrigerate within 2 hours, use within 3–4 days, and reheat leftovers to 165°F.',
+    ],
+    riceCooker: { capacity: cookerCapacity, mode: 'White Rice with steam basket; fish stays above the liquid', timing: 'About 35–50 minutes; check salmon immediately at Warm and extend in 5-minute Cook intervals only if needed.', doneness: 'Rice is tender; salmon is opaque and reaches 145°F at the thickest point.', safety: 'Do not use delayed start with raw fish. Salmon must reach 145°F; reheat leftovers to 165°F.', storage },
+  };
   if (id >= 301 && id <= 308) {
     const wholeWheat = id === 306;
     return {

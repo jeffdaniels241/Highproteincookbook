@@ -1,4 +1,7 @@
 node_modules/
 dist/
 public/cookbook/
+.next/
+.wrangler/
+next-env.d.ts
 .DS_Store
