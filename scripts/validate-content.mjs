@@ -39,6 +39,7 @@ for (const recipe of recipes.filter((item) => item.visibility === 'variation')) 
 for (const recipe of recipes) {
   if (!recipe.proteinTier || !['high', 'forward', 'standard'].includes(recipe.proteinTier)) errors.push(`missing protein tier in ${recipe.id}`);
   if (!recipe.taste || !['sweet', 'savory'].includes(recipe.taste) || typeof recipe.isDessert !== 'boolean') errors.push(`missing taste profile in ${recipe.id}`);
+  if (!recipe.proteinType || !['chicken', 'turkey', 'beef', 'pork', 'seafood', 'eggs-dairy', 'plant-based', 'none'].includes(recipe.proteinType)) errors.push(`missing protein type in ${recipe.id}`);
 }
 
 if (errors.length) { console.error(errors.join('\n')); process.exit(1); }
