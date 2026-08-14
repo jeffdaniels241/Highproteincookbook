@@ -1,6 +1,7 @@
 import { getMasterRecipes } from './recipes.js';
 import { getAuditOverride } from './auditOverrides.ts';
 import { getLibraryCuration, type LibraryVisibility } from './libraryCuration.ts';
+import { getRecipeProfile, type RecipeTaste } from './recipeProfiles.ts';
 
 export type RecipeStatus = 'adapted' | 'concept' | 'tested';
 export type RecipeCategory = 'Bread' | 'RC-Breads' | 'RC-Breakfast' | 'Rice-Cooker' | 'High-Protein' | 'Sides & Snacks';
@@ -26,6 +27,8 @@ export type Recipe = {
   instructions: string[];
   nutrition: Nutrition;
   proteinTier: ProteinTier;
+  taste: RecipeTaste;
+  isDessert: boolean;
   audit: RecipeAudit;
   visibility: LibraryVisibility;
   parentId?: number;
@@ -77,6 +80,7 @@ function normalize(raw: any): Recipe {
   if (!categories.has(category)) throw new Error(`Unknown category: ${category}`);
   const sourceTitle = cleanText(raw.title);
   const curation = getLibraryCuration(raw);
+  const profile = getRecipeProfile(raw);
   const title = curation.displayTitle || sourceTitle;
   const isRice = riceCategories.has(category);
   const isBread = category === 'Bread' || category === 'RC-Breads';
@@ -117,6 +121,8 @@ function normalize(raw: any): Recipe {
     instructions,
     nutrition,
     proteinTier,
+    taste: profile.taste,
+    isDessert: profile.isDessert,
     audit,
     visibility: curation.visibility,
     parentId: curation.parentId,
@@ -145,7 +151,7 @@ export function validateRecipes() {
     if (ids.has(recipe.id)) errors.push(`Duplicate id ${recipe.id}`); ids.add(recipe.id);
     if (slugs.has(recipe.slug)) errors.push(`Duplicate slug ${recipe.slug}`); slugs.add(recipe.slug);
     if (!recipe.title || !recipe.ingredients.length || !recipe.instructions.length || !recipe.yield.amount) errors.push(`Incomplete recipe ${recipe.id}`);
-    if (!recipe.proteinTier || !recipe.visibility) errors.push(`Missing curation metadata ${recipe.id}`);
+    if (!recipe.proteinTier || !recipe.visibility || !recipe.taste || typeof recipe.isDessert !== 'boolean') errors.push(`Missing curation metadata ${recipe.id}`);
     if (recipe.visibility === 'variation' && (!recipe.parentId || !recipes.some((parent) => parent.id === recipe.parentId))) errors.push(`Variation ${recipe.id} has no valid parent`);
     if (!recipe.audit.finding || !recipe.audit.method || !recipe.audit.sources.length) errors.push(`Missing audit metadata ${recipe.id}`);
     if (recipe.riceCooker && (!recipe.riceCooker.mode || !recipe.riceCooker.capacity || !recipe.riceCooker.timing || !recipe.riceCooker.doneness || !recipe.riceCooker.safety)) errors.push(`Incomplete rice-cooker guidance ${recipe.id}`);
