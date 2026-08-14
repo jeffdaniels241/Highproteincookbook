@@ -1,9 +1,13 @@
 import { getMasterRecipes } from './recipes.js';
+import { getAuditOverride } from './auditOverrides.ts';
 
 export type RecipeStatus = 'adapted' | 'concept' | 'tested';
 export type RecipeCategory = 'Bread' | 'RC-Breads' | 'RC-Breakfast' | 'Rice-Cooker' | 'High-Protein' | 'Sides & Snacks';
-
+export type RecipeMethod = 'rice-cooker' | 'oven' | 'stovetop' | 'no-cook' | 'freeze' | 'blend-and-chill' | 'microwave';
+export type AuditVerdict = 'promising' | 'needs-revision' | 'not-rice-cooker';
 export type Nutrition = { calories: number; protein: number; carbs: number; fat: number; status: 'estimated' };
+export type RecipeAudit = { verdict: AuditVerdict; method: RecipeMethod; finding: string; sources: string[]; requiresKitchenTest: boolean };
+
 export type Recipe = {
   id: number;
   slug: string;
@@ -19,27 +23,22 @@ export type Recipe = {
   ingredients: string[];
   instructions: string[];
   nutrition: Nutrition;
+  audit: RecipeAudit;
   isVegetarian: boolean;
   proteinPairing?: string;
   texture?: string;
-  riceCooker?: {
-    capacity: string;
-    mode: string;
-    timing: string;
-    doneness: string;
-    safety: string;
-    storage: string;
-  };
+  riceCooker?: { capacity: string; mode: string; timing: string; doneness: string; safety: string; storage: string };
 };
 
 const categories = new Set<RecipeCategory>(['Bread', 'RC-Breads', 'RC-Breakfast', 'Rice-Cooker', 'High-Protein', 'Sides & Snacks']);
+const riceCategories = new Set<RecipeCategory>(['RC-Breads', 'RC-Breakfast', 'Rice-Cooker']);
 
 function slugify(title: string) {
-  return title.replace(/^⚡\s*/, '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  return title.replace(/^[^\p{L}\p{N}]+/u, '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
 function cleanText(value: string) {
-  return value.replace(/^⚡\s*/, '').replace(/â€¦|â€”|â€“|Â°F/g, (match) => ({ 'â€¦': '…', 'â€”': '—', 'â€“': '–', 'Â°F': '°F' }[match] || match));
+  return value.replace(/^[^\p{L}\p{N}]+/u, '').replace(/Ã¢â‚¬Â¦|Ã¢â‚¬â€|Ã¢â‚¬â€œ|Ã‚Â°F/g, (match) => ({ 'Ã¢â‚¬Â¦': '…', 'Ã¢â‚¬â€': '—', 'Ã¢â‚¬â€œ': '–', 'Ã‚Â°F': '°F' }[match] || match));
 }
 
 function estimateNutrition(raw: any): Nutrition {
@@ -55,52 +54,61 @@ function estimateNutrition(raw: any): Nutrition {
 }
 
 function cookerDetails(raw: any, category: RecipeCategory) {
-  if (!['RC-Breads', 'RC-Breakfast', 'Rice-Cooker'].includes(category)) return undefined;
+  if (!riceCategories.has(category)) return undefined;
+  const title = String(raw.title).toLowerCase();
   const isBread = category === 'RC-Breads';
-  const isSoup = raw.m === 'Soup' || raw.title.toLowerCase().includes('soup');
-  const isSteam = raw.title.toLowerCase().includes('bun');
+  const isSoup = raw.m === 'Soup' || title.includes('soup');
+  const isSteam = title.includes('bun');
   const mode = isSteam ? 'Steam / basket' : isSoup ? 'Soup or slow-cook' : raw.m || 'Cook / white rice';
-  const timing = isBread ? 'Cook cycle, then check every 10 minutes; most loaves need 1–2 cycles.' : isSteam ? 'Steam 12–18 minutes; keep the lid closed, then rest 5 minutes.' : 'Run the selected cycle, then rest 5 minutes; add 10-minute extensions if the center is loose.';
+  const timing = isBread ? 'Check after the first cycle and extend in 10-minute intervals.' : isSteam ? 'Steam 12–18 minutes; keep the lid closed, then rest 5 minutes.' : 'Run the selected cycle, then rest 5 minutes; add short extensions only after checking.';
   const doneness = isBread ? 'Center should be firm and 190–200°F; cool before slicing.' : isSoup ? 'Lentils and grains must be tender; meat must reach its safe temperature.' : 'Grains are tender, liquid is absorbed, and any egg or meat reaches its safe temperature.';
-  const safety = raw.title.toLowerCase().includes('shrimp') ? 'Use cooked shrimp at the end or cook raw shrimp to 145°F.' : raw.title.toLowerCase().includes('egg') ? 'Cook egg dishes to 160°F.' : raw.title.toLowerCase().match(/chicken|turkey|poultry/) ? 'Cook poultry to 165°F.' : raw.title.toLowerCase().match(/beef|pork|lamb/) ? 'Cook ground meat to 160°F and whole cuts to 145°F with rest.' : 'Use canned or fully cooked beans; never use dry kidney beans without a separate boil.';
+  const safety = title.includes('shrimp') ? 'Use cooked shrimp at the end or cook raw shrimp to 145°F.' : title.includes('egg') ? 'Cook egg dishes to 160°F.' : title.match(/chicken|turkey|poultry/) ? 'Cook poultry to 165°F.' : title.match(/beef|pork|lamb/) ? 'Cook ground meat to 160°F and whole cuts to 145°F with rest.' : 'Use canned or fully cooked beans; never use dry kidney beans without a separate boil.';
   return { capacity: '5.5–6 cup cooker; do not exceed half-full for foaming grains', mode, timing, doneness, safety, storage: 'Refrigerate within 2 hours. Reheat leftovers to 165°F and use within 3–4 days.' };
 }
 
 function normalize(raw: any): Recipe {
-  const category = (raw.cat as RecipeCategory);
+  const category = raw.cat as RecipeCategory;
   if (!categories.has(category)) throw new Error(`Unknown category: ${category}`);
   const title = cleanText(raw.title);
-  const isRice = ['RC-Breads', 'RC-Breakfast', 'Rice-Cooker'].includes(category);
+  const isRice = riceCategories.has(category);
   const isBread = category === 'Bread' || category === 'RC-Breads';
   const amount = Number(raw.baseS || 4);
   const label = isBread && amount === 1 ? 'loaf' : isBread ? 'pieces' : 'servings';
+  const override = getAuditOverride(raw);
   const sparse = raw.instructions.length < 4 || raw.ingredients.length < 4;
-  const status: RecipeStatus = isRice || sparse ? 'concept' : 'adapted';
-  const prepMinutes = isRice ? 10 : category === 'Bread' ? 30 : 15;
-  const cookMinutes = isRice ? 35 : category === 'Bread' ? 35 : 20;
-  const instructions = raw.instructions.map(cleanText);
-  if (isRice) {
-    instructions.unshift(`Setup: Use a greased 5.5–6 cup cooker. Add ingredients in the order listed; keep delicate toppings, dairy, citrus, herbs, and cooked shrimp for the finishing step.`);
-    instructions.push(`Finish: When the cooker switches to Warm, check the center and stir only if the recipe calls for it. If still loose, restart in 10-minute increments.`);
-    instructions.push(`Safety and rest: Confirm the doneness and temperature note before serving. Rest 5 minutes, then refrigerate leftovers within 2 hours.`);
-  }
+  const status: RecipeStatus = override?.verdict === 'needs-revision' || isRice || sparse ? 'concept' : 'adapted';
+  const prepMinutes = override?.prepMinutes ?? (isRice ? 10 : category === 'Bread' ? 30 : 15);
+  const cookMinutes = override?.cookMinutes ?? (isRice ? 35 : category === 'Bread' ? 35 : 20);
+  const ingredients = (override?.ingredients ?? raw.ingredients).map(cleanText);
+  const instructions = (override?.instructions ?? raw.instructions).map(cleanText);
+  const method = override?.method ?? (category === 'Bread' ? 'oven' : category === 'Sides & Snacks' ? 'no-cook' : 'oven');
+  const audit: RecipeAudit = {
+    verdict: override?.verdict ?? (sparse ? 'needs-revision' : 'promising'),
+    method,
+    finding: override?.finding ?? (sparse ? 'Static review found an abbreviated method; expand and kitchen-test before calling it reliable.' : 'Static review found a coherent formula; it still requires a kitchen test before promotion to Tested.'),
+    sources: ['USDA FSIS safe-temperature guidance', 'Zojirushi rice-cooker manuals and grain guidance', 'King Arthur Baking hydration guidance'],
+    requiresKitchenTest: true,
+  };
   return {
     id: raw.id,
     slug: slugify(title),
     title,
     category,
-    description: `${raw.texture || 'Practical'} ${category === 'Bread' ? 'bread' : category === 'High-Protein' ? 'high-protein recipe' : 'rice-cooker-friendly meal'} with a clear, adjustable method.`,
+    description: `${raw.texture || 'Practical'} ${category === 'Bread' ? 'bread' : category === 'High-Protein' ? 'high-protein recipe' : 'rice-cooker-friendly meal'} with a ${audit.verdict === 'promising' ? 'promising' : 'revised'} method for a real kitchen test.`,
     tags: raw.tags || [],
     status,
     yield: { amount, label, scalable: label === 'servings' },
-    prepMinutes, cookMinutes, totalMinutes: prepMinutes + cookMinutes,
-    ingredients: raw.ingredients.map(cleanText),
+    prepMinutes,
+    cookMinutes,
+    totalMinutes: prepMinutes + cookMinutes,
+    ingredients,
     instructions,
     nutrition: estimateNutrition(raw),
+    audit,
     isVegetarian: !`${title} ${raw.ingredients.join(' ')}`.toLowerCase().match(/chicken|turkey|beef|pork|bacon|ham|sausage|lamb|shrimp|fish|salmon|anchov|meat|gelatin/),
     proteinPairing: raw.proteinRec,
     texture: raw.texture,
-    riceCooker: cookerDetails(raw, category),
+    riceCooker: override?.riceCooker ?? cookerDetails(raw, category),
   };
 }
 
@@ -121,7 +129,8 @@ export function validateRecipes() {
     if (ids.has(recipe.id)) errors.push(`Duplicate id ${recipe.id}`); ids.add(recipe.id);
     if (slugs.has(recipe.slug)) errors.push(`Duplicate slug ${recipe.slug}`); slugs.add(recipe.slug);
     if (!recipe.title || !recipe.ingredients.length || !recipe.instructions.length || !recipe.yield.amount) errors.push(`Incomplete recipe ${recipe.id}`);
-    if (recipe.riceCooker && (!recipe.riceCooker.mode || !recipe.riceCooker.capacity || !recipe.riceCooker.doneness || !recipe.riceCooker.safety)) errors.push(`Incomplete rice-cooker guidance ${recipe.id}`);
+    if (!recipe.audit.finding || !recipe.audit.method || !recipe.audit.sources.length) errors.push(`Missing audit metadata ${recipe.id}`);
+    if (recipe.riceCooker && (!recipe.riceCooker.mode || !recipe.riceCooker.capacity || !recipe.riceCooker.timing || !recipe.riceCooker.doneness || !recipe.riceCooker.safety)) errors.push(`Incomplete rice-cooker guidance ${recipe.id}`);
   }
   return errors;
 }

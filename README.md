@@ -1,22 +1,18 @@
 # High-Protein Rice Cooker Cookbook
 
-A Sites-hosted, local-first recipe library for rice cookers, ovens, and skillets.
+Local-first cookbook site for 127 recipes across six categories. The canonical recipe records are normalized in `src/data/recipes.ts`; raw legacy source remains in `src/data/*.js` while the audit layer supplies corrected methods and evidence-backed safety guidance.
 
-The site contains 127 recipes across six categories. Favorites, pantry selections, and display preferences stay in the visitor's browser; there is no account system, Firebase connection, or backend database.
+## Commands
 
-## Development
+- `npm run dev` — local development server
+- `npm run audit` — baseline content audit and `docs/RECIPE_AUDIT.md`
+- `npm run validate` — schema, category, ID/slug, and content checks
+- `npm run build` — production build
 
-```bash
-npm install
-npm run dev
-```
+## Testing status
 
-Before publishing, run `npm run validate` and `npm run build`.
+Recipes are marked `Adapted` or `Concept testing required`. Static review does not promote a recipe to `Tested`; use `docs/KITCHEN_TEST_MATRIX.md` to record physical cooker runs before making that claim.
 
-## Recipe status
+## Standards
 
-Recipes marked **Adapted** have complete written guidance but have not been physically tested in every cooker. Recipes marked **Concept testing required** need a kitchen test before being treated as reliable. No recipe should be marked Tested without a recorded cooker model, timing, texture, and safety check.
-
-## Rice cooker safety
-
-Use a typical 5.5–6 cup cooker as the baseline, respect the fill line, and use a thermometer for meat and egg dishes. Cook poultry and leftovers to 165°F, ground meat to 160°F, egg dishes to 160°F, and fish or shrimp to 145°F. Refrigerate leftovers within two hours.
+Rice and grain liquids are cooker-model dependent. Use the water line or manual for the specific machine, especially for quinoa, oats, and foaming legumes. Safety endpoints are explicit in the recipe pages: poultry and leftovers 165°F, ground meat 160°F, egg dishes 160°F, and fish/shrimp 145°F.

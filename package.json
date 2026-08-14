@@ -7,7 +7,8 @@
     "dev": "vinext dev",
     "build": "vinext build",
     "preview": "vinext start",
-    "validate": "node scripts/validate-recipes.mjs"
+    "validate": "node --experimental-strip-types scripts/validate-content.mjs",
+    "audit": "node scripts/audit-recipes.mjs"
   },
   "dependencies": {
     "react": "^19.2.6",
