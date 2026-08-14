@@ -19,6 +19,7 @@ export type Recipe = {
   ingredients: string[];
   instructions: string[];
   nutrition: Nutrition;
+  isVegetarian: boolean;
   proteinPairing?: string;
   texture?: string;
   riceCooker?: {
@@ -96,6 +97,7 @@ function normalize(raw: any): Recipe {
     ingredients: raw.ingredients.map(cleanText),
     instructions,
     nutrition: estimateNutrition(raw),
+    isVegetarian: !`${title} ${raw.ingredients.join(' ')}`.toLowerCase().match(/chicken|turkey|beef|pork|bacon|ham|sausage|lamb|shrimp|fish|salmon|anchov|meat|gelatin/),
     proteinPairing: raw.proteinRec,
     texture: raw.texture,
     riceCooker: cookerDetails(raw, category),
