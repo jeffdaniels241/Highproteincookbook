@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vinext dev",
     "build": "npm run build:legacy && vinext build",
-    "build:legacy": "vite build",
+    "build:legacy": "vite build --config vite.legacy.config.js",
     "preview": "vinext start"
   },
   "dependencies": {
