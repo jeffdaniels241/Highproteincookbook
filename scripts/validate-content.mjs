@@ -1,12 +1,12 @@
 import { recipes, validateRecipes, recipeCounts } from '../src/data/recipes.ts';
 
-const expected = { Bread: 28, 'RC-Breads': 22, 'RC-Breakfast': 7, 'Rice-Cooker': 32, 'High-Protein': 32, 'Sides & Snacks': 9 };
+const expected = { Bread: 28, 'RC-Breads': 22, 'RC-Breakfast': 7, 'Rice-Cooker': 39, 'High-Protein': 32, 'Sides & Snacks': 9 };
 const errors = [...validateRecipes()];
-if (recipes.length !== 130) errors.push(`expected 130 normalized recipes, found ${recipes.length}`);
+if (recipes.length !== 137) errors.push(`expected 137 normalized recipes, found ${recipes.length}`);
 for (const [category, count] of Object.entries(expected)) if (recipeCounts()[category] !== count) errors.push(`${category}: expected ${count}, found ${recipeCounts()[category] || 0}`);
 
 const rice = recipes.filter((recipe) => recipe.riceCooker);
-if (rice.length !== 61) errors.push(`expected 61 rice-cooker records, found ${rice.length}`);
+if (rice.length !== 68) errors.push(`expected 68 rice-cooker records, found ${rice.length}`);
 for (const recipe of rice) {
   const method = recipe.instructions.join(' ').toLowerCase();
   if (/run (?:cook|white rice|porridge|whole grain) cycle/.test(method)) errors.push(`generic rice-cycle wording remains in ${recipe.id}`);
@@ -32,7 +32,7 @@ for (const id of [8, 9, 21, 22, 24, 25, 26, 27, 28, 29, 31, 37]) {
 }
 if (recipes.some((recipe) => recipe.status === 'tested')) errors.push('unsupported Tested status present');
 const visibilityCounts = recipes.reduce((counts, recipe) => { counts[recipe.visibility] = (counts[recipe.visibility] || 0) + 1; return counts; }, {});
-if (visibilityCounts.core !== 98 || visibilityCounts.variation !== 31 || visibilityCounts.technique !== 1) errors.push(`unexpected curation counts: ${JSON.stringify(visibilityCounts)}`);
+if (visibilityCounts.core !== 105 || visibilityCounts.variation !== 31 || visibilityCounts.technique !== 1) errors.push(`unexpected curation counts: ${JSON.stringify(visibilityCounts)}`);
 for (const recipe of recipes.filter((item) => item.visibility === 'variation')) {
   if (!recipe.parentId || !recipes.some((parent) => parent.id === recipe.parentId)) errors.push(`variation ${recipe.id} has no valid parent`);
 }

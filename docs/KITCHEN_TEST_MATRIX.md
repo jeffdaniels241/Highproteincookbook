@@ -22,5 +22,12 @@ Record the cooker model, nominal capacity, program, actual elapsed time, liquid 
 | Cold dip | 222 Mediterranean Feta Dip | Blend texture, salt/acid, chill stability, two-hour limit |
 | Frozen dessert | 227 Dark Choco Cherry Bark | Yogurt thickness, freeze time, fruit ice crystals, snap |
 | Marinade | 240 Quick Protein Marinades | Per-pound quantities, raw-protein handling, glaze burn risk |
+| Frittata | 139 Cottage Cheese Turkey Frittata | Cooker mode, release, center 160°F, moisture after cooling |
+| Chicken curry pot | 140 Chicken Curry Rice Pot | Tomato/broth ratio, late chicken and coconut milk, finished chicken 165°F |
+| Pasta and cheese sauce | 141 Cottage Cheese Mac & Cheese | Foam control, pasta doneness, sauce separation, finished dish 165°F |
+| Polenta and meatballs | 142 Protein Polenta with Turkey Meatballs | Stirring frequency, gritty center, meatball reheating to 165°F |
+| Shakshuka | 143 Rice-Cooker Shakshuka | Sauce reduction, egg timing, egg center 160°F |
+| Bread pudding | 144 Apple Cinnamon Bread Pudding | Custard set, cake-mode behavior, center 160°F, cooling |
+| Warm dip | 145 Warm Buffalo Chicken Protein Dip | Dairy scorching, stirring, hot holding, chicken 165°F |
 
 Promotion rule: only the tested recipe and its directly equivalent variation may move to `Tested`; related recipes stay untested until the formula change is documented and justified.

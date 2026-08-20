@@ -1,6 +1,6 @@
 # The Rice Cooker & Protein Kitchen
 
-Local-first cookbook site for 130 recipes across six categories. It combines rice-cooker meals with everyday breads, sides, breakfasts, and protein-forward recipes. The canonical recipe records are normalized in `src/data/recipes.ts`; raw legacy source remains in `src/data/*.js` while the audit layer supplies corrected methods and evidence-backed safety guidance.
+Local-first cookbook site for 137 recipes across six categories. It combines rice-cooker meals with everyday breads, sides, breakfasts, and protein-forward recipes. The canonical recipe records are normalized in `src/data/recipes.ts`; raw legacy source remains in `src/data/*.js` while the audit layer supplies corrected methods and evidence-backed safety guidance.
 
 ## Commands
 

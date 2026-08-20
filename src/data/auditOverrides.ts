@@ -75,9 +75,51 @@ function safetyFor(raw: any) {
   return 'Use canned/cooked beans or properly rinsed lentils. Refrigerate within 2 hours and reheat leftovers to 165°F.';
 }
 
+function newIdeaOverride(raw: any): AuditOverride | undefined {
+  const id = raw.id;
+  if (id === 139) return {
+    verdict: 'needs-revision', method: 'rice-cooker', finding: 'Frittata is a good cooker use, but the egg center must be checked with a thermometer and the batch must stay shallow enough to set evenly.', prepMinutes: 15, cookMinutes: 45,
+    instructions: ['Setup: grease the pot. Whisk 6 eggs and 1 cup blended cottage cheese until smooth, then fold in the cooked turkey sausage, pepper, spinach, cheddar, salt, and pepper.', 'Cook: keep the mixture below half-full. Select Cake if available; otherwise select Cook/White Rice. Keep the lid closed during the active cycle.', 'Check: when the cooker moves to Warm, check the center. Use 5-minute Cook extensions until the center reaches 160°F and is set but still moist.', 'Rest and store: rest 10 minutes before lifting out. Refrigerate within 2 hours and reheat portions to 165°F.'],
+    riceCooker: { capacity: cookerCapacity, mode: 'Cake if available; otherwise Cook/White Rice; no delayed start', timing: 'About 35–50 minutes, then 5-minute extensions after the first Warm signal.', doneness: 'Center is set, not liquid, and reaches 160°F.', safety: 'Use fully cooked sausage and verify the egg center at 160°F. Do not hold the frittata on Warm for hours.', storage },
+  };
+  if (id === 140) return {
+    verdict: 'needs-revision', method: 'rice-cooker', finding: 'The curry works as a rice pot when cooked chicken is added late; coconut milk and lime stay out of the active grain cycle to prevent a dull, split sauce.', prepMinutes: 15, cookMinutes: 50,
+    instructions: ['Setup: rinse the basmati. Add rice, 1 cup broth, crushed tomatoes, curry paste, ginger, salt, and frozen vegetables to the pot. Keep below the fill line.', 'Cook: select White Rice and keep the lid closed. When the cooker moves to Warm, rest closed for 10 minutes and check that the rice is tender and the liquid absorbed.', 'Finish: fold in 12 oz cooked shredded chicken and ½ cup coconut milk. Select Cook for about 5 minutes, stir once, and verify the dish reaches 165°F.', 'Serve and store: finish with lime and cilantro. Refrigerate within 2 hours and reheat leftovers to 165°F.'],
+    riceCooker: { capacity: cookerCapacity, mode: 'White Rice; add cooked chicken and coconut milk late', timing: 'About 35–50 minutes, followed by a 10-minute rest and a 5-minute finishing stage.', doneness: 'Rice is tender, sauce is cohesive, and the finished chicken reaches 165°F.', safety: 'Use cooked chicken only in the cooker. Reheat the finished dish to 165°F and do not leave coconut-based leftovers on Warm.', storage },
+  };
+  if (id === 141) return {
+    verdict: 'needs-revision', method: 'rice-cooker', finding: 'Pasta is viable in a cooker with a shallow batch and frequent checking; the cheese sauce is added after draining so it does not scorch or separate.', prepMinutes: 10, cookMinutes: 30,
+    instructions: ['Setup: add 8 oz macaroni, 3 cups water, salt, and butter. Keep below half-full because pasta foams.', 'Cook: select Pasta if available; otherwise select Cook/White Rice. Stir once halfway through and stop when the pasta is tender. Drain excess water if needed.', 'Finish: stir in blended cottage cheese, evaporated milk, mustard, cheddar, and pepper. Select Cook for 3–5 minutes, stirring often, until hot and at least 165°F; this is the finishing cycle.', 'Serve and store: serve immediately. Refrigerate within 2 hours and reheat to 165°F with a splash of milk.'],
+    riceCooker: { capacity: cookerCapacity, mode: 'Pasta if available; otherwise Cook/White Rice', timing: 'About 20–35 minutes for pasta, then 3–5 minutes for the sauce.', doneness: 'Pasta is tender and the sauce is hot throughout; finished dish reaches 165°F.', safety: 'Keep the batch below half-full to control foaming. Do not leave dairy sauce on Warm for extended holding.', storage },
+  };
+  if (id === 142) return {
+    verdict: 'needs-revision', method: 'rice-cooker', finding: 'Polenta needs a porridge or soup program and periodic stirring; fully cooked turkey meatballs are added late so the cooker is not asked to safely cook dense raw meat.', prepMinutes: 10, cookMinutes: 60,
+    instructions: ['Setup: whisk polenta, broth, water, Italian seasoning, and salt in the pot. Keep below half-full.', 'Cook: select Porridge or Soup. If your manual permits stirring, stir carefully every 10–15 minutes until creamy and no longer gritty; add ¼ cup hot broth if it thickens too quickly.', 'Finish: fold in fully cooked turkey meatballs, marinara, spinach, and Parmesan. Select Cook for 5–8 minutes and verify the center reaches 165°F.', 'Rest and store: rest 5 minutes. Refrigerate within 2 hours and reheat to 165°F with extra broth.'],
+    riceCooker: { capacity: cookerCapacity, mode: 'Porridge or Soup; stirring required if the manual permits', timing: 'About 45–65 minutes, depending on polenta grind, plus 5–8 minutes to reheat meatballs.', doneness: 'Polenta is creamy with no gritty center and the meatballs reach 165°F.', safety: 'Use fully cooked turkey meatballs. Never add raw ground poultry to a thick polenta batch; do not let the pot run dry.', storage },
+  };
+  if (id === 143) return {
+    verdict: 'needs-revision', method: 'rice-cooker', finding: 'Shakshuka is viable as a two-stage tomato-and-egg dish; eggs must be added only after the sauce is hot and must reach 160°F.', prepMinutes: 15, cookMinutes: 45,
+    instructions: ['Setup: add tomatoes, rinsed chickpeas, pepper, onion, cumin, paprika, and salt. Keep the pot below half-full.', 'Sauce: select Soup or Slow Cook until the vegetables are tender and the sauce is bubbling, about 25–35 minutes; this is the tomato-sauce cycle.', 'Eggs: make four wells and crack in the eggs. Select Cook for 8–12 minutes with the lid closed, checking the thickest egg center until it reaches 160°F.', 'Serve and store: top with feta and parsley. Refrigerate within 2 hours and reheat leftovers to 165°F.'],
+    riceCooker: { capacity: cookerCapacity, mode: 'Soup/Slow Cook for sauce, then Cook for eggs; no delayed start', timing: 'About 25–35 minutes for sauce plus 8–12 minutes for eggs.', doneness: 'Sauce is bubbling, whites are set, yolks are cooked to preference, and eggs reach 160°F.', safety: 'Egg dishes must reach 160°F. Do not rely on Keep Warm to cook the eggs; refrigerate leftovers within 2 hours.', storage },
+  };
+  if (id === 144) return {
+    verdict: 'needs-revision', method: 'rice-cooker', finding: 'Bread pudding is a suitable covered-custard use for a Cake-capable cooker, but the center needs a 160°F endpoint and a shallow fill.', prepMinutes: 20, cookMinutes: 60,
+    instructions: ['Setup: grease the pot. Whisk eggs, milk, blended cottage cheese, sugar, cinnamon, vanilla, and salt. Fold in bread cubes and apple; rest 10 minutes.', 'Load: pour into the pot and keep below half-full. Select Cake if available; otherwise use Cook/White Rice with the lid closed.', 'Check: when the cooker moves to Warm, test the center. Add 10-minute Cook intervals until the custard reaches 160°F and no liquid pools at the bottom.', 'Rest and store: rest 15 minutes. Refrigerate within 2 hours and reheat portions to 165°F.'],
+    riceCooker: { capacity: cookerCapacity, mode: 'Cake if available; otherwise Cook/White Rice; no delayed start', timing: 'About 50–70 minutes, then 10-minute extensions as needed.', doneness: 'Center is set, no liquid pools at the bottom, and the custard reaches 160°F.', safety: 'Egg custard must reach 160°F. Cool promptly and do not leave bread pudding on Warm for extended holding.', storage },
+  };
+  if (id === 145) return {
+    verdict: 'needs-revision', method: 'rice-cooker', finding: 'A warm dip is practical when cooked chicken is used and the mixture is stirred during heating; dairy can scorch if left unattended on Warm.', prepMinutes: 10, cookMinutes: 20,
+    instructions: ['Setup: stir cooked chicken, blended cottage cheese, Greek yogurt, hot sauce, garlic powder, and onion powder together in the pot.', 'Heat: select Cook and stir every 5–10 minutes. Fold in cheddar when hot and continue until the thickest part reaches 165°F.', 'Serve: switch to Keep Warm only for serving and stir occasionally. Do not leave the dip at room temperature longer than 2 hours.', 'Store: top with green onions. Cool promptly, refrigerate within 2 hours, and reheat to 165°F.'],
+    riceCooker: { capacity: cookerCapacity, mode: 'Cook, then Keep Warm only for active serving', timing: 'About 15–25 minutes; stir every 5–10 minutes and check the center.', doneness: 'Dip is smooth and hot throughout; thickest part reaches 165°F.', safety: 'Use cooked chicken. Do not leave dairy dip on Warm unattended or hold it at room temperature longer than 2 hours.', storage },
+  };
+  return undefined;
+}
+
 function riceOverride(raw: any): AuditOverride {
   const title = titleOf(raw);
   const id = raw.id;
+  const ideaOverride = newIdeaOverride(raw);
+  if (ideaOverride) return ideaOverride;
   if (id === 136) return {
     verdict: 'promising', method: 'rice-cooker', finding: 'A complete late-addition meal: the rice, beans, corn, and salsa cook together, while cooked chicken is added afterward so it stays moist and can be reheated safely.',
     prepMinutes: 15, cookMinutes: 45,

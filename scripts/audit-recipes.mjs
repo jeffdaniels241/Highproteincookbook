@@ -24,7 +24,7 @@ for (const recipe of recipes) {
   if (breadCategories.has(recipe.cat) && !hasAny(ingredients, ['salt'])) { counts.missingSalt++; issues.push([recipe.id, 'missing-salt']); }
   if (isRice) {
     if (hasAny(instructions, ['run cook cycle', 'run white rice cycle', 'run porridge cycle', 'run whole grain cycle'])) { counts.genericRiceInstructions++; issues.push([recipe.id, 'generic-rice-cycle']); }
-    if (!hasAny(ingredients, ['water', 'broth', 'milk', 'coconut milk', 'tomato puree'])) { counts.missingLiquid++; issues.push([recipe.id, 'no-obvious-liquid']); }
+    if (!hasAny(ingredients, ['water', 'broth', 'milk', 'coconut milk', 'tomato puree', 'tomato', 'crushed tomatoes'])) { counts.missingLiquid++; issues.push([recipe.id, 'no-obvious-liquid']); }
     if (!hasAny(instructions, ['165°f', '160°f', '145°f', '190°f', '200°f', '205°f', 'temperature'])) { counts.missingSafety++; issues.push([recipe.id, 'missing-temperature-or-safety']); }
     if (recipe.cat === 'Rice-Cooker' && title.includes('soup') && !hasAny(ingredients, ['broth', 'water', 'tomato'])) { counts.soupWithoutBroth++; issues.push([recipe.id, 'soup-without-liquid']); }
     if (recipe.cat === 'RC-Breads' && hasAny(title, ['quick bread', 'banana', 'pumpkin', 'lemon', 'blueberry', 'apple', 'chocolate', 'cheddar', 'jalapeño', 'olive', 'tomato'])) {
@@ -56,12 +56,12 @@ This report records baseline red flags in the raw recipe source before correctiv
 
 ## Corrective pass
 
-- Replaced the shared instructions for all 61 rice-cooker recipes with family-specific setup, cycle handling, water guidance, doneness, protein timing, safety, rest, and storage instructions.
+- Replaced the shared instructions for all 68 rice-cooker recipes with family-specific setup, cycle handling, water guidance, doneness, protein timing, safety, rest, and storage instructions.
 - Added explicit liquid and protein corrections to the burrito beef soup, shrimp recipes, quick breads, lentil recipes, and breakfast egg recipes.
 - Added center-temperature endpoints to rice-cooker yeast loaves and quick breads.
 - Corrected steamed-bun water level, spacing, lid handling, and resting.
 - Replaced inherited baked-dip instructions with blend-and-chill methods; repaired sweet-potato mash, egg muffins, and marinades.
-- Added npm run validate, which verifies 130 normalized records, 61 recipe-specific rice-cooker guides, stable IDs/slugs, and required audit metadata.
+- Added npm run validate, which verifies 137 normalized records, 68 recipe-specific rice-cooker guides, stable IDs/slugs, and required audit metadata.
 
 ## Standards applied
 
